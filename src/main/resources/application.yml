@@ -1,0 +1,92 @@
+#Application Properties
+#Application Properties
+mscontacts:
+  application:
+    name: ms-post
+    datasource:
+      host: ""
+      database: ""
+      username: ""
+      password: ""
+      protocol: mongodb
+      options: '?authSource=ms-auth'
+
+    elasticsearch:
+      hosts: localhost:9200
+      connectTimeout: 10000
+      connectionRequestTimeout: 10000
+      socketTimeout: 10000
+      maxRetryTimeoutMillis: 60000
+
+    security:
+      jwt-token:
+        secret: ""
+
+      corsConfig:
+        allowed-origins: "*"
+        allowed-methods: "*"
+        allowed-headers: "*"
+        exposed-headers: "Authorization"
+        allow-credentials: true
+        max-age: 1800
+    kafka:
+      servers: 3.223.152.25:9092
+      topics:
+        output:
+          logs: com-fyself-dev-logs
+    server:
+      port: 8080
+
+application:
+  name: ${mscontacts.application.name}
+  datasource:
+    host: ${mscontacts.application.datasource.host}
+    database: ${mscontacts.application.datasource.database}
+    username: ${mscontacts.application.datasource.username}
+    password: ${mscontacts.application.datasource.password}
+    protocol: ${mscontacts.application.datasource.protocol}
+    options: ${mscontacts.application.datasource.options}
+
+  security:
+    jwt-token:
+      secret: ${mscontacts.application.security.jwt-token.secret}
+
+    corsConfig:
+      allowed-origins: ${mscontacts.application.security.corsConfig.allowed-origins}
+      allowed-methods: ${mscontacts.application.security.corsConfig.allowed-methods}
+      allowed-headers: ${mscontacts.application.security.corsConfig.allowed-headers}
+      exposed-headers: ${mscontacts.application.security.corsConfig.exposed-headers}
+      allow-credentials: ${mscontacts.application.security.corsConfig.allow-credentials}
+      max-age: ${mscontacts.application.security.corsConfig.max-age}
+  kafka:
+    servers: ${mscontacts.application.kafka.servers}
+
+    topics:
+      output:
+        logs: ${mscontacts.application.kafka.topics.output.logs}
+
+
+  server:
+    port: ${mscontacts.application.server.port}
+
+
+
+spring:
+  data:
+    mongodb:
+      uri: ${application.datasource.protocol}://${application.datasource.username}:${application.datasource.password}@${application.datasource.host}/${application.datasource.database}${application.datasource.options}
+
+  jpa:
+    open-in-view: false
+  mvc:
+    favicon:
+      enabled: false
+    servlet:
+      load-on-startup: 1
+  output:
+    ansi:
+      enabled: always
+
+#Server Properties
+server:
+  port: ${application.server.port}
