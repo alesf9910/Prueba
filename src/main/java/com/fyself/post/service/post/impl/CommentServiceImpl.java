@@ -14,8 +14,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import static com.fyself.post.service.post.contract.CommentBinder.COMMENT_BINDER;
-import static com.fyself.post.tools.LoggerUtils.createEvent;
-import static com.fyself.post.tools.LoggerUtils.updateEvent;
+import static com.fyself.post.tools.LoggerUtils.*;
 import static com.fyself.seedwork.security.SecurityContextHolder.authenticatedId;
 import static reactor.core.publisher.Mono.error;
 
@@ -56,4 +55,15 @@ public class CommentServiceImpl implements CommentService {
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .then();
     }
+
+    @Override
+    public Mono<Void> delete(@NotNull String id, String post, FySelfContext context) {
+        return repository.findById(id)
+                .filter(comment -> comment.getPost().getId().equals(post))
+                .switchIfEmpty(error(EntityNotFoundException::new))
+                .flatMap(comment -> repository.softDelete(comment).doOnSuccess(entity -> deleteEvent(comment, context)))
+                .then();
+    }
+
+
 }

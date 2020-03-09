@@ -21,9 +21,9 @@ public interface CommentService {
     Mono<CommentTO> load(@NotNull String id, String post, FySelfContext context);
 
     Mono<Void> update(@NotNull @Valid CommentTO to, FySelfContext context);
-//
 
-//
-//    Mono<Void> delete(@NotNull String id, FySelfContext context);
+    Mono<Void> delete(@NotNull String id, String post, FySelfContext context);
+
+
 
 }

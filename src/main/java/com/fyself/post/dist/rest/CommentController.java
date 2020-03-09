@@ -42,11 +42,17 @@ public class CommentController extends Controller<CommentFacade> {
 
     @PutMapping("/{id}")
     @ApiSecuredOperation
-    @ApiOperation(nickname = "comment_load", value = "Load comment", response = NoContentResponse.class, code = 204)
+    @ApiOperation(nickname = "comment_load", value = "Update comment", response = NoContentResponse.class, code = 204)
     public Mono<ResponseEntity> update(@PathVariable String post, @PathVariable String id, @RequestBody CommentTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.perform((facade, context) -> facade.update(to.withId(id).withPost(post), context), exchange);
     }
 
+    @DeleteMapping("/{id}")
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "comment_load", value = "Update comment", response = NoContentResponse.class, code = 204)
+    public Mono<ResponseEntity> delete(@PathVariable String post, @PathVariable String id, @RequestBody CommentTO to, @ApiIgnore ServerWebExchange exchange) {
+        return this.perform((facade, context) -> facade.delete(id, post, context), exchange);
+    }
 
     //<editor-fold desc="Inner classes (Documentation purpose)">
     private static class SearchResponse extends PagedList<CommentTO> {

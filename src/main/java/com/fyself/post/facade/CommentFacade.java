@@ -15,5 +15,7 @@ public interface CommentFacade {
     Mono<Result<String>> create(CommentTO to, FySelfContext context);
     Mono<Result<CommentTO>> load(String id, String post, FySelfContext context);
     Mono<Result<Void>> update(CommentTO to, FySelfContext context);
+    Mono<Result<Void>> delete(String id, String post, FySelfContext context);
+
 
 }

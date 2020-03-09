@@ -35,4 +35,12 @@ public class CommentFacadeImpl implements CommentFacade {
         return service.update(to, context)
                 .thenReturn(successful());
     }
+
+    @Override
+    public Mono<Result<Void>> delete(String id, String post, FySelfContext context) {
+        return service.delete(id, post, context)
+                .thenReturn(successful());
+    }
+
+
 }
