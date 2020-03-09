@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "comment")
 public class Comment extends DomainAuditEntity {
 
+    private static final long serialVersionUID = 2392223630818952482L;
     @DBRef
     @CascadeReference
     private Post post;
