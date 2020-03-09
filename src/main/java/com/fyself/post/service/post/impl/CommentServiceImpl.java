@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 
 import static com.fyself.post.service.post.contract.CommentBinder.COMMENT_BINDER;
 import static com.fyself.post.tools.LoggerUtils.createEvent;
+import static com.fyself.post.tools.LoggerUtils.updateEvent;
 import static com.fyself.seedwork.security.SecurityContextHolder.authenticatedId;
 import static reactor.core.publisher.Mono.error;
 
@@ -44,5 +45,15 @@ public class CommentServiceImpl implements CommentService {
                 .filter(comment -> comment.getPost().getId().equals(post))
                 .map(COMMENT_BINDER::bind)
                 .switchIfEmpty(error(EntityNotFoundException::new));
+    }
+
+    @Override
+    public Mono<Void> update(@NotNull @Valid CommentTO to, FySelfContext context) {
+        return repository.findById(to.getId())
+                .map(comment -> COMMENT_BINDER.set(comment, to))
+                .flatMap(comment -> repository.save(comment)
+                        .doOnSuccess(entity -> updateEvent(comment, entity, context)))
+                .switchIfEmpty(error(EntityNotFoundException::new))
+                .then();
     }
 }

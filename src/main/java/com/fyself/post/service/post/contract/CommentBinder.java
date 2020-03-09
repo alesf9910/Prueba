@@ -4,6 +4,7 @@ import com.fyself.post.service.post.contract.to.CommentTO;
 import com.fyself.post.service.post.datasource.domain.Comment;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -21,4 +22,15 @@ public interface CommentBinder {
 
     @Mapping(target = "post", source = "post.id")
     CommentTO bind(Comment source);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "owner", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "post", ignore = true)
+    void bind(@MappingTarget Comment target, CommentTO source);
+
+    default Comment set(Comment target, CommentTO source) {
+        this.bind(target, source);
+        return target;
+    }
 }

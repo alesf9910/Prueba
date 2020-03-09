@@ -59,6 +59,11 @@ public class CommentTO extends DomainAuditTransferObject {
         return super.getId();
     }
 
+    public CommentTO withId(String id) {
+        this.setId(id);
+        return this;
+    }
+
     public CommentTO withPost(String post) {
         setPost(post);
         return this;

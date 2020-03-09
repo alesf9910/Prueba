@@ -8,6 +8,8 @@ import com.fyself.seedwork.facade.stereotype.Facade;
 import com.fyself.seedwork.service.context.FySelfContext;
 import reactor.core.publisher.Mono;
 
+import static com.fyself.seedwork.facade.Result.successful;
+
 @Facade("commentFacade")
 public class CommentFacadeImpl implements CommentFacade {
 
@@ -26,5 +28,11 @@ public class CommentFacadeImpl implements CommentFacade {
     @Override
     public Mono<Result<CommentTO>> load(String id, String post, FySelfContext context) {
         return service.load(id, post, context).map(Result::successful);
+    }
+
+    @Override
+    public Mono<Result<Void>> update(CommentTO to, FySelfContext context) {
+        return service.update(to, context)
+                .thenReturn(successful());
     }
 }
