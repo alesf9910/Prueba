@@ -38,5 +38,11 @@ public class CommentServiceImpl implements CommentService {
                 .map(DomainEntity::getId);
     }
 
-
+    @Override
+    public Mono<CommentTO> load(@NotNull String id, String post, FySelfContext context) {
+        return repository.getById(id)
+                .filter(comment -> comment.getPost().getId().equals(post))
+                .map(COMMENT_BINDER::bind)
+                .switchIfEmpty(error(EntityNotFoundException::new));
+    }
 }

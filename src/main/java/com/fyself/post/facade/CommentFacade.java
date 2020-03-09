@@ -13,6 +13,6 @@ import reactor.core.publisher.Mono;
  */
 public interface CommentFacade {
     Mono<Result<String>> create(CommentTO to, FySelfContext context);
-
+    Mono<Result<CommentTO>> load(String id, String post, FySelfContext context);
 
 }

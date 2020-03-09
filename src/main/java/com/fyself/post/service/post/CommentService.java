@@ -18,7 +18,7 @@ public interface CommentService {
 
     Mono<String> add(@NotNull @Valid CommentTO to, FySelfContext context);
 
-
+    Mono<CommentTO> load(@NotNull String id, String post, FySelfContext context);
 
 //    Mono<Void> update(@NotNull @Valid PostTO to, FySelfContext context);
 //

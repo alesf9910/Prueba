@@ -19,6 +19,7 @@ import springfox.documentation.annotations.ApiIgnore;
  * @author jmmarin
  * @since 0.0.2
  */
+
 @RestController
 @RequestMapping("/post/{post}/comment")
 @Api(tags = "Comment", description = "Endpoint for the profile shared management")
@@ -29,6 +30,13 @@ public class CommentController extends Controller<CommentFacade> {
     @ApiOperation(nickname = "comment_create", value = "Create comment", response = String.class)
     public Mono<ResponseEntity> loadSharedWithMe(@PathVariable String post, @RequestBody CommentTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.create((facade, context) -> facade.create(to.withPost(post), context), exchange);
+    }
+
+    @GetMapping("/{id}")
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "comment_load", value = "Load comment", response = String.class)
+    public Mono<ResponseEntity> load(@PathVariable String post, @PathVariable String id, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.load(id, post, context), exchange);
     }
 
     //<editor-fold desc="Inner classes (Documentation purpose)">

@@ -23,5 +23,8 @@ public class CommentFacadeImpl implements CommentFacade {
         return service.add(to, context).map(Result::successful);
     }
 
-
+    @Override
+    public Mono<Result<CommentTO>> load(String id, String post, FySelfContext context) {
+        return service.load(id, post, context).map(Result::successful);
+    }
 }
