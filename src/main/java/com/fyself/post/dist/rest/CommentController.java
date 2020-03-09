@@ -2,6 +2,7 @@ package com.fyself.post.dist.rest;
 
 import com.fyself.post.facade.CommentFacade;
 import com.fyself.post.service.post.contract.to.CommentTO;
+import com.fyself.post.service.post.contract.to.criteria.CommentCriteriaTO;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.web.Controller;
 import com.fyself.seedwork.web.documentation.annotations.ApiSecuredOperation;
@@ -28,7 +29,7 @@ public class CommentController extends Controller<CommentFacade> {
 
     @PostMapping()
     @ApiSecuredOperation
-    @ApiOperation(nickname = "comment_create", value = "Create comment", response = String.class)
+    @ApiOperation(nickname = "comment_create", value = "Create comment", response = String.class, code = 201)
     public Mono<ResponseEntity> create(@PathVariable String post, @RequestBody CommentTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.create((facade, context) -> facade.create(to.withPost(post), context), exchange);
     }
@@ -49,10 +50,18 @@ public class CommentController extends Controller<CommentFacade> {
 
     @DeleteMapping("/{id}")
     @ApiSecuredOperation
-    @ApiOperation(nickname = "comment_load", value = "Update comment", response = NoContentResponse.class, code = 204)
+    @ApiOperation(nickname = "comment_load", value = "Update comment", response = NoContentResponse.class)
     public Mono<ResponseEntity> delete(@PathVariable String post, @PathVariable String id, @RequestBody CommentTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.perform((facade, context) -> facade.delete(id, post, context), exchange);
     }
+
+    @PostMapping("/search")
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "comment_search", value = "Search comments", response = SearchResponse.class)
+    public Mono<ResponseEntity> search(@PathVariable String post, @RequestBody CommentCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.search(to, post, context), exchange);
+    }
+
 
     //<editor-fold desc="Inner classes (Documentation purpose)">
     private static class SearchResponse extends PagedList<CommentTO> {

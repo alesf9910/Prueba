@@ -1,7 +1,9 @@
 package com.fyself.post.facade;
 
 import com.fyself.post.service.post.contract.to.CommentTO;
+import com.fyself.post.service.post.contract.to.criteria.CommentCriteriaTO;
 import com.fyself.seedwork.facade.Result;
+import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import reactor.core.publisher.Mono;
 
@@ -16,6 +18,5 @@ public interface CommentFacade {
     Mono<Result<CommentTO>> load(String id, String post, FySelfContext context);
     Mono<Result<Void>> update(CommentTO to, FySelfContext context);
     Mono<Result<Void>> delete(String id, String post, FySelfContext context);
-
-
+    Mono<Result<PagedList<CommentTO>>> search(CommentCriteriaTO criteria, String post, FySelfContext context);
 }

@@ -1,6 +1,8 @@
 package com.fyself.post.service.post;
 
 import com.fyself.post.service.post.contract.to.CommentTO;
+import com.fyself.post.service.post.contract.to.criteria.CommentCriteriaTO;
+import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import reactor.core.publisher.Mono;
 
@@ -24,6 +26,6 @@ public interface CommentService {
 
     Mono<Void> delete(@NotNull String id, String post, FySelfContext context);
 
-
+    Mono<PagedList<CommentTO>> search(@NotNull CommentCriteriaTO criteria, String post, FySelfContext context);
 
 }
