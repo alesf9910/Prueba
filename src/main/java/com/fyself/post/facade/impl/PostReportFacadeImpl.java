@@ -5,6 +5,7 @@ import com.fyself.post.service.post.PostReportService;
 import com.fyself.post.service.post.contract.to.PostReportTO;
 import com.fyself.post.service.post.contract.to.criteria.PostReportCriteriaTO;
 import com.fyself.seedwork.facade.Result;
+import com.fyself.seedwork.facade.stereotype.Facade;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import reactor.core.publisher.Mono;
@@ -17,6 +18,7 @@ import static com.fyself.seedwork.facade.Result.successful;
  * @author Alejandro
  * @since 0.0.1
  */
+@Facade("postReportFacade")
 public class PostReportFacadeImpl implements PostReportFacade {
 
     final PostReportService service;
