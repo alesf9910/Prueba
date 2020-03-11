@@ -49,4 +49,14 @@ public class PostReportFacadeImpl implements PostReportFacade {
     public Mono<Result<PagedList<PostReportTO>>> search(PostReportCriteriaTO criteria, String post, FySelfContext context) {
         return service.loadAll(criteria, post, context).map(Result::successful);
     }
+
+    @Override
+    public Mono<Result<PagedList<PostReportTO>>> search(PostReportCriteriaTO criteria, FySelfContext context) {
+        return service.loadAll(criteria, context).map(Result::successful);
+    }
+
+    @Override
+    public Mono<Result<PagedList<PostReportTO>>> searchByMe(PostReportCriteriaTO criteria, FySelfContext context) {
+        return service.loadAll(criteria.withOwner(context.getAccount().get().getId()), context).map(Result::successful);
+    }
 }

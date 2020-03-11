@@ -19,4 +19,6 @@ public interface PostReportFacade {
     Mono<Result<Void>> delete(String id, String post, FySelfContext context);
     Mono<Result<PostReportTO>> load(String id, String post, FySelfContext context);
     Mono<Result<PagedList<PostReportTO>>> search(PostReportCriteriaTO criteria, String post, FySelfContext context);
+    Mono<Result<PagedList<PostReportTO>>> search(PostReportCriteriaTO criteria, FySelfContext context);
+    Mono<Result<PagedList<PostReportTO>>> searchByMe(PostReportCriteriaTO criteria, FySelfContext context);
 }

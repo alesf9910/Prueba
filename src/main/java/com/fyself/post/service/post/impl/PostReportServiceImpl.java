@@ -47,4 +47,9 @@ public class PostReportServiceImpl implements PostReportService {
     public Mono<PagedList<PostReportTO>> loadAll(PostReportCriteriaTO criteria, String post, FySelfContext context) {
         return null;
     }
+
+    @Override
+    public Mono<PagedList<PostReportTO>> loadAll(PostReportCriteriaTO criteria, FySelfContext context) {
+        return null;
+    }
 }
