@@ -17,9 +17,13 @@ public class PostFacadeImpl implements PostFacade {
         this.service = service;
     }
 
-
     @Override
     public Mono<Result<String>> create(PostTO to, FySelfContext context) {
         return service.create(to, context).map(Result::successful);
+    }
+
+    @Override
+    public Mono<Result<PostTO>> load(String post, FySelfContext context) {
+        return service.load(post, context).map(Result::successful);
     }
 }

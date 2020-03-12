@@ -7,10 +7,7 @@ import com.fyself.seedwork.web.documentation.annotations.ApiSecuredOperation;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import springfox.documentation.annotations.ApiIgnore;
@@ -34,4 +31,10 @@ public class PostController extends Controller<PostFacade> {
         return this.create((facade, context) -> facade.create(to, context), exchange);
     }
 
+    @GetMapping("/{id}")
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "post_load", value = "Load post", response = ResponseEntity.class)
+    public Mono<ResponseEntity> load(@PathVariable String id, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.load(id, context), exchange);
+    }
 }

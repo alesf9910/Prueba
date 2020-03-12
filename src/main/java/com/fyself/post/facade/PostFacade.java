@@ -13,4 +13,6 @@ import reactor.core.publisher.Mono;
  */
 public interface PostFacade {
     Mono<Result<String>> create(PostTO to, FySelfContext context);
+
+    Mono<Result<PostTO>> load(String post, FySelfContext context);
 }

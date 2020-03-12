@@ -34,4 +34,18 @@ public interface PostBinder {
     }
 
     LinkContent bind(LinkContentTO source);
+
+    default PostTO bind(Post source) {
+        PostTO post = new PostTO();
+        post.setContents(source.getContents().stream().map(this::bind).collect(toSet()));
+        return post;
+    }
+
+    default ContentTO bind(Content source) {
+        if (source instanceof LinkContent)
+            return this.bind((LinkContent) source);
+        return null;
+    }
+
+    LinkContentTO bind(LinkContent source);
 }
