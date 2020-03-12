@@ -6,9 +6,6 @@ import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import reactor.core.publisher.Mono;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 
 /**
  * Service for Post Report.
@@ -18,16 +15,17 @@ import javax.validation.constraints.NotNull;
  */
 public interface PostReportService {
 
-    Mono<String> add(@NotNull @Valid PostReportTO to, FySelfContext context);
+    Mono<String> add(PostReportTO to, FySelfContext context);
 
-    Mono<Void> update(@NotNull @Valid PostReportTO to, FySelfContext context);
+    Mono<Void> update(PostReportTO to, FySelfContext context);
 
-    Mono<Void> delete(@NotNull String id, String post, FySelfContext context);
+    Mono<Void> delete(String id, String post, FySelfContext context);
 
-    Mono<PostReportTO> load(@NotNull String id, String post, FySelfContext context);
-
-    Mono<PagedList<PostReportTO>> loadAll(PostReportCriteriaTO criteria, String post, FySelfContext context);
+    Mono<PostReportTO> load(String id, FySelfContext context);
 
     Mono<PagedList<PostReportTO>> loadAll(PostReportCriteriaTO criteria, FySelfContext context);
+
+    Mono<PagedList<PostReportTO>> loadAllToMe(PostReportCriteriaTO criteria, FySelfContext context);
+    Mono<PagedList<PostReportTO>> loadAllFromMe(PostReportCriteriaTO criteria, FySelfContext context);
 
 }

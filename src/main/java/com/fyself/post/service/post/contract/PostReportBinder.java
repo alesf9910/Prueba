@@ -25,9 +25,15 @@ import java.util.List;
 public interface PostReportBinder {
     PostReportBinder POST_REPORT_BINDER = Mappers.getMapper(PostReportBinder.class);
 
+    @Mapping(target = "user", source = "user")
+    @Mapping(target = "description", source = "description")
+    @Mapping(target = "reason", source = "reason")
     @Mapping(target = "post.id", source = "post")
     PostReport bind(PostReportTO source);
 
+    @Mapping(target = "user", source = "user")
+    @Mapping(target = "description", source = "description")
+    @Mapping(target = "reason", source = "reason")
     @Mapping(target = "post", source = "post.id")
     PostReportTO bind(PostReport source);
 
@@ -51,6 +57,18 @@ public interface PostReportBinder {
         Post post = new Post();
         post.setId(postId);
         criteria.setPost(post);
+        return criteria;
+    }
+
+    default PostReportCriteria bindToCriteriaToMe(PostReportCriteriaTO source) {
+        PostReportCriteria criteria = new PostReportCriteria();
+        criteria.setUser(source.getUser());
+        return criteria;
+    }
+
+    default PostReportCriteria bindToCriteriaOfMe(PostReportCriteriaTO source) {
+        PostReportCriteria criteria = new PostReportCriteria();
+        criteria.setOwner(source.getOwner());
         return criteria;
     }
 

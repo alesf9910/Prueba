@@ -3,8 +3,11 @@ package com.fyself.post.service.post.contract.to;
 import com.fyself.post.service.post.datasource.domain.enums.ReportingReason;
 import com.fyself.seedwork.service.to.DomainAuditTransferObject;
 import com.fyself.seedwork.service.to.annotation.ReadOnly;
+import org.springframework.util.DigestUtils;
 
 import java.time.LocalDateTime;
+
+import static java.time.LocalDateTime.now;
 
 public class PostReportTO extends DomainAuditTransferObject {
     private String post;
@@ -79,7 +82,18 @@ public class PostReportTO extends DomainAuditTransferObject {
     }
 
     public PostReportTO withId(String id) {
-        this.setId(id);
+        String reportId = DigestUtils.md5DigestAsHex(String.format("%s%s", this.getUser(), id).getBytes());
+        this.setId(reportId);
+        return this;
+    }
+
+    public PostReportTO withCreateAt() {
+        this.setCreatedAt(now());
+        return this;
+    }
+
+    public PostReportTO withUpdateAt() {
+        this.setUpdatedAt(now());
         return this;
     }
 }
