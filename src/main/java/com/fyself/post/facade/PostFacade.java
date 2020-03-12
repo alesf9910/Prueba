@@ -15,4 +15,6 @@ public interface PostFacade {
     Mono<Result<String>> create(PostTO to, FySelfContext context);
 
     Mono<Result<PostTO>> load(String post, FySelfContext context);
+
+    Mono<Result<Void>> delete(String post, FySelfContext context);
 }

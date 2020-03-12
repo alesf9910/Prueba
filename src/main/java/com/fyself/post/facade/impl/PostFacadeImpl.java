@@ -26,4 +26,9 @@ public class PostFacadeImpl implements PostFacade {
     public Mono<Result<PostTO>> load(String post, FySelfContext context) {
         return service.load(post, context).map(Result::successful);
     }
+
+    @Override
+    public Mono<Result<Void>> delete(String post, FySelfContext context) {
+        return service.delete(post, context).map(Result::successful);
+    }
 }

@@ -4,6 +4,7 @@ import com.fyself.post.facade.PostFacade;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.seedwork.web.Controller;
 import com.fyself.seedwork.web.documentation.annotations.ApiSecuredOperation;
+import com.fyself.seedwork.web.documentation.responses.NoContentResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
@@ -36,5 +37,12 @@ public class PostController extends Controller<PostFacade> {
     @ApiOperation(nickname = "post_load", value = "Load post", response = ResponseEntity.class)
     public Mono<ResponseEntity> load(@PathVariable String id, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.load(id, context), exchange);
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "post_load", value = "Update post", response = NoContentResponse.class)
+    public Mono<ResponseEntity> delete(@PathVariable String id, @ApiIgnore ServerWebExchange exchange) {
+        return this.perform((facade, context) -> facade.delete(id, context), exchange);
     }
 }

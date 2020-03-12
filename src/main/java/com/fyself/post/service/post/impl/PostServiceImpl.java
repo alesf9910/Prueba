@@ -3,6 +3,7 @@ package com.fyself.post.service.post.impl;
 import com.fyself.post.service.post.PostService;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.datasource.PostRepository;
+import com.fyself.seedwork.service.EntityNotFoundException;
 import com.fyself.seedwork.service.context.FySelfContext;
 import com.fyself.seedwork.service.repository.mongodb.domain.DomainEntity;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
+import static com.fyself.post.tools.LoggerUtils.deleteEvent;
+import static reactor.core.publisher.Mono.error;
 
 @Service("postService")
 @Validated
@@ -26,7 +29,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Mono<String> create(@NotNull @Valid PostTO to, FySelfContext context) {
         return context.authenticatedId()
-        .flatMap(userId -> repository.save(POST_BINDER.bind(to.withUserId(userId).withCreatedAt().withUpdatedAt())).map(DomainEntity::getId));
+                .flatMap(userId -> repository.save(POST_BINDER.bind(to.withUserId(userId).withCreatedAt().withUpdatedAt())).map(DomainEntity::getId));
     }
 
     @Override
@@ -41,6 +44,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Mono<Void> delete(@NotNull String id, FySelfContext context) {
-        return null;
+        return repository.findById(id)
+                .switchIfEmpty(error(EntityNotFoundException::new))
+                .flatMap(post -> repository.softDelete(post).doOnSuccess(entity -> deleteEvent(post, context)))
+                .then();
     }
 }
