@@ -19,7 +19,7 @@ public interface PostReportService {
 
     Mono<Void> update(PostReportTO to, FySelfContext context);
 
-    Mono<Void> delete(String id, String post, FySelfContext context);
+    Mono<Void> delete(String id, FySelfContext context);
 
     Mono<PostReportTO> load(String id, FySelfContext context);
 

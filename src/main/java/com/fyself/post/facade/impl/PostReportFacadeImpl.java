@@ -38,8 +38,8 @@ public class PostReportFacadeImpl implements PostReportFacade {
     }
 
     @Override
-    public Mono<Result<Void>> delete(String id, String post, FySelfContext context) {
-        return service.delete(id, post, context).thenReturn(successful());
+    public Mono<Result<Void>> delete(String id, FySelfContext context) {
+        return service.delete(id, context).thenReturn(successful());
     }
 
     @Override

@@ -53,7 +53,7 @@ public class PostReportServiceImpl implements PostReportService {
     }
 
     @Override
-    public Mono<Void> delete(String id, String post, FySelfContext context) {
+    public Mono<Void> delete(String id, FySelfContext context) {
         return null;
     }
 

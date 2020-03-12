@@ -45,15 +45,15 @@ public class PostReportController extends Controller<PostReportFacade> {
     @PutMapping("/{id}")
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_report_update", value = "Update post reports", response = NoContentResponse.class, code = 204)
-    public Mono<ResponseEntity> update(@ApiParam(name = "post", value = "ID of post to be update") @PathVariable String post, @ApiParam(name = "id", value = "ID of report to be reported") @PathVariable String id, @RequestBody PostReportTO to, @ApiIgnore ServerWebExchange exchange) {
-        return this.perform((facade, context) -> facade.update(to.withId(id).withPost(post), context), exchange);
+    public Mono<ResponseEntity> update(@ApiParam(name = "id", value = "ID of report to be reported") @PathVariable String id, @RequestBody PostReportTO to, @ApiIgnore ServerWebExchange exchange) {
+        return this.perform((facade, context) -> facade.update(to.withId(id), context), exchange);
     }
 
-    @DeleteMapping("/{post}/{id}")
+    @DeleteMapping("/{id}")
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_report_delete", value = "Delete post reports", response = NoContentResponse.class)
-    public Mono<ResponseEntity> delete(@ApiParam(name = "post", value = "ID of post to be deleted from report") @PathVariable String post, @ApiParam(name = "post", value = "ID of report to be deleted") @PathVariable String id, @ApiIgnore ServerWebExchange exchange) {
-        return this.perform((facade, context) -> facade.delete(id, post, context), exchange);
+    public Mono<ResponseEntity> delete( @ApiParam(name = "post", value = "ID of report to be deleted") @PathVariable String id, @ApiIgnore ServerWebExchange exchange) {
+        return this.perform((facade, context) -> facade.delete(id, context), exchange);
     }
 
     @GetMapping()
