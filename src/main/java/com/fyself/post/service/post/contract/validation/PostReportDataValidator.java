@@ -35,7 +35,7 @@ public class PostReportDataValidator extends MonoBiValidatorFixInterceptor<PostR
                     "execution(public * com.fyself.post.service.post.PostReportService+.update(..)) || "
     )
     public Object intercept(ProceedingJoinPoint procedure) {
-        return this.proceed(procedure, 0, LAST, "fyself.service.post.report.with.me");
+        return this.proceed(procedure, 0, LAST, "fyself.service.post.report.missing.data");
     }
 
     @Override
