@@ -11,6 +11,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -37,9 +38,6 @@ public interface PostReportBinder {
     @Mapping(target = "post", source = "post.id")
     PostReportTO bind(PostReport source);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "owner", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "post.id", source = "post")
     void bind(@MappingTarget PostReport target, PostReportTO source);
 
@@ -50,6 +48,11 @@ public interface PostReportBinder {
 
     default PostReportCriteria bindToCriteria(PostReportCriteriaTO source) {
         return this.bind(source);
+    }
+
+    default PostReport set(PostReport target, PostReportTO source) {
+        this.bind(target, source);
+        return target;
     }
 
     default PostReportCriteria bindToCriteria(PostReportCriteriaTO source, String postId) {

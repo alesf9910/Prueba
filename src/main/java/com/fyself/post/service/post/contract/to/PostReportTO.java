@@ -5,6 +5,7 @@ import com.fyself.seedwork.service.to.DomainAuditTransferObject;
 import com.fyself.seedwork.service.to.annotation.ReadOnly;
 import org.springframework.util.DigestUtils;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 import static java.time.LocalDateTime.now;
@@ -55,6 +56,7 @@ public class PostReportTO extends DomainAuditTransferObject {
         this.user = user;
     }
 
+    @NotBlank
     public String getDescription() {
         return description;
     }
@@ -81,8 +83,18 @@ public class PostReportTO extends DomainAuditTransferObject {
         return this;
     }
 
+    public PostReportTO withUser(String user) {
+        this.setUser(user);
+        return this;
+    }
+
     public PostReportTO withId(String id) {
         String reportId = DigestUtils.md5DigestAsHex(String.format("%s%s", this.getUser(), id).getBytes());
+        this.setId(reportId);
+        return this;
+    }
+
+    public PostReportTO withReportId(String reportId) {
         this.setId(reportId);
         return this;
     }

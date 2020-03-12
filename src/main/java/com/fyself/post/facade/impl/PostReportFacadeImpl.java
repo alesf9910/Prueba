@@ -2,15 +2,18 @@ package com.fyself.post.facade.impl;
 
 import com.fyself.post.facade.PostReportFacade;
 import com.fyself.post.service.post.PostReportService;
+import com.fyself.post.service.post.PostService;
 import com.fyself.post.service.post.contract.to.PostReportTO;
 import com.fyself.post.service.post.contract.to.criteria.PostReportCriteriaTO;
 import com.fyself.seedwork.facade.Result;
 import com.fyself.seedwork.facade.stereotype.Facade;
+import com.fyself.seedwork.service.EntityNotFoundException;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import reactor.core.publisher.Mono;
 
 import static com.fyself.seedwork.facade.Result.successful;
+import static reactor.core.publisher.Mono.error;
 
 /**
  * Facade implementation for Post Report.
@@ -22,19 +25,25 @@ import static com.fyself.seedwork.facade.Result.successful;
 public class PostReportFacadeImpl implements PostReportFacade {
 
     final PostReportService service;
+    final PostService postService;
 
-    public PostReportFacadeImpl(PostReportService service) {
+    public PostReportFacadeImpl(PostReportService service, PostService postService) {
         this.service = service;
+        this.postService = postService;
     }
 
     @Override
     public Mono<Result<String>> create(PostReportTO to, FySelfContext exchange) {
-        return service.add(to, exchange).map(Result::successful);
+        return postService.load(to.getPost(), exchange)
+                .flatMap(postTO -> service.add(to.withUser(postTO.getOwner()), exchange))
+                .map(Result::successful);
     }
 
     @Override
     public Mono<Result<Void>> update(PostReportTO to, FySelfContext context) {
-        return service.update(to, context).thenReturn(successful());
+        return postService.load(to.getPost(), context)
+                .flatMap(postTO -> service.update(to.withUser(postTO.getOwner()), context))
+                .thenReturn(successful());
     }
 
     @Override
@@ -54,11 +63,15 @@ public class PostReportFacadeImpl implements PostReportFacade {
 
     @Override
     public Mono<Result<PagedList<PostReportTO>>> searchByMe(PostReportCriteriaTO criteria, FySelfContext context) {
-        return service.loadAllFromMe(criteria.withOwner(context.getAccount().get().getId()), context).map(Result::successful);
+        return context.authenticatedId()
+                .flatMap(id-> service.loadAll(criteria.withOwner(id), context))
+                .map(Result::successful);
     }
 
     @Override
     public Mono<Result<PagedList<PostReportTO>>> searchToMe(PostReportCriteriaTO criteria, FySelfContext context) {
-        return service.loadAllToMe(criteria.withUser(context.getAccount().get().getId()), context).map(Result::successful);
+        return context.authenticatedId()
+                .flatMap(id-> service.loadAll(criteria.withUser(id), context))
+                .map(Result::successful);
     }
 }
