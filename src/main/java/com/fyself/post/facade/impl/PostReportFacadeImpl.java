@@ -7,13 +7,11 @@ import com.fyself.post.service.post.contract.to.PostReportTO;
 import com.fyself.post.service.post.contract.to.criteria.PostReportCriteriaTO;
 import com.fyself.seedwork.facade.Result;
 import com.fyself.seedwork.facade.stereotype.Facade;
-import com.fyself.seedwork.service.EntityNotFoundException;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import reactor.core.publisher.Mono;
 
 import static com.fyself.seedwork.facade.Result.successful;
-import static reactor.core.publisher.Mono.error;
 
 /**
  * Facade implementation for Post Report.
@@ -64,14 +62,14 @@ public class PostReportFacadeImpl implements PostReportFacade {
     @Override
     public Mono<Result<PagedList<PostReportTO>>> searchByMe(PostReportCriteriaTO criteria, FySelfContext context) {
         return context.authenticatedId()
-                .flatMap(id-> service.loadAll(criteria.withOwner(id), context))
+                .flatMap(id -> service.loadAll(criteria.withOwner(id), context))
                 .map(Result::successful);
     }
 
     @Override
     public Mono<Result<PagedList<PostReportTO>>> searchToMe(PostReportCriteriaTO criteria, FySelfContext context) {
         return context.authenticatedId()
-                .flatMap(id-> service.loadAll(criteria.withUser(id), context))
+                .flatMap(id -> service.loadAll(criteria.withUser(id), context))
                 .map(Result::successful);
     }
 }

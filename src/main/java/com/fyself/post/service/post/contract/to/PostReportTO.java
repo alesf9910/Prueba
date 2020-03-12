@@ -6,10 +6,17 @@ import com.fyself.seedwork.service.to.annotation.ReadOnly;
 import org.springframework.util.DigestUtils;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 import static java.time.LocalDateTime.now;
 
+/**
+ * Controller for Post Report.
+ *
+ * @author Alejandro
+ * @since 0.0.1
+ */
 public class PostReportTO extends DomainAuditTransferObject {
     private String post;
     private String user;
@@ -48,6 +55,8 @@ public class PostReportTO extends DomainAuditTransferObject {
         this.post = post;
     }
 
+    @NotBlank
+    @NotNull
     public String getUser() {
         return user;
     }
@@ -57,6 +66,7 @@ public class PostReportTO extends DomainAuditTransferObject {
     }
 
     @NotBlank
+    @NotNull
     public String getDescription() {
         return description;
     }
@@ -65,6 +75,8 @@ public class PostReportTO extends DomainAuditTransferObject {
         this.description = description;
     }
 
+    @NotBlank
+    @NotNull
     public ReportingReason getReason() {
         return reason;
     }
