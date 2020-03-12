@@ -1,7 +1,6 @@
 package com.fyself.post.dist.rest;
 
 import com.fyself.post.facade.PostReportFacade;
-import com.fyself.post.service.post.contract.to.CommentTO;
 import com.fyself.post.service.post.contract.to.PostReportTO;
 import com.fyself.post.service.post.contract.to.criteria.PostReportCriteriaTO;
 import com.fyself.seedwork.service.PagedList;
@@ -37,7 +36,7 @@ public class PostReportController extends Controller<PostReportFacade> {
 
     @GetMapping("/{id}")
     @ApiSecuredOperation
-    @ApiOperation(nickname = "post_report_load", value = "Load post reports", response = String.class)
+    @ApiOperation(nickname = "post_report_load", value = "Load post reports", response = PostReportResponse.class)
     public Mono<ResponseEntity> load(@ApiParam(name = "id", value = "ID of report to be load") @PathVariable String id, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.load(id, context), exchange);
     }
@@ -52,7 +51,7 @@ public class PostReportController extends Controller<PostReportFacade> {
     @DeleteMapping("/{id}")
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_report_delete", value = "Delete post reports", response = NoContentResponse.class)
-    public Mono<ResponseEntity> delete( @ApiParam(name = "post", value = "ID of report to be deleted") @PathVariable String id, @ApiIgnore ServerWebExchange exchange) {
+    public Mono<ResponseEntity> delete(@ApiParam(name = "post", value = "ID of report to be deleted") @PathVariable String id, @ApiIgnore ServerWebExchange exchange) {
         return this.perform((facade, context) -> facade.delete(id, context), exchange);
     }
 
@@ -72,34 +71,37 @@ public class PostReportController extends Controller<PostReportFacade> {
 
     @GetMapping("/tome")
     @ApiSecuredOperation
-    @ApiOperation(nickname = "post_report_search_post", value = "Search post reports", response = SearchResponse.class)
-    public Mono<ResponseEntity> searchByUserGet(@ApiParam(name = "to", value = "Data of post report to be search")@RequestBody PostReportCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
+    @ApiOperation(nickname = "post_report_to_me_search_get", value = "Search post reports made for me", response = SearchResponse.class)
+    public Mono<ResponseEntity> searchByUserGet(PostReportCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.searchToMe(to, context), exchange);
     }
 
     @PostMapping("/tome/all")
     @ApiSecuredOperation
-    @ApiOperation(nickname = "post_report_search_post", value = "Search post reports", response = SearchResponse.class)
+    @ApiOperation(nickname = "post_report_to_me_search_post", value = "Search post reports made for me", response = SearchResponse.class)
     public Mono<ResponseEntity> searchByUserPost(@ApiParam(name = "to", value = "Data of post report to be search") @RequestBody PostReportCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.searchToMe(to, context), exchange);
     }
 
-    @PostMapping("/me")
+    @GetMapping("/me")
     @ApiSecuredOperation
-    @ApiOperation(nickname = "post_report_search_post", value = "Search post reports", response = SearchResponse.class)
-    public Mono<ResponseEntity> searchByMeGet(@ApiParam(name = "to", value = "Data of post report to be search") @RequestBody PostReportCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
+    @ApiOperation(nickname = "post_report_from_me_search_get", value = "Search post reports made by me", response = SearchResponse.class)
+    public Mono<ResponseEntity> searchByMeGet(PostReportCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.searchByMe(to, context), exchange);
     }
 
     @PostMapping("/me/all")
     @ApiSecuredOperation
-    @ApiOperation(nickname = "post_report_search_post", value = "Search post reports", response = SearchResponse.class)
+    @ApiOperation(nickname = "post_report_from_me_search_post", value = "Search post reports made by me", response = SearchResponse.class)
     public Mono<ResponseEntity> searchByMePost(@ApiParam(name = "to", value = "Data of post report to be search") @RequestBody PostReportCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.searchByMe(to, context), exchange);
     }
 
     //<editor-fold desc="Inner classes (Documentation purpose)">
     private static class SearchResponse extends PagedList<PostReportTO> {
+    }
+
+    private static class PostReportResponse extends PostReportTO {
     }
     //</editor-fold>
 }

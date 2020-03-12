@@ -78,6 +78,6 @@ public class PostReportServiceImpl implements PostReportService {
 
     @Override
     public Mono<PagedList<PostReportTO>> loadAll(PostReportCriteriaTO criteria, FySelfContext context) {
-        return null;
+        return repository.findPage(POST_REPORT_BINDER.bindToCriteria(criteria)).map(POST_REPORT_BINDER::bind);
     }
 }
