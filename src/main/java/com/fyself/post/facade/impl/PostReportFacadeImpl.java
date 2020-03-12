@@ -7,11 +7,13 @@ import com.fyself.post.service.post.contract.to.PostReportTO;
 import com.fyself.post.service.post.contract.to.criteria.PostReportCriteriaTO;
 import com.fyself.seedwork.facade.Result;
 import com.fyself.seedwork.facade.stereotype.Facade;
+import com.fyself.seedwork.service.EntityNotFoundException;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import reactor.core.publisher.Mono;
 
 import static com.fyself.seedwork.facade.Result.successful;
+import static reactor.core.publisher.Mono.error;
 
 /**
  * Facade implementation for Post Report.
@@ -32,12 +34,20 @@ public class PostReportFacadeImpl implements PostReportFacade {
 
     @Override
     public Mono<Result<String>> create(PostReportTO to, FySelfContext exchange) {
-        return service.add(to, exchange).map(Result::successful);
+        return postService.load(to.getPost(), exchange)
+                .switchIfEmpty(error(EntityNotFoundException::new))
+                .flatMap(postTO -> service.add(to.withUser(postTO.getOwner()), exchange)
+                        .map(Result::successful)
+                );
     }
 
     @Override
     public Mono<Result<Void>> update(PostReportTO to, FySelfContext context) {
-        return service.update(to, context).thenReturn(successful());
+        return postService.load(to.getPost(), context)
+                .switchIfEmpty(error(EntityNotFoundException::new))
+                .flatMap(postTO -> service.update(to.withUser(postTO.getOwner()), context)
+                        .thenReturn(successful())
+                );
     }
 
     @Override

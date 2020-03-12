@@ -81,6 +81,11 @@ public class PostReportTO extends DomainAuditTransferObject {
         return this;
     }
 
+    public PostReportTO withUser(String user) {
+        this.setUser(user);
+        return this;
+    }
+
     public PostReportTO withId(String id) {
         String reportId = DigestUtils.md5DigestAsHex(String.format("%s%s", this.getUser(), id).getBytes());
         this.setId(reportId);
