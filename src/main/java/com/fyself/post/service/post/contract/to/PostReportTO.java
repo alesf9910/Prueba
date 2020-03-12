@@ -87,6 +87,11 @@ public class PostReportTO extends DomainAuditTransferObject {
         return this;
     }
 
+    public PostReportTO withReportId(String reportId) {
+        this.setId(reportId);
+        return this;
+    }
+
     public PostReportTO withCreateAt() {
         this.setCreatedAt(now());
         return this;

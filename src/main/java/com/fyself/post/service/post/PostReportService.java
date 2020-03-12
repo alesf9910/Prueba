@@ -24,8 +24,4 @@ public interface PostReportService {
     Mono<PostReportTO> load(String id, FySelfContext context);
 
     Mono<PagedList<PostReportTO>> loadAll(PostReportCriteriaTO criteria, FySelfContext context);
-
-    Mono<PagedList<PostReportTO>> loadAllToMe(PostReportCriteriaTO criteria, FySelfContext context);
-    Mono<PagedList<PostReportTO>> loadAllFromMe(PostReportCriteriaTO criteria, FySelfContext context);
-
 }

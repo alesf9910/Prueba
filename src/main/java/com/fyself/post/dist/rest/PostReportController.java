@@ -46,7 +46,7 @@ public class PostReportController extends Controller<PostReportFacade> {
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_report_update", value = "Update post reports", response = NoContentResponse.class, code = 204)
     public Mono<ResponseEntity> update(@ApiParam(name = "id", value = "ID of report to be reported") @PathVariable String id, @RequestBody PostReportTO to, @ApiIgnore ServerWebExchange exchange) {
-        return this.perform((facade, context) -> facade.update(to.withId(id), context), exchange);
+        return this.perform((facade, context) -> facade.update(to.withReportId(id), context), exchange);
     }
 
     @DeleteMapping("/{id}")

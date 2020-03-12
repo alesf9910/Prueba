@@ -2,6 +2,7 @@ package com.fyself.post.facade.impl;
 
 import com.fyself.post.facade.PostReportFacade;
 import com.fyself.post.service.post.PostReportService;
+import com.fyself.post.service.post.PostService;
 import com.fyself.post.service.post.contract.to.PostReportTO;
 import com.fyself.post.service.post.contract.to.criteria.PostReportCriteriaTO;
 import com.fyself.seedwork.facade.Result;
@@ -22,9 +23,11 @@ import static com.fyself.seedwork.facade.Result.successful;
 public class PostReportFacadeImpl implements PostReportFacade {
 
     final PostReportService service;
+    final PostService postService;
 
-    public PostReportFacadeImpl(PostReportService service) {
+    public PostReportFacadeImpl(PostReportService service, PostService postService) {
         this.service = service;
+        this.postService = postService;
     }
 
     @Override
@@ -54,11 +57,11 @@ public class PostReportFacadeImpl implements PostReportFacade {
 
     @Override
     public Mono<Result<PagedList<PostReportTO>>> searchByMe(PostReportCriteriaTO criteria, FySelfContext context) {
-        return service.loadAllFromMe(criteria.withOwner(context.getAccount().get().getId()), context).map(Result::successful);
+        return service.loadAll(criteria.withOwner(context.getAccount().get().getId()), context).map(Result::successful);
     }
 
     @Override
     public Mono<Result<PagedList<PostReportTO>>> searchToMe(PostReportCriteriaTO criteria, FySelfContext context) {
-        return service.loadAllToMe(criteria.withUser(context.getAccount().get().getId()), context).map(Result::successful);
+        return service.loadAll(criteria.withUser(context.getAccount().get().getId()), context).map(Result::successful);
     }
 }
