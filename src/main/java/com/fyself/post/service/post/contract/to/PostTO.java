@@ -4,8 +4,11 @@ package com.fyself.post.service.post.contract.to;
 import com.fyself.seedwork.service.to.DomainAuditTransferObject;
 import com.fyself.seedwork.service.to.annotation.ReadOnly;
 
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.util.Set;
+
+import static java.time.LocalDateTime.now;
 
 public class PostTO extends DomainAuditTransferObject {
 
@@ -36,6 +39,7 @@ public class PostTO extends DomainAuditTransferObject {
         return super.getId();
     }
 
+    @NotEmpty
     public Set<ContentTO> getContents() {
         return contents;
     }
@@ -44,8 +48,18 @@ public class PostTO extends DomainAuditTransferObject {
         this.contents = contents;
     }
 
-    public PostTO withOwner(String owner) {
-        this.setOwner(owner);
+    public PostTO withUserId(String id) {
+        this.setOwner(id);
+        return this;
+    }
+
+    public PostTO withCreatedAt() {
+        this.setCreatedAt(now());
+        return this;
+    }
+
+    public PostTO withUpdatedAt() {
+        this.setUpdatedAt(now());
         return this;
     }
 }
