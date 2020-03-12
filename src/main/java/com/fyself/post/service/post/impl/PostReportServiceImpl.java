@@ -31,7 +31,6 @@ public class PostReportServiceImpl implements PostReportService {
         return context.authenticatedId()
                 .flatMap(userId -> repository.save(POST_REPORT_BINDER.bind(to
                         .withOwner(userId)
-                        .withId(userId)
                         .withCreateAt()
                         .withUpdateAt()))
                 )
