@@ -30,7 +30,7 @@ public class PostReportController extends Controller<PostReportFacade> {
     @PostMapping()
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_report_create", value = "Create post reports", response = String.class, code = 201)
-    public Mono<ResponseEntity> create(@ApiParam(name = "to", value = "Data of report to be report", required = true) @RequestBody PostReportTO to, @ApiIgnore ServerWebExchange exchange) {
+    public Mono<ResponseEntity> create(@ApiParam(name = "to", value = "Data of report to be create", required = true) @RequestBody PostReportTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.create((facade, context) -> facade.create(to, context), exchange);
     }
 
@@ -44,7 +44,8 @@ public class PostReportController extends Controller<PostReportFacade> {
     @PutMapping("/{id}")
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_report_update", value = "Update post reports", response = NoContentResponse.class, code = 204)
-    public Mono<ResponseEntity> update(@ApiParam(name = "id", value = "ID of report to be reported", required = true) @PathVariable String id, @RequestBody PostReportTO to, @ApiIgnore ServerWebExchange exchange) {
+    public Mono<ResponseEntity> update(@ApiParam(name = "id", value = "ID of report to be reported", required = true) @PathVariable String id,
+                                       @ApiParam(name = "id", value = "Post report data to be update", required = true) @RequestBody PostReportTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.perform((facade, context) -> facade.update(to.withReportId(id), context), exchange);
     }
 
@@ -58,7 +59,7 @@ public class PostReportController extends Controller<PostReportFacade> {
     @GetMapping()
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_report_search_get", value = "Search post reports", response = SearchResponse.class)
-    public Mono<ResponseEntity> searchGet(PostReportCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
+    public Mono<ResponseEntity> searchGet(@ApiParam(name = "to", value = "Data of post report to be search", required = true) PostReportCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.search(to, context), exchange);
     }
 
