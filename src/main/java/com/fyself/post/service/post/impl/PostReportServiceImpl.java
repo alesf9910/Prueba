@@ -32,7 +32,21 @@ public class PostReportServiceImpl implements PostReportService {
     }
 
     @Override
-    public Mono<String> add(@NotNull @Valid PostReportTO to, FySelfContext context) {
+    public Mono<String> add(PostReportTO to, FySelfContext context) {
+        return authenticatedId()
+                .flatMap(userId ->
+                        repository.save(POST_REPORT_BINDER.bind(to
+                                .withOwner(userId)
+                                .withId(userId)
+                                .withCreateAt()
+                                .withUpdateAt())
+                        )
+                )
+                .doOnSuccess(entity -> createEvent(entity, context))
+                .switchIfEmpty(error(EntityNotFoundException::new))
+                .map(DomainEntity::getId);
+    }
+
     @Override
     public Mono<Void> update(PostReportTO to, FySelfContext context) {
         return null;
