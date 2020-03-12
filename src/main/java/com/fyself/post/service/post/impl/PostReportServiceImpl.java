@@ -33,11 +33,11 @@ public class PostReportServiceImpl implements PostReportService {
 
     @Override
     public Mono<String> add(PostReportTO to, FySelfContext context) {
-        return authenticatedId()
+        return authenticatedId() //TODO @ACPU change
                 .flatMap(userId ->
                         repository.save(POST_REPORT_BINDER.bind(to
                                 .withOwner(userId)
-                                .withId(userId)
+                                .withId(userId) //TODO @ACPU remove
                                 .withCreateAt()
                                 .withUpdateAt())
                         )

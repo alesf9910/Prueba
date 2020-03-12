@@ -35,19 +35,15 @@ public class PostReportFacadeImpl implements PostReportFacade {
     @Override
     public Mono<Result<String>> create(PostReportTO to, FySelfContext exchange) {
         return postService.load(to.getPost(), exchange)
-                .switchIfEmpty(error(EntityNotFoundException::new))
-                .flatMap(postTO -> service.add(to.withUser(postTO.getOwner()), exchange)
-                        .map(Result::successful)
-                );
+                .flatMap(postTO -> service.add(to.withUser(postTO.getOwner()), exchange))
+                .map(Result::successful);
     }
 
     @Override
     public Mono<Result<Void>> update(PostReportTO to, FySelfContext context) {
         return postService.load(to.getPost(), context)
-                .switchIfEmpty(error(EntityNotFoundException::new))
-                .flatMap(postTO -> service.update(to.withUser(postTO.getOwner()), context)
-                        .thenReturn(successful())
-                );
+                .flatMap(postTO -> service.update(to.withUser(postTO.getOwner()), context))
+                .thenReturn(successful());
     }
 
     @Override
@@ -67,11 +63,15 @@ public class PostReportFacadeImpl implements PostReportFacade {
 
     @Override
     public Mono<Result<PagedList<PostReportTO>>> searchByMe(PostReportCriteriaTO criteria, FySelfContext context) {
-        return service.loadAll(criteria.withOwner(context.getAccount().get().getId()), context).map(Result::successful);
+        return context.authenticatedId()
+                .flatMap(id-> service.loadAll(criteria.withOwner(id), context))
+                .map(Result::successful);
     }
 
     @Override
     public Mono<Result<PagedList<PostReportTO>>> searchToMe(PostReportCriteriaTO criteria, FySelfContext context) {
-        return service.loadAll(criteria.withUser(context.getAccount().get().getId()), context).map(Result::successful);
+        return context.authenticatedId()
+                .flatMap(id-> service.loadAll(criteria.withUser(id), context))
+                .map(Result::successful);
     }
 }

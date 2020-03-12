@@ -6,6 +6,8 @@ import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Valid;
+
 
 /**
  * Service for Post Report.
@@ -15,7 +17,7 @@ import reactor.core.publisher.Mono;
  */
 public interface PostReportService {
 
-    Mono<String> add(PostReportTO to, FySelfContext context);
+    Mono<String> add(@Valid PostReportTO to, FySelfContext context);
 
     Mono<Void> update(PostReportTO to, FySelfContext context);
 
