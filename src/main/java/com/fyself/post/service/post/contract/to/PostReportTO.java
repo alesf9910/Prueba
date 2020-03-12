@@ -75,7 +75,6 @@ public class PostReportTO extends DomainAuditTransferObject {
         this.description = description;
     }
 
-    @NotBlank
     @NotNull
     public ReportingReason getReason() {
         return reason;
