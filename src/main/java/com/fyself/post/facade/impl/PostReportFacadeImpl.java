@@ -39,9 +39,11 @@ public class PostReportFacadeImpl implements PostReportFacade {
 
     @Override
     public Mono<Result<Void>> update(PostReportTO to, FySelfContext context) {
-        return postService.load(to.getPost(), context)
-                .flatMap(postTO -> service.update(to.withUser(postTO.getOwner()), context))
-                .thenReturn(successful());
+        return service.load(to.getId(), context)
+                .flatMap(postReportTO ->
+                        postService.load(postReportTO.getPost(), context)
+                                .flatMap(postTO -> service.update(to.withUser(postTO.getOwner()), context))
+                ).thenReturn(successful());
     }
 
     @Override
