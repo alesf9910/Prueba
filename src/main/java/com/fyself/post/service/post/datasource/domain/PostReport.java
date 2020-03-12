@@ -6,7 +6,7 @@ import com.fyself.seedwork.service.repository.mongodb.stereotype.CascadeReferenc
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "post")
+@Document(collection = "post_report")
 public class PostReport extends DomainAuditEntity {
     private static final long serialVersionUID = 8909993127910604604L;
 
