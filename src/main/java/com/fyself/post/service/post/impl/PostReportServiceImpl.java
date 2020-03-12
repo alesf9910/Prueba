@@ -43,7 +43,7 @@ public class PostReportServiceImpl implements PostReportService {
     public Mono<Void> update(PostReportTO to, FySelfContext context) {
         return context.authenticatedId()
                 .flatMap(userId -> repository.getById(to.getId()))
-                .flatMap(postReport -> repository.save(POST_REPORT_BINDER.set(postReport, to.withUpdateAt().withPost(postReport.getPost().getId())))
+                .flatMap(postReport -> repository.save(POST_REPORT_BINDER.set(postReport, to.withUpdateAt()))
                         .doOnSuccess(entity -> updateEvent(postReport, entity, context))
                 )
                 .switchIfEmpty(error(EntityNotFoundException::new))

@@ -36,7 +36,12 @@ public interface PostReportBinder {
     @Mapping(target = "post", source = "post.id")
     PostReportTO bind(PostReport source);
 
-    @Mapping(target = "post.id", source = "post")
+
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "owner", ignore = true)
+    @Mapping(target = "post", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "id", ignore = true)
     void bind(@MappingTarget PostReport target, PostReportTO source);
 
     @Mapping(target = "user", source = "user")
