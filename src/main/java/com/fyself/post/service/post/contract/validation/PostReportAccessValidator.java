@@ -40,10 +40,6 @@ public class PostReportAccessValidator extends MonoBiValidatorFixInterceptor<Pos
     @Override
     protected Mono<Boolean> validate(PostReportTO value, FySelfContext context) {
 
-        if (value.getUser() == null || value.getUser().trim().equals("")) {
-            return Mono.just(true);
-        }
-
         if (context.getAccount().isEmpty()) {
             return Mono.just(false);
         }

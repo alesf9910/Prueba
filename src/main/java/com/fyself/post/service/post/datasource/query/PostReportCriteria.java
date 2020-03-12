@@ -2,7 +2,6 @@ package com.fyself.post.service.post.datasource.query;
 
 import com.fyself.post.service.post.datasource.domain.Post;
 import com.fyself.post.service.post.datasource.domain.PostReport;
-import com.fyself.post.service.post.datasource.domain.enums.ReportingReason;
 import com.fyself.seedwork.service.repository.mongodb.criteria.DomainCriteria;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
