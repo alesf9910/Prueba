@@ -23,7 +23,7 @@ public interface PostBinder {
 
     default Post bind(PostTO source) {
         Post post = new Post();
-        post.setContents(source.getContents().stream().map(this::bind).collect(toSet()));
+        post.setContent(this.bind(source.getContent()));
         return post;
     }
 
@@ -37,7 +37,7 @@ public interface PostBinder {
 
     default PostTO bind(Post source) {
         PostTO post = new PostTO();
-        post.setContents(source.getContents().stream().map(this::bind).collect(toSet()));
+        post.setContent(this.bind(source.getContent()));
         return post;
     }
 

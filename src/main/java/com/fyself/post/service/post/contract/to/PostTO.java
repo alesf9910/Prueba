@@ -1,19 +1,22 @@
 package com.fyself.post.service.post.contract.to;
 
 
+import com.fyself.post.tools.enums.Access;
 import com.fyself.seedwork.service.to.DomainAuditTransferObject;
 import com.fyself.seedwork.service.to.annotation.ReadOnly;
 
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 import static java.time.LocalDateTime.now;
 
 public class PostTO extends DomainAuditTransferObject {
 
     private static final long serialVersionUID = -1060990002867022621L;
-    private Set<ContentTO> contents;
+    private ContentTO content;
+    private Access access;
+    private boolean status;
+    private boolean blocked;
 
     @Override
     @ReadOnly
@@ -40,12 +43,36 @@ public class PostTO extends DomainAuditTransferObject {
     }
 
     @NotEmpty
-    public Set<ContentTO> getContents() {
-        return contents;
+    public ContentTO getContent() {
+        return content;
     }
 
-    public void setContents(Set<ContentTO> contents) {
-        this.contents = contents;
+    public void setContent(ContentTO content) {
+        this.content = content;
+    }
+
+    public Access getAccess() {
+        return access;
+    }
+
+    public void setAccess(Access access) {
+        this.access = access;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
     }
 
     public PostTO withUserId(String id) {

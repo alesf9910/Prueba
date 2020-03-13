@@ -29,7 +29,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public Mono<String> create(@NotNull @Valid PostTO to, FySelfContext context) {
         return context.authenticatedId()
-                .flatMap(userId -> repository.save(POST_BINDER.bind(to.withUserId(userId).withCreatedAt().withUpdatedAt())).map(DomainEntity::getId));
+                .flatMap(userId -> repository.save(POST_BINDER.bind(to.withUserId(userId).withCreatedAt().withUpdatedAt())))
+                .doOnSuccess(entity -> createEvent(entity, context))
+                .switchIfEmpty(error(EntityNotFoundException::new))
+                .map(DomainEntity::getId);
     }
 
     @Override
