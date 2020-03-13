@@ -6,14 +6,14 @@ import java.util.Map;
 
 public class AnswerChoiceTO extends AnswerTO {
     private static final long serialVersionUID = -6768015360211032033L;
-    private Map<String, Boolean> answers;
+    private Map<String, Boolean> answer;
 
     @NotEmpty
-    public java.util.Map<String, Boolean> getAnswers() {
-        return answers;
+    public java.util.Map<String, Boolean> getAnswer() {
+        return answer;
     }
 
-    public void setAnswers(Map<String, Boolean> answers) {
-        this.answers = answers;
+    public void setAnswer(Map<String, Boolean> answer) {
+        this.answer = answer;
     }
 }
