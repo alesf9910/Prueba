@@ -5,7 +5,7 @@ import com.fyself.post.tools.enums.Access;
 import com.fyself.seedwork.service.to.DomainAuditTransferObject;
 import com.fyself.seedwork.service.to.annotation.ReadOnly;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 import static java.time.LocalDateTime.now;
@@ -15,7 +15,7 @@ public class PostTO extends DomainAuditTransferObject {
     private static final long serialVersionUID = -1060990002867022621L;
     private ContentTO content;
     private Access access;
-    private boolean status;
+    private boolean active;
     private boolean blocked;
 
     @Override
@@ -42,7 +42,7 @@ public class PostTO extends DomainAuditTransferObject {
         return super.getId();
     }
 
-    @NotEmpty
+    @NotNull
     public ContentTO getContent() {
         return content;
     }
@@ -59,12 +59,12 @@ public class PostTO extends DomainAuditTransferObject {
         this.access = access;
     }
 
-    public boolean isStatus() {
-        return status;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public boolean isBlocked() {
@@ -73,6 +73,11 @@ public class PostTO extends DomainAuditTransferObject {
 
     public void setBlocked(boolean blocked) {
         this.blocked = blocked;
+    }
+
+    public PostTO withId(String id) {
+        this.setId(id);
+        return this;
     }
 
     public PostTO withUserId(String id) {

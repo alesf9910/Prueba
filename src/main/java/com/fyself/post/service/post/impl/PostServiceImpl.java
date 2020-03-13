@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
-import static com.fyself.post.tools.LoggerUtils.deleteEvent;
+import static com.fyself.post.tools.LoggerUtils.*;
 import static reactor.core.publisher.Mono.error;
 
 @Service("postService")
@@ -37,7 +37,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Mono<Void> update(@NotNull @Valid PostTO to, FySelfContext context) {
-        return null;
+        return repository.findById(to.getId())
+                .map(post -> POST_BINDER.set(post, to.withUpdatedAt()))
+                .flatMap(post -> repository.save(post)
+                        .doOnSuccess(entity -> updateEvent(post, entity, context)))
+                .switchIfEmpty(error(EntityNotFoundException::new))
+                .then();
     }
 
     @Override

@@ -45,4 +45,11 @@ public class PostController extends Controller<PostFacade> {
     public Mono<ResponseEntity> delete(@PathVariable String id, @ApiIgnore ServerWebExchange exchange) {
         return this.perform((facade, context) -> facade.delete(id, context), exchange);
     }
+
+    @PutMapping("/{id}")
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "post_load", value = "Update post", response = NoContentResponse.class, code = 204)
+    public Mono<ResponseEntity> update(@PathVariable String id, @RequestBody PostTO to, @ApiIgnore ServerWebExchange exchange) {
+        return this.perform((facade, context) -> facade.update(to.withId(id), context), exchange);
+    }
 }

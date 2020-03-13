@@ -12,7 +12,7 @@ public class Post extends DomainAuditEntity {
     private static final long serialVersionUID = 8909993127910604604L;
     private Content content;
     private Access access;
-    private boolean status;
+    private boolean active;
     private boolean blocked;
 
 
@@ -32,12 +32,12 @@ public class Post extends DomainAuditEntity {
         this.access = access;
     }
 
-    public boolean isStatus() {
-        return status;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public boolean isBlocked() {

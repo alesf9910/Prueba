@@ -7,9 +7,9 @@ import com.fyself.post.service.post.datasource.domain.Post;
 import com.fyself.post.service.post.datasource.domain.subentities.Content;
 import com.fyself.post.service.post.datasource.domain.subentities.LinkContent;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
-
-import static java.util.stream.Collectors.toSet;
 
 /**
  * Binder
@@ -21,11 +21,8 @@ import static java.util.stream.Collectors.toSet;
 public interface PostBinder {
     PostBinder POST_BINDER = Mappers.getMapper(PostBinder.class);
 
-    default Post bind(PostTO source) {
-        Post post = new Post();
-        post.setContent(this.bind(source.getContent()));
-        return post;
-    }
+    @Mapping(target = "content", expression = "java(bind(source.getContent()))")
+    Post bind(PostTO source);
 
     default Content bind(ContentTO source) {
         if (source instanceof LinkContentTO)
@@ -48,4 +45,15 @@ public interface PostBinder {
     }
 
     LinkContentTO bind(LinkContent source);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "owner", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "content", expression = "java(bind(source.getContent()))")
+    void bind(@MappingTarget Post target, PostTO source);
+
+    default Post set(Post target, PostTO source) {
+        this.bind(target, source);
+        return target;
+    }
 }
