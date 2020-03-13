@@ -6,14 +6,14 @@ import java.util.Set;
 
 public class HierarchySurveyTO extends SurveyContentTO {
     private static final long serialVersionUID = 5688252080662594286L;
-    private Set<String> choices;
+    private Set<String> options;
 
     @NotEmpty
-    public Set<String> getChoices() {
-        return choices;
+    public Set<String> getOptions() {
+        return options;
     }
 
-    public void setChoices(Set<String> choices) {
-        this.choices = choices;
+    public void setOptions(Set<String> options) {
+        this.options = options;
     }
 }
