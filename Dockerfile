@@ -21,7 +21,7 @@ ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
 RUN mkdir /opt/java-ms
 
 #TODO for compitalions change name of jar
-COPY --from=builder /opt/service/build/libs/ms-contacts* /opt/java-ms/ms-post.jar
+COPY --from=builder /opt/service/build/libs/ms-post* /opt/java-ms/ms-post.jar
 
 #TODO port
 EXPOSE 8080
