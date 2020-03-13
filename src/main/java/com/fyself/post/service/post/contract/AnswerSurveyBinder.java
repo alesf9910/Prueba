@@ -4,7 +4,6 @@ import com.fyself.post.service.post.contract.to.*;
 import com.fyself.post.service.post.contract.to.criteria.AnswerSurveyCriteriaTO;
 import com.fyself.post.service.post.datasource.domain.AnswerSurvey;
 import com.fyself.post.service.post.datasource.domain.Post;
-import com.fyself.post.service.post.datasource.domain.enums.TypeSurvey;
 import com.fyself.post.service.post.datasource.domain.subentities.*;
 import com.fyself.post.service.post.datasource.query.AnswerSurveyCriteria;
 import com.fyself.seedwork.service.PagedList;
@@ -42,16 +41,7 @@ public interface AnswerSurveyBinder {
     default AnswerSurveyCriteria bind(AnswerSurveyCriteriaTO source) {
         AnswerSurveyCriteria criteria = new AnswerSurveyCriteria();
         criteria.setPost(buildPostWithId(source.getPost()));
-
-        Answer answer = new Answer() {
-            @Override
-            public void setType(TypeSurvey type) {
-                super.setType(type);
-            }
-        };
-        answer.setType(source.getAnswer().getType());
-
-        criteria.setAnswer(answer);
+        criteria.setTypeSurvey(source.getTypeSurvey());
         criteria.setOwner(source.getOwner());
         criteria.setUser(source.getUser());
         return criteria;

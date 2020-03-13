@@ -2,7 +2,7 @@ package com.fyself.post.service.post.datasource.query;
 
 import com.fyself.post.service.post.datasource.domain.AnswerSurvey;
 import com.fyself.post.service.post.datasource.domain.Post;
-import com.fyself.post.service.post.datasource.domain.subentities.Answer;
+import com.fyself.post.service.post.datasource.domain.enums.TypeSurvey;
 import com.fyself.seedwork.service.repository.mongodb.criteria.DomainCriteria;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
@@ -15,7 +15,7 @@ public class AnswerSurveyCriteria extends DomainCriteria<AnswerSurvey> {
     private static final long serialVersionUID = -1173576727652462350L;
 
     private Post post;
-    private Answer answer;
+    private TypeSurvey typeSurvey;
     private String user;
     private String owner;
 
@@ -29,11 +29,11 @@ public class AnswerSurveyCriteria extends DomainCriteria<AnswerSurvey> {
     }
 
     private Criteria matchPost() {
-        return this.answer != null ? where("post.id").is(this.getPost()) : null;
+        return this.typeSurvey != null ? where("post.id").is(this.getPost()) : null;
     }
 
     private Criteria matchAnswer() {
-        return this.answer != null ? where("answer.id").is(this.getAnswer()) : null;
+        return this.typeSurvey != null ? where("answer.type").is(this.getTypeSurvey()) : null;
     }
 
     private Criteria matchOwner() {
@@ -52,12 +52,12 @@ public class AnswerSurveyCriteria extends DomainCriteria<AnswerSurvey> {
         this.post = post;
     }
 
-    public Answer getAnswer() {
-        return answer;
+    public TypeSurvey getTypeSurvey() {
+        return typeSurvey;
     }
 
-    public void setAnswer(Answer answer) {
-        this.answer = answer;
+    public void setTypeSurvey(TypeSurvey typeSurvey) {
+        this.typeSurvey = typeSurvey;
     }
 
     public String getUser() {
