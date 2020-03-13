@@ -21,10 +21,10 @@ ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
 RUN mkdir /opt/java-ms
 
 #TODO for compitalions change name of jar
-COPY --from=builder /opt/service/build/libs/ms-contacts* /opt/java-ms/ms-contacts.jar
+COPY --from=builder /opt/service/build/libs/ms-contacts* /opt/java-ms/ms-post.jar
 
 #TODO port
 EXPOSE 8080
 
 #TODO for compitalions change name of jar
-CMD java ${JAVA_OPTS} -server -XX:+UseParallelGC -XX:+UseNUMA -Djava.security.egd=file:/dev/./urandom -jar /opt/java-ms/ms-contacts.jar
+CMD java ${JAVA_OPTS} -server -XX:+UseParallelGC -XX:+UseNUMA -Djava.security.egd=file:/dev/./urandom -jar /opt/java-ms/ms-post.jar
