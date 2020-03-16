@@ -27,7 +27,7 @@ public class AnswerSurveyFacadeImpl implements AnswerSurveyFacade {
 
     @Override
     public Mono<Result<Void>> update(AnswerSurveyTO template, FySelfContext context) {
-        return null;
+        return service.update(template, context).thenReturn(Result.successful());
     }
 
     @Override
