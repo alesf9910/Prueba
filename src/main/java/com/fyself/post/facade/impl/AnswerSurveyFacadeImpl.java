@@ -3,7 +3,6 @@ package com.fyself.post.facade.impl;
 import com.fyself.post.facade.AnswerSurveyFacade;
 import com.fyself.post.service.post.AnswerSurveyService;
 import com.fyself.post.service.post.contract.to.AnswerSurveyTO;
-import com.fyself.post.service.post.contract.to.PostReportTO;
 import com.fyself.post.service.post.contract.to.criteria.AnswerSurveyCriteriaTO;
 import com.fyself.seedwork.facade.Result;
 import com.fyself.seedwork.facade.stereotype.Facade;
@@ -36,22 +35,22 @@ public class AnswerSurveyFacadeImpl implements AnswerSurveyFacade {
     }
 
     @Override
-    public Mono<Result<PostReportTO>> load(String id, FySelfContext context) {
+    public Mono<Result<AnswerSurveyTO>> load(String id, String postId, FySelfContext context) {
+        return service.load(id, postId, context).map(Result::successful);
+    }
+
+    @Override
+    public Mono<Result<PagedList<AnswerSurveyTO>>> search(AnswerSurveyCriteriaTO criteria, FySelfContext context) {
         return null;
     }
 
     @Override
-    public Mono<Result<PagedList<PostReportTO>>> search(AnswerSurveyCriteriaTO criteria, FySelfContext context) {
+    public Mono<Result<PagedList<AnswerSurveyTO>>> searchByMe(AnswerSurveyCriteriaTO criteria, FySelfContext context) {
         return null;
     }
 
     @Override
-    public Mono<Result<PagedList<PostReportTO>>> searchByMe(AnswerSurveyCriteriaTO criteria, FySelfContext context) {
-        return null;
-    }
-
-    @Override
-    public Mono<Result<PagedList<PostReportTO>>> searchToMe(AnswerSurveyCriteriaTO criteria, FySelfContext context) {
+    public Mono<Result<PagedList<AnswerSurveyTO>>> searchToMe(AnswerSurveyCriteriaTO criteria, FySelfContext context) {
         return null;
     }
 }

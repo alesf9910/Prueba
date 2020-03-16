@@ -2,7 +2,6 @@ package com.fyself.post.service.post.impl;
 
 import com.fyself.post.service.post.AnswerSurveyService;
 import com.fyself.post.service.post.contract.to.AnswerSurveyTO;
-import com.fyself.post.service.post.contract.to.PostReportTO;
 import com.fyself.post.service.post.contract.to.criteria.AnswerSurveyCriteriaTO;
 import com.fyself.post.service.post.datasource.AnswerSurveyRepository;
 import com.fyself.seedwork.service.EntityNotFoundException;
@@ -66,12 +65,15 @@ public class AnswerSurveyServiceImpl implements AnswerSurveyService {
     }
 
     @Override
-    public Mono<PostReportTO> load(String id, String post, FySelfContext context) {
-        return null;
+    public Mono<AnswerSurveyTO> load(String id, String post, FySelfContext context) {
+        return repository.getById(id)
+                .filter(survey -> survey.getPost().getId().equals(post))
+                .map(ANSWER_SURVEY_BINDER::bind)
+                .switchIfEmpty(error(EntityNotFoundException::new));
     }
 
     @Override
-    public Mono<PagedList<PostReportTO>> loadAll(AnswerSurveyCriteriaTO criteria, FySelfContext context) {
+    public Mono<PagedList<AnswerSurveyTO>> loadAll(AnswerSurveyCriteriaTO criteria, FySelfContext context) {
         return null;
     }
 }

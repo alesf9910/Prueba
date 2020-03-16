@@ -34,11 +34,11 @@ public class AnswerSurveyController extends Controller<AnswerSurveyFacade>  {
         return this.create((facade, context) -> facade.create(to, context), exchange);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/{postId}")
     @ApiSecuredOperation
     @ApiOperation(nickname = "answer_survey_load", value = "Load answer", response = AnswerResponse.class)
-    public Mono<ResponseEntity> load(@ApiParam(name = "id", value = "ID of answer to be load", required = true) @PathVariable String id, @ApiIgnore ServerWebExchange exchange) {
-        return this.get((facade, context) -> facade.load(id, context), exchange);
+    public Mono<ResponseEntity> load(@ApiParam(name = "id", value = "ID of answer to be load", required = true) @PathVariable String id,@ApiParam(name = "id", value = "ID of post to load the answer", required = true)  @PathVariable String postId, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.load(id, postId, context), exchange);
     }
 
     @PutMapping("/{id}")
