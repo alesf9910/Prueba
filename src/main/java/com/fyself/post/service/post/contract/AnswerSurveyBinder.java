@@ -9,6 +9,7 @@ import com.fyself.post.service.post.datasource.query.AnswerSurveyCriteria;
 import com.fyself.seedwork.service.PagedList;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 
@@ -30,7 +31,7 @@ import static com.fyself.post.service.post.contract.AnswerRateBinder.ANSWER_RATE
 public interface AnswerSurveyBinder {
     AnswerSurveyBinder ANSWER_SURVEY_BINDER = Mappers.getMapper(AnswerSurveyBinder.class);
 
-    @Mapping(target = "post", expression = "java(buildPostWithId(source.getPost()))")
+    @Mapping(target = "post.id", source = "post")
     @Mapping(target = "answer", expression = "java(buildSurveyAnswer(source))")
     AnswerSurvey bind(AnswerSurveyTO source);
 
@@ -40,13 +41,18 @@ public interface AnswerSurveyBinder {
 
     default AnswerSurveyCriteria bind(AnswerSurveyCriteriaTO source) {
         AnswerSurveyCriteria criteria = new AnswerSurveyCriteria();
-        criteria.setPost(buildPostWithId(source.getPost()));
+
+        if (source.getPost() != null || source.getPost().trim().equals("")) {
+            Post post = new Post();
+            post.setId(source.getPost());
+            criteria.setPost(post);
+        }
+
         criteria.setTypeSurvey(source.getTypeSurvey());
         criteria.setOwner(source.getOwner());
         criteria.setUser(source.getUser());
         return criteria;
     }
-
 
     default PagedList<AnswerSurveyTO> bind(Page<AnswerSurvey> source) {
         List<AnswerSurveyTO> packagesBinder = source.map(this::bind).getContent();
@@ -77,11 +83,5 @@ public interface AnswerSurveyBinder {
             default:
                 return ANSWER_HIERARCHY_BINDER.bind((AnswerHierarchy) source.getAnswer());
         }
-    }
-
-    default Post buildPostWithId(String postId) {
-        Post post = new Post();
-        post.setId(postId);
-        return post;
     }
 }

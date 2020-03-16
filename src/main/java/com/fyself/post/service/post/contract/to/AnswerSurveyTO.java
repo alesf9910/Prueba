@@ -80,6 +80,11 @@ public class AnswerSurveyTO extends DomainAuditTransferObject {
         return this;
     }
 
+    public AnswerSurveyTO withCreateAt(LocalDateTime time) {
+        this.setCreatedAt(time);
+        return this;
+    }
+
     public AnswerSurveyTO withUpdateAt() {
         this.setUpdatedAt(now());
         return this;
