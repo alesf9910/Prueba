@@ -1,5 +1,6 @@
 package com.fyself.post.service.post.contract;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fyself.post.service.post.contract.to.*;
 import com.fyself.post.service.post.datasource.domain.Post;
 import com.fyself.post.service.post.datasource.domain.subentities.*;
@@ -7,6 +8,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
+
+import java.util.HashMap;
+
+import static com.fyself.seedwork.util.JsonUtil.MAPPER;
 
 /**
  * Binder
@@ -95,5 +100,15 @@ public interface PostBinder {
     default Post set(Post target, PostTO source) {
         this.bind(target, source);
         return target;
+    }
+
+    default PostTO pacth(Post post, HashMap to) {
+        try {
+            var c = MAPPER.updateValue(this.bind(post), to);
+            return c;
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        }
+        return bind(post);
     }
 }

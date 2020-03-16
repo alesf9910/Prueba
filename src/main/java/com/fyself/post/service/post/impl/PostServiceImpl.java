@@ -13,6 +13,8 @@ import reactor.core.publisher.Mono;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import java.util.HashMap;
+
 import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
 import static com.fyself.post.tools.LoggerUtils.*;
 import static reactor.core.publisher.Mono.error;
@@ -56,5 +58,12 @@ public class PostServiceImpl implements PostService {
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .flatMap(post -> repository.softDelete(post).doOnSuccess(entity -> deleteEvent(post, context)))
                 .then();
+    }
+
+    @Override
+    public Mono<PostTO> patch(@NotNull String id, HashMap to, FySelfContext context) {
+        return repository.findById(id)
+                .switchIfEmpty(error(EntityNotFoundException::new))
+                .map(post -> POST_BINDER.pacth(post, to));
     }
 }

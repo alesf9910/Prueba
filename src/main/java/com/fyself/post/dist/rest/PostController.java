@@ -13,6 +13,8 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.HashMap;
+
 /**
  * Post CRUD
  *
@@ -52,4 +54,13 @@ public class PostController extends Controller<PostFacade> {
     public Mono<ResponseEntity> update(@PathVariable String id, @RequestBody PostTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.perform((facade, context) -> facade.update(to.withId(id), context), exchange);
     }
+
+    @PatchMapping("/{id}")
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "post_load", value = "Update post", response = NoContentResponse.class, code = 204)
+    public Mono<ResponseEntity> patch(@PathVariable String id, @RequestBody HashMap to, @ApiIgnore ServerWebExchange exchange) {
+        return this.perform((facade, context) -> facade.patch(id, to, context), exchange);
+    }
+
+
 }
