@@ -41,16 +41,20 @@ public class AnswerSurveyFacadeImpl implements AnswerSurveyFacade {
 
     @Override
     public Mono<Result<PagedList<AnswerSurveyTO>>> search(AnswerSurveyCriteriaTO criteria, FySelfContext context) {
-        return null;
+        return service.loadAll(criteria, context).map(Result::successful);
     }
 
     @Override
     public Mono<Result<PagedList<AnswerSurveyTO>>> searchByMe(AnswerSurveyCriteriaTO criteria, FySelfContext context) {
-        return null;
+        return context.authenticatedId()
+                .flatMap(userId -> service.loadAll(criteria.withOwner(userId), context))
+                .map(Result::successful);
     }
 
     @Override
     public Mono<Result<PagedList<AnswerSurveyTO>>> searchToMe(AnswerSurveyCriteriaTO criteria, FySelfContext context) {
-        return null;
+        return context.authenticatedId()
+                .flatMap(userId -> service.loadAll(criteria.withUser(userId), context))
+                .map(Result::successful);
     }
 }

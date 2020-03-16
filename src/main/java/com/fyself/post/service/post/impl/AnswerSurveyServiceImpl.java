@@ -74,6 +74,6 @@ public class AnswerSurveyServiceImpl implements AnswerSurveyService {
 
     @Override
     public Mono<PagedList<AnswerSurveyTO>> loadAll(AnswerSurveyCriteriaTO criteria, FySelfContext context) {
-        return null;
+        return repository.findPage(ANSWER_SURVEY_BINDER.bind(criteria)).map(ANSWER_SURVEY_BINDER::bind);
     }
 }
