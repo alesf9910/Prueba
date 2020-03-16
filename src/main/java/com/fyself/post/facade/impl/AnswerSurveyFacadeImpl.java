@@ -32,7 +32,7 @@ public class AnswerSurveyFacadeImpl implements AnswerSurveyFacade {
 
     @Override
     public Mono<Result<Void>> delete(String id, FySelfContext context) {
-        return null;
+        return service.delete(id, context).thenReturn(Result.successful());
     }
 
     @Override

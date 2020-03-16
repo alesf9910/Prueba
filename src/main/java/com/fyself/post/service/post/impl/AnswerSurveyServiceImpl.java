@@ -16,9 +16,7 @@ import reactor.core.publisher.Mono;
 import javax.validation.Valid;
 
 import static com.fyself.post.service.post.contract.AnswerSurveyBinder.ANSWER_SURVEY_BINDER;
-import static com.fyself.post.service.post.contract.PostReportBinder.POST_REPORT_BINDER;
-import static com.fyself.post.tools.LoggerUtils.createEvent;
-import static com.fyself.post.tools.LoggerUtils.updateEvent;
+import static com.fyself.post.tools.LoggerUtils.*;
 import static reactor.core.publisher.Mono.error;
 
 @Service("answerSurveyService")
@@ -61,8 +59,10 @@ public class AnswerSurveyServiceImpl implements AnswerSurveyService {
     }
 
     @Override
-    public Mono<Void> delete(String id, String post, FySelfContext context) {
-        return null;
+    public Mono<Void> delete(String id, FySelfContext context) {
+        return repository.getById(id).flatMap(survey ->
+                repository.softDelete(survey).doOnSuccess(entity -> deleteEvent(survey, context))
+        ).switchIfEmpty(error(EntityNotFoundException::new)).then();
     }
 
     @Override
