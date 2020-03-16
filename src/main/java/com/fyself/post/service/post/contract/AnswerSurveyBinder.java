@@ -1,5 +1,6 @@
 package com.fyself.post.service.post.contract;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fyself.post.service.post.contract.to.*;
 import com.fyself.post.service.post.contract.to.criteria.AnswerSurveyCriteriaTO;
 import com.fyself.post.service.post.datasource.domain.AnswerSurvey;
@@ -12,12 +13,14 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static com.fyself.post.service.post.contract.AnswerAskBinder.ANSWER_ASK_BINDER;
 import static com.fyself.post.service.post.contract.AnswerChoiceBinder.ANSWER_CHOICE_BINDER;
 import static com.fyself.post.service.post.contract.AnswerHierarchyBinder.ANSWER_HIERARCHY_BINDER;
 import static com.fyself.post.service.post.contract.AnswerRateBinder.ANSWER_RATE_BINDER;
+import static com.fyself.seedwork.util.JsonUtil.MAPPER;
 
 
 /**
@@ -34,8 +37,22 @@ public interface AnswerSurveyBinder {
     @Mapping(target = "answer", expression = "java(buildSurveyAnswer(source))")
     AnswerSurvey bind(AnswerSurveyTO source);
 
+    @Mapping(target = "post", source = "post.id")
+    @Mapping(target = "answer", expression = "java(buildSurveyAnswer(source))")
+    AnswerSurveyTO bindFromSurvey(AnswerSurvey source);
+
     default AnswerSurveyTO bind(AnswerSurvey source) {
         return new AnswerSurveyTO(source.getPost().getId(), buildSurveyAnswer(source));
+    }
+
+    default AnswerSurveyTO pacth(AnswerSurvey target, HashMap to) {
+        try {
+            var c = MAPPER.updateValue(this.bindFromSurvey(target), to);
+            return c;
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        }
+        return bind(target);
     }
 
     default AnswerSurveyTO bind(AnswerSurvey target, AnswerTO source) {
@@ -64,7 +81,7 @@ public interface AnswerSurveyBinder {
     }
 
     default PagedList<AnswerSurveyTO> bind(Page<AnswerSurvey> source) {
-        List<AnswerSurveyTO> packagesBinder = source.map(this::bind).getContent();
+        List<AnswerSurveyTO> packagesBinder = source.map(this::bindFromSurvey).getContent();
         return new PagedList<>(packagesBinder, source.getNumber(), source.getTotalPages(), source.getTotalElements());
     }
 
