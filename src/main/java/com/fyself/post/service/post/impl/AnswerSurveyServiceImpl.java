@@ -49,7 +49,7 @@ public class AnswerSurveyServiceImpl implements AnswerSurveyService {
         return context.authenticatedId()
                 .flatMap(userId ->
                         repository.getById(to.getId())
-                                .flatMap(survey -> repository.save(ANSWER_SURVEY_BINDER.bindSurvey(
+                                .flatMap(survey -> repository.save(ANSWER_SURVEY_BINDER.bind(
                                         to.withCreateAt(survey.getCreatedAt())
                                                 .withUpdateAt()
                                                 .withOwner(userId))
