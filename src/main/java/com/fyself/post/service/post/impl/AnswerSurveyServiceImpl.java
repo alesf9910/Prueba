@@ -2,6 +2,7 @@ package com.fyself.post.service.post.impl;
 
 import com.fyself.post.service.post.AnswerSurveyService;
 import com.fyself.post.service.post.contract.to.AnswerSurveyTO;
+import com.fyself.post.service.post.contract.to.AnswerTO;
 import com.fyself.post.service.post.contract.to.criteria.AnswerSurveyCriteriaTO;
 import com.fyself.post.service.post.datasource.AnswerSurveyRepository;
 import com.fyself.seedwork.service.EntityNotFoundException;
@@ -17,6 +18,7 @@ import javax.validation.Valid;
 import static com.fyself.post.service.post.contract.AnswerSurveyBinder.ANSWER_SURVEY_BINDER;
 import static com.fyself.post.tools.LoggerUtils.*;
 import static reactor.core.publisher.Mono.error;
+import static reactor.core.publisher.Mono.just;
 
 @Service("answerSurveyService")
 @Validated
@@ -55,6 +57,15 @@ public class AnswerSurveyServiceImpl implements AnswerSurveyService {
                 )
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .then();
+    }
+
+    @Override
+    public Mono<AnswerSurveyTO> patch(String id, AnswerTO to, FySelfContext context) {
+        return repository.getById(id)
+                .switchIfEmpty(error(EntityNotFoundException::new))
+                .flatMap(survey ->
+                        just(ANSWER_SURVEY_BINDER.bind(survey, to))
+                );
     }
 
     @Override
