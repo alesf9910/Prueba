@@ -4,7 +4,7 @@ package com.fyself.post.service.post.contract.to;
 import javax.validation.constraints.NotEmpty;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ChoiceSurveyTO extends SurveyContentTO {
@@ -21,10 +21,9 @@ public class ChoiceSurveyTO extends SurveyContentTO {
     }
 
     public ChoiceSurveyTO generateChoicesIds() {
-        AtomicInteger index = new AtomicInteger();
         this.setChoices(this.choices.stream()
                 .map(choice -> {
-                    choice.put("id", index.getAndIncrement());
+                    choice.put("id", UUID.randomUUID().toString());
                     return choice;
                 }).collect(Collectors.toSet()));
         return this;

@@ -10,6 +10,11 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import static com.fyself.seedwork.util.JsonUtil.MAPPER;
 
@@ -42,7 +47,9 @@ public interface PostBinder {
     }
 
     LinkContent bind(LinkContentTO source);
+
     ImageContent bind(ImageContentTO source);
+
     TextContent bind(TextContentTO source);
 
     default ContentTO bind(Content source) {
@@ -58,7 +65,9 @@ public interface PostBinder {
     }
 
     LinkContentTO bind(LinkContent source);
+
     ImageContentTO bind(ImageContent source);
+
     TextContentTO bind(TextContent source);
 
     default SurveyContent bind(SurveyContentTO source) {
@@ -72,8 +81,11 @@ public interface PostBinder {
     }
 
     ChoiceSurvey bind(ChoiceSurveyTO source);
+
     HierarchySurvey bind(HierarchySurveyTO source);
+
     RateSurvey bind(RateSurveyTO source);
+
     SurveyContent bindSurvey(SurveyContentTO source);
 
     default SurveyContentTO bind(SurveyContent source) {
@@ -87,15 +99,104 @@ public interface PostBinder {
     }
 
     ChoiceSurveyTO bind(ChoiceSurvey source);
+
     HierarchySurveyTO bind(HierarchySurvey source);
+
     RateSurveyTO bind(RateSurvey source);
+
     SurveyContentTO bindSurvey(SurveyContent source);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "owner", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "content", expression = "java(bind(source.getContent()))")
+    @Mapping(target = "content", expression = "java(set(target.getContent(), source.getContent()))")
     void bind(@MappingTarget Post target, PostTO source);
+
+    default Content set(Content target, ContentTO source) {
+        if (source instanceof LinkContentTO)
+            return this.bind((LinkContentTO) source);
+        if (source instanceof ImageContentTO)
+            return this.bind((ImageContentTO) source);
+        if (source instanceof TextContentTO)
+            return this.bind((TextContentTO) source);
+        if (source instanceof SurveyContentTO)
+            return this.set((SurveyContent) target, (SurveyContentTO) source);
+        return null;
+    }
+
+    default SurveyContent set(SurveyContent target, SurveyContentTO source) {
+        if (source instanceof ChoiceSurveyTO)
+            return this.setChoice((ChoiceSurvey) target, (ChoiceSurveyTO) source);
+        if (source instanceof HierarchySurveyTO)
+            return this.setOptions((HierarchySurvey) target, (HierarchySurveyTO) source);
+        if (source instanceof RateSurveyTO)
+            return this.bind((RateSurveyTO) source);
+        return bindSurvey(source);
+    }
+
+    default ChoiceSurvey setChoice(ChoiceSurvey target, ChoiceSurveyTO source) {
+        for (Map<String, Object> choice : source.getChoices()) {
+            if (choice.containsKey("id")) {
+                target.setChoices(target.getChoices().stream()
+                        .map(map -> {
+                            if (map.get("id").equals(choice.get("id")))
+                                return choice;
+                            else
+                                return map;
+                        })
+                        .collect(Collectors.toSet()));
+            } else {
+                choice.put("id", UUID.randomUUID().toString());
+                target.getChoices().add(choice);
+            }
+        }
+        for (Iterator<Map<String, Object>> it = target.getChoices().iterator(); it.hasNext(); ) {
+            AtomicReference<Boolean> deleted = new AtomicReference<>(true);
+            Map<String, Object> choice = it.next();
+            source.getChoices().stream()
+                    .filter(map -> map.get("id").equals(choice.get("id")))
+                    .map(map -> {
+                        deleted.set(false);
+                        return map;
+                    })
+                    .collect(Collectors.toSet());
+            if (deleted.get())
+                it.remove();
+        }
+        return target;
+    }
+
+    default HierarchySurvey setOptions(HierarchySurvey target, HierarchySurveyTO source) {
+        for (Map<String, Object> choice : source.getOptions()) {
+            if (choice.containsKey("id")) {
+                target.setOptions(target.getOptions().stream()
+                        .map(map -> {
+                            if (map.get("id").equals(choice.get("id")))
+                                return choice;
+                            else
+                                return map;
+                        })
+                        .collect(Collectors.toSet()));
+            } else {
+                choice.put("id", UUID.randomUUID().toString());
+                target.getOptions().add(choice);
+            }
+        }
+        for (Iterator<Map<String, Object>> it = target.getOptions().iterator(); it.hasNext(); ) {
+            AtomicReference<Boolean> deleted = new AtomicReference<>(true);
+            Map<String, Object> choice = it.next();
+            source.getOptions().stream()
+                    .filter(map -> map.get("id").equals(choice.get("id")))
+                    .map(map -> {
+                        deleted.set(false);
+                        return map;
+                    })
+                    .collect(Collectors.toSet());
+            if (deleted.get())
+                it.remove();
+        }
+        return target;
+    }
 
     default Post set(Post target, PostTO source) {
         this.bind(target, source);

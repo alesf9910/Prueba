@@ -4,7 +4,7 @@ package com.fyself.post.service.post.contract.to;
 import javax.validation.constraints.NotEmpty;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class HierarchySurveyTO extends SurveyContentTO {
@@ -21,10 +21,9 @@ public class HierarchySurveyTO extends SurveyContentTO {
     }
 
     public HierarchySurveyTO generateOptionsIds() {
-        AtomicInteger index = new AtomicInteger();
         this.setOptions(this.options.stream()
                 .map(option -> {
-                    option.put("id", index.getAndIncrement());
+                    option.put("id", UUID.randomUUID().toString());
                     return option;
                 }).collect(Collectors.toSet()));
         return this;
