@@ -51,7 +51,7 @@ public class CommentController extends Controller<CommentFacade> {
     @DeleteMapping("/{id}")
     @ApiSecuredOperation
     @ApiOperation(nickname = "comment_load", value = "Update comment", response = NoContentResponse.class)
-    public Mono<ResponseEntity> delete(@PathVariable String post, @PathVariable String id, @RequestBody CommentTO to, @ApiIgnore ServerWebExchange exchange) {
+    public Mono<ResponseEntity> delete(@PathVariable String post, @PathVariable String id, @ApiIgnore ServerWebExchange exchange) {
         return this.perform((facade, context) -> facade.delete(id, post, context), exchange);
     }
 

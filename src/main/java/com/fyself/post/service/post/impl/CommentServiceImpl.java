@@ -51,7 +51,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Mono<Void> update(@NotNull @Valid CommentTO to, FySelfContext context) {
         return repository.findById(to.getId())
-                .map(comment -> COMMENT_BINDER.set(comment, to))
+                .map(comment -> COMMENT_BINDER.set(comment, to.withUpdatedAt()))
                 .flatMap(comment -> repository.save(comment)
                         .doOnSuccess(entity -> updateEvent(comment, entity, context)))
                 .switchIfEmpty(error(EntityNotFoundException::new))
