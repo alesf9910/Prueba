@@ -16,7 +16,9 @@ import reactor.core.publisher.Mono;
 import javax.validation.Valid;
 
 import static com.fyself.post.service.post.contract.AnswerSurveyBinder.ANSWER_SURVEY_BINDER;
+import static com.fyself.post.service.post.contract.PostReportBinder.POST_REPORT_BINDER;
 import static com.fyself.post.tools.LoggerUtils.createEvent;
+import static com.fyself.post.tools.LoggerUtils.updateEvent;
 import static reactor.core.publisher.Mono.error;
 
 @Service("answerSurveyService")
@@ -44,7 +46,18 @@ public class AnswerSurveyServiceImpl implements AnswerSurveyService {
 
     @Override
     public Mono<Void> update(AnswerSurveyTO to, FySelfContext context) {
-        return null;
+        return context.authenticatedId()
+                .flatMap(userId ->
+                        repository.getById(to.getId())
+                                .flatMap(survey -> repository.save(ANSWER_SURVEY_BINDER.bindSurvey(
+                                        to.withCreateAt(survey.getCreatedAt())
+                                                .withUpdateAt()
+                                                .withOwner(userId))
+                                        ).doOnSuccess(entity -> updateEvent(survey, entity, context))
+                                )
+                )
+                .switchIfEmpty(error(EntityNotFoundException::new))
+                .then();
     }
 
     @Override
