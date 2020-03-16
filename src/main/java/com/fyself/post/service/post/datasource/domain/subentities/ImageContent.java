@@ -1,16 +1,18 @@
 package com.fyself.post.service.post.datasource.domain.subentities;
 
 
+import java.util.Map;
+
 public class ImageContent extends Content{
 
-    private String title;
+    private Map<String,String> title;
     private String url;
 
-    public String getTitle() {
+    public Map<String,String> getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(Map<String,String> title) {
         this.title = title;
     }
 
