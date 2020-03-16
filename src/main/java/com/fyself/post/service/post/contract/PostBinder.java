@@ -63,9 +63,9 @@ public interface PostBinder {
 
     default SurveyContent bind(SurveyContentTO source) {
         if (source instanceof ChoiceSurveyTO)
-            return this.bind((ChoiceSurveyTO) source);
+            return this.bind(((ChoiceSurveyTO) source).generateChoicesIds());
         if (source instanceof HierarchySurveyTO)
-            return this.bind((HierarchySurveyTO) source);
+            return this.bind(((HierarchySurveyTO) source).generateOptionsIds());
         if (source instanceof RateSurveyTO)
             return this.bind((RateSurveyTO) source);
         return bindSurvey(source);
