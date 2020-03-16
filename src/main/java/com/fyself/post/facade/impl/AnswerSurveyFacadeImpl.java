@@ -3,7 +3,6 @@ package com.fyself.post.facade.impl;
 import com.fyself.post.facade.AnswerSurveyFacade;
 import com.fyself.post.service.post.AnswerSurveyService;
 import com.fyself.post.service.post.contract.to.AnswerSurveyTO;
-import com.fyself.post.service.post.contract.to.AnswerTO;
 import com.fyself.post.service.post.contract.to.criteria.AnswerSurveyCriteriaTO;
 import com.fyself.seedwork.facade.Result;
 import com.fyself.seedwork.facade.stereotype.Facade;
@@ -11,6 +10,8 @@ import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.publisher.Mono;
+
+import java.util.HashMap;
 
 @Facade("answerSurveyFacade")
 public class AnswerSurveyFacadeImpl implements AnswerSurveyFacade {
@@ -35,7 +36,7 @@ public class AnswerSurveyFacadeImpl implements AnswerSurveyFacade {
     }
 
     @Override
-    public Mono<Result<Void>> patch(String id, AnswerTO to, FySelfContext context) {
+    public Mono<Result<Void>> patch(String id, HashMap to, FySelfContext context) {
         return service.patch(id, to, context).flatMap(answerSurveyTO -> facade.update(answerSurveyTO, context));
     }
 
