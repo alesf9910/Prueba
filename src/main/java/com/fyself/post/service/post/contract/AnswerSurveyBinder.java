@@ -42,7 +42,7 @@ public interface AnswerSurveyBinder {
     default AnswerSurveyCriteria bind(AnswerSurveyCriteriaTO source) {
         AnswerSurveyCriteria criteria = new AnswerSurveyCriteria();
 
-        if (source.getPost() != null || source.getPost().trim().equals("")) {
+        if (source.getPost() != null) {
             Post post = new Post();
             post.setId(source.getPost());
             criteria.setPost(post);
