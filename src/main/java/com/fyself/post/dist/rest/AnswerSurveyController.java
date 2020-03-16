@@ -26,7 +26,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 @RequestMapping("/answer")
 @Api(tags = "Answer", description = "Endpoint to make answer")
-public class AnswerSurveyController extends Controller<AnswerSurveyFacade>  {
+public class AnswerSurveyController extends Controller<AnswerSurveyFacade> {
     @PostMapping()
     @ApiSecuredOperation
     @ApiOperation(nickname = "answer_survey_create", value = "Create answer", response = String.class, code = 201)
@@ -34,19 +34,28 @@ public class AnswerSurveyController extends Controller<AnswerSurveyFacade>  {
         return this.create((facade, context) -> facade.create(to, context), exchange);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/{postId}")
     @ApiSecuredOperation
     @ApiOperation(nickname = "answer_survey_load", value = "Load answer", response = AnswerResponse.class)
-    public Mono<ResponseEntity> load(@ApiParam(name = "id", value = "ID of answer to be load", required = true) @PathVariable String id, @ApiIgnore ServerWebExchange exchange) {
-        return this.get((facade, context) -> facade.load(id, context), exchange);
+    public Mono<ResponseEntity> load(@ApiParam(name = "id", value = "ID of answer to be load", required = true) @PathVariable String id,
+                                     @ApiParam(name = "postId", value = "ID of post to load the answer", required = true) @PathVariable String postId, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.load(id, postId, context), exchange);
     }
 
     @PutMapping("/{id}")
     @ApiSecuredOperation
     @ApiOperation(nickname = "answer_survey_update", value = "Update answer reports", response = NoContentResponse.class, code = 204)
     public Mono<ResponseEntity> update(@ApiParam(name = "id", value = "ID of answer to be answered", required = true) @PathVariable String id,
-                                       @ApiParam(name = "id", value = "Answer data to be update", required = true) @RequestBody AnswerSurveyTO to, @ApiIgnore ServerWebExchange exchange) {
+                                       @ApiParam(name = "to", value = "Answer data to be update", required = true) @RequestBody AnswerSurveyTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.perform((facade, context) -> facade.update(to.withAnswerId(id), context), exchange);
+    }
+
+    @PatchMapping("/{id}")
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "answer_survey_patch", value = "Update answer survey", response = NoContentResponse.class, code = 204)
+    public Mono<ResponseEntity> patch(@ApiParam(name = "id", value = "ID of answer to be patch", required = true) @PathVariable String id,
+                                      @ApiParam(name = "to", value = "Answer type to be patch", required = true) @RequestBody AnswerTO to, @ApiIgnore ServerWebExchange exchange) {
+        return this.perform((facade, context) -> facade.patch(id, to, context), exchange);
     }
 
     @DeleteMapping("/{id}")
@@ -73,28 +82,28 @@ public class AnswerSurveyController extends Controller<AnswerSurveyFacade>  {
     @GetMapping("/tome")
     @ApiSecuredOperation
     @ApiOperation(nickname = "answer_survey_to_me_search_get", value = "Search answer made for me", response = SearchResponse.class)
-    public Mono<ResponseEntity> searchByUserGet(AnswerSurveyCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
+    public Mono<ResponseEntity> searchByUserGet(@ApiParam(name = "to", value = "Data of answer report to be search") AnswerSurveyCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.searchToMe(to, context), exchange);
     }
 
     @PostMapping("/tome/all")
     @ApiSecuredOperation
     @ApiOperation(nickname = "answer_survey_to_me_search_post", value = "Search answer made for me", response = SearchResponse.class)
-    public Mono<ResponseEntity> searchByUserPost(@ApiParam(name = "to", value = "Data of answer report to be search", required = true) @RequestBody AnswerSurveyCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
+    public Mono<ResponseEntity> searchByUserPost(@ApiParam(name = "to", value = "Data of answer report to be search") @RequestBody AnswerSurveyCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.searchToMe(to, context), exchange);
     }
 
     @GetMapping("/me")
     @ApiSecuredOperation
     @ApiOperation(nickname = "answer_survey_from_me_search_get", value = "Search answer made by me", response = SearchResponse.class)
-    public Mono<ResponseEntity> searchByMeGet(AnswerSurveyCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
+    public Mono<ResponseEntity> searchByMeGet(@ApiParam(name = "to", value = "Data of answer report to be search") AnswerSurveyCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.searchByMe(to, context), exchange);
     }
 
     @PostMapping("/me/all")
     @ApiSecuredOperation
     @ApiOperation(nickname = "answer_survey_from_me_search_post", value = "Search answer made by me", response = SearchResponse.class)
-    public Mono<ResponseEntity> searchByMePost(@ApiParam(name = "to", value = "Data of answer to be search", required = true) @RequestBody AnswerSurveyCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
+    public Mono<ResponseEntity> searchByMePost(@ApiParam(name = "to", value = "Data of answer to be search") @RequestBody AnswerSurveyCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.searchByMe(to, context), exchange);
     }
 

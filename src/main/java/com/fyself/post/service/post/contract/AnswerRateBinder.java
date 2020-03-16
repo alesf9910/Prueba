@@ -22,12 +22,4 @@ public interface AnswerRateBinder {
     AnswerRate bind(AnswerRateTO source);
 
     AnswerRateTO bind(AnswerRate source);
-
-    default AnswerHierarchyTO bindToAnswerHierarchyTO(AnswerHierarchy source) {
-        AnswerHierarchyTO answer = new AnswerHierarchyTO();
-        answer.setAnswer(source.getAnswers());
-        answer.setType(source.getType());
-        return answer;
-    }
-
 }

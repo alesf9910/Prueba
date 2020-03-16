@@ -9,7 +9,6 @@ import com.fyself.post.service.post.datasource.query.AnswerSurveyCriteria;
 import com.fyself.seedwork.service.PagedList;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 
@@ -39,10 +38,20 @@ public interface AnswerSurveyBinder {
         return new AnswerSurveyTO(source.getPost().getId(), buildSurveyAnswer(source));
     }
 
+    default AnswerSurveyTO bind(AnswerSurvey target, AnswerTO source) {
+        AnswerSurveyTO survey = bind(target);
+        survey.setAnswer(source);
+        survey.setCreatedAt(target.getCreatedAt());
+        survey.withOwner(target.getOwner());
+        survey.withAnswerId(target.getId());
+        survey.setPost(target.getPost().getId());
+        return survey;
+    }
+
     default AnswerSurveyCriteria bind(AnswerSurveyCriteriaTO source) {
         AnswerSurveyCriteria criteria = new AnswerSurveyCriteria();
 
-        if (source.getPost() != null || source.getPost().trim().equals("")) {
+        if (source.getPost() != null) {
             Post post = new Post();
             post.setId(source.getPost());
             criteria.setPost(post);

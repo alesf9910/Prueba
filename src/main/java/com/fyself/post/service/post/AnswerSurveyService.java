@@ -1,7 +1,7 @@
 package com.fyself.post.service.post;
 
 import com.fyself.post.service.post.contract.to.AnswerSurveyTO;
-import com.fyself.post.service.post.contract.to.PostReportTO;
+import com.fyself.post.service.post.contract.to.AnswerTO;
 import com.fyself.post.service.post.contract.to.criteria.AnswerSurveyCriteriaTO;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
@@ -14,9 +14,11 @@ public interface AnswerSurveyService {
 
     Mono<Void> update(AnswerSurveyTO to, FySelfContext context);
 
+    Mono<AnswerSurveyTO> patch(String id, AnswerTO to, FySelfContext context);
+
     Mono<Void> delete(String id, FySelfContext context);
 
-    Mono<PostReportTO> load(String id, String post, FySelfContext context);
+    Mono<AnswerSurveyTO> load(String id, String post, FySelfContext context);
 
-    Mono<PagedList<PostReportTO>> loadAll(AnswerSurveyCriteriaTO criteria, FySelfContext context);
+    Mono<PagedList<AnswerSurveyTO>> loadAll(AnswerSurveyCriteriaTO criteria, FySelfContext context);
 }
