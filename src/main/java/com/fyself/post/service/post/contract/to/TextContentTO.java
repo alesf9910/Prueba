@@ -1,27 +1,25 @@
 package com.fyself.post.service.post.contract.to;
 
 
-import java.util.Map;
-
 public class TextContentTO extends ContentTO{
 
     private static final long serialVersionUID = -1073487522607459128L;
-    private Map<String,String> title;
-    private Map<String,String> description;
+    private String title;
+    private String description;
 
-    public Map<String,String> getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    public void setTitle(Map<String,String> title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    public Map<String,String> getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(Map<String,String> description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 }

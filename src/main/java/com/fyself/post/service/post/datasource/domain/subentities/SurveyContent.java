@@ -1,17 +1,15 @@
 package com.fyself.post.service.post.datasource.domain.subentities;
 
 
-import java.util.Map;
-
 public class SurveyContent extends Content {
 
-    private Map<String,String> ask;
+    private String ask;
 
-    public Map<String,String> getAsk() {
+    public String getAsk() {
         return ask;
     }
 
-    public void setAsk(Map<String,String> ask) {
+    public void setAsk(String ask) {
         this.ask = ask;
     }
 }
