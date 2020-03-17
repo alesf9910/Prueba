@@ -1,7 +1,9 @@
 package com.fyself.post.facade;
 
 import com.fyself.post.service.post.contract.to.PostTO;
+import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
 import com.fyself.seedwork.facade.Result;
+import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import reactor.core.publisher.Mono;
 
@@ -24,4 +26,5 @@ public interface PostFacade {
 
     Mono<Result<Void>> patch(String id, HashMap to, FySelfContext context);
 
+    Mono<Result<PagedList<PostTO>>> search(PostCriteriaTO criteria, FySelfContext context);
 }

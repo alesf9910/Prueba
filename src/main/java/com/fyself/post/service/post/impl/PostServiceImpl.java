@@ -2,8 +2,10 @@ package com.fyself.post.service.post.impl;
 
 import com.fyself.post.service.post.PostService;
 import com.fyself.post.service.post.contract.to.PostTO;
+import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
 import com.fyself.post.service.post.datasource.PostRepository;
 import com.fyself.seedwork.service.EntityNotFoundException;
+import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import com.fyself.seedwork.service.repository.mongodb.domain.DomainEntity;
 import org.springframework.stereotype.Service;
@@ -65,5 +67,11 @@ public class PostServiceImpl implements PostService {
         return repository.findById(id)
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .map(post -> POST_BINDER.pacth(post, to));
+    }
+
+    @Override
+    public Mono<PagedList<PostTO>> search(@NotNull PostCriteriaTO criteria, FySelfContext context) {
+        return repository.findPage(POST_BINDER.bindToCriteria(criteria))
+                .map(POST_BINDER::bindPage);
     }
 }

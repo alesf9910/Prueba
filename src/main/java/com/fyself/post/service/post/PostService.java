@@ -1,6 +1,8 @@
 package com.fyself.post.service.post;
 
 import com.fyself.post.service.post.contract.to.PostTO;
+import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
+import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import reactor.core.publisher.Mono;
 
@@ -26,4 +28,7 @@ public interface PostService {
     Mono<Void> delete(@NotNull String id, FySelfContext context);
 
     Mono<PostTO> patch(@NotNull String id, HashMap to, FySelfContext context);
+
+    Mono<PagedList<PostTO>> search(@NotNull PostCriteriaTO criteria, FySelfContext context);
+
 }

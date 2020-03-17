@@ -2,17 +2,18 @@ package com.fyself.post.service.post.contract;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fyself.post.service.post.contract.to.*;
+import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
 import com.fyself.post.service.post.datasource.domain.Post;
 import com.fyself.post.service.post.datasource.domain.subentities.*;
+import com.fyself.post.service.post.datasource.query.PostCriteria;
+import com.fyself.seedwork.service.PagedList;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.Page;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -211,5 +212,12 @@ public interface PostBinder {
             e.printStackTrace();
         }
         return bind(post);
+    }
+
+    PostCriteria bindToCriteria(PostCriteriaTO source);
+
+    default PagedList<PostTO> bindPage(Page<Post> source) {
+        List<PostTO> profiles = source.stream().map(this::bind).collect(Collectors.toList());
+        return new PagedList<>(profiles, 0, 1, source.getTotalElements());
     }
 }

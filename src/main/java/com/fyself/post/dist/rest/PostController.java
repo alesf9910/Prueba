@@ -2,6 +2,8 @@ package com.fyself.post.dist.rest;
 
 import com.fyself.post.facade.PostFacade;
 import com.fyself.post.service.post.contract.to.PostTO;
+import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
+import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.web.Controller;
 import com.fyself.seedwork.web.documentation.annotations.ApiSecuredOperation;
 import com.fyself.seedwork.web.documentation.responses.NoContentResponse;
@@ -62,5 +64,15 @@ public class PostController extends Controller<PostFacade> {
         return this.perform((facade, context) -> facade.patch(id, to, context), exchange);
     }
 
+    @PostMapping("/search")
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "post_search", value = "Search Posts", response = SearchResponse.class)
+    public Mono<ResponseEntity> search(@RequestBody PostCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.search(to, context), exchange);
+    }
 
+    //<editor-fold desc="Inner classes (Documentation purpose)">
+    private static class SearchResponse extends PagedList<PostTO> {
+    }
+    //</editor-fold>
 }
