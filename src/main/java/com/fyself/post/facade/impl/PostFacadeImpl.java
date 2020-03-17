@@ -3,8 +3,10 @@ package com.fyself.post.facade.impl;
 import com.fyself.post.facade.PostFacade;
 import com.fyself.post.service.post.PostService;
 import com.fyself.post.service.post.contract.to.PostTO;
+import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
 import com.fyself.seedwork.facade.Result;
 import com.fyself.seedwork.facade.stereotype.Facade;
+import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import reactor.core.publisher.Mono;
 
@@ -46,5 +48,10 @@ public class PostFacadeImpl implements PostFacade {
         return service.patch(id, to, context)
                 .flatMap(postTO -> service.update(postTO, context))
                 .thenReturn(successful());
+    }
+
+    @Override
+    public Mono<Result<PagedList<PostTO>>> search(PostCriteriaTO criteria, FySelfContext context) {
+        return service.search(criteria, context).map(Result::successful);
     }
 }
