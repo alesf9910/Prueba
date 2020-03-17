@@ -5,6 +5,7 @@ import com.fyself.post.tools.enums.Access;
 import com.fyself.seedwork.service.to.DomainAuditTransferObject;
 import com.fyself.seedwork.service.to.annotation.ReadOnly;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -43,6 +44,7 @@ public class PostTO extends DomainAuditTransferObject {
     }
 
     @NotNull
+    @Valid
     public ContentTO getContent() {
         return content;
     }
