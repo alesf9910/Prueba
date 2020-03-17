@@ -71,7 +71,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Mono<PagedList<PostTO>> search(@NotNull PostCriteriaTO criteria, FySelfContext context) {
-        return repository.findPage(POST_BINDER.bindToCriteria(criteria))
+        return repository.findPage(POST_BINDER.bindToCriteria(criteria.withOwner(context.getAccount().get().getId())))
                 .map(POST_BINDER::bindPage);
     }
 }

@@ -14,6 +14,7 @@ public class PostCriteria extends DomainCriteria<Post> {
     private static final long serialVersionUID = -3800122150368324780L;
 
     private Access access;
+    private String owner;
     private boolean active;
     private boolean blocked;
 
@@ -23,7 +24,7 @@ public class PostCriteria extends DomainCriteria<Post> {
 
     @Override
     public CriteriaDefinition getPredicate() {
-        return and(matchAccess(), matchActive(), matchBlocked());
+        return and(matchAccess(), matchActive(), matchBlocked(), matchOwner());
     }
 
     private Criteria matchAccess() {
@@ -36,6 +37,10 @@ public class PostCriteria extends DomainCriteria<Post> {
 
     private Criteria matchBlocked() {
         return this.blocked ? where("blocked").is(this.isBlocked()) : null;
+    }
+
+    private Criteria matchOwner() {
+        return this.blocked ? where("owner").is(this.getOwner()) : null;
     }
 
     public Access getAccess() {
@@ -60,5 +65,13 @@ public class PostCriteria extends DomainCriteria<Post> {
 
     public void setBlocked(boolean blocked) {
         this.blocked = blocked;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 }
