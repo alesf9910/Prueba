@@ -8,6 +8,8 @@ import com.fyself.seedwork.facade.stereotype.Facade;
 import com.fyself.seedwork.service.context.FySelfContext;
 import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
+
 import static com.fyself.seedwork.facade.Result.successful;
 
 @Facade("postFacade")
@@ -37,5 +39,12 @@ public class PostFacadeImpl implements PostFacade {
     @Override
     public Mono<Result<Void>> update(PostTO to, FySelfContext context) {
         return service.update(to, context).thenReturn(successful());
+    }
+
+    @Override
+    public Mono<Result<Void>> patch(String id, HashMap to, FySelfContext context) {
+        return service.patch(id, to, context)
+                .flatMap(postTO -> service.update(postTO, context))
+                .thenReturn(successful());
     }
 }

@@ -6,6 +6,7 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.HashMap;
 
 
 /**
@@ -24,4 +25,5 @@ public interface PostService {
 
     Mono<Void> delete(@NotNull String id, FySelfContext context);
 
+    Mono<PostTO> patch(@NotNull String id, HashMap to, FySelfContext context);
 }
