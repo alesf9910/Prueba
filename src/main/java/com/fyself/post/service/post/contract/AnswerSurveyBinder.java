@@ -41,22 +41,17 @@ public interface AnswerSurveyBinder {
     @Mapping(target = "answer", expression = "java(buildSurveyAnswer(source))")
     AnswerSurveyTO bindFromSurvey(AnswerSurvey source);
 
-    default AnswerSurveyTO bind(AnswerSurvey source) {
-        return new AnswerSurveyTO(source.getPost().getId(), buildSurveyAnswer(source));
-    }
-
-    default AnswerSurveyTO pacth(AnswerSurvey target, HashMap to) {
+    default AnswerSurveyTO patch(AnswerSurvey target, HashMap to) {
         try {
-            var c = MAPPER.updateValue(this.bindFromSurvey(target), to);
-            return c;
+            return MAPPER.updateValue(this.bindFromSurvey(target), to);
         } catch (JsonMappingException e) {
             e.printStackTrace();
         }
-        return bind(target);
+        return bindFromSurvey(target);
     }
 
     default AnswerSurveyTO bind(AnswerSurvey target, AnswerTO source) {
-        AnswerSurveyTO survey = bind(target);
+        AnswerSurveyTO survey = bindFromSurvey(target);
         survey.setAnswer(source);
         survey.setCreatedAt(target.getCreatedAt());
         survey.withOwner(target.getOwner());

@@ -64,7 +64,7 @@ public class AnswerSurveyServiceImpl implements AnswerSurveyService {
         return repository.getById(id)
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .flatMap(survey ->
-                        just(ANSWER_SURVEY_BINDER.pacth(survey, to))
+                        just(ANSWER_SURVEY_BINDER.patch(survey, to))
                 );
     }
 
@@ -79,7 +79,7 @@ public class AnswerSurveyServiceImpl implements AnswerSurveyService {
     public Mono<AnswerSurveyTO> load(String id, String post, FySelfContext context) {
         return repository.getById(id)
                 .filter(survey -> survey.getPost().getId().equals(post))
-                .map(ANSWER_SURVEY_BINDER::bind)
+                .map(ANSWER_SURVEY_BINDER::bindFromSurvey)
                 .switchIfEmpty(error(EntityNotFoundException::new));
     }
 
