@@ -17,6 +17,8 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.HashMap;
+
 /**
  * Controller for Answer.
  *
@@ -54,7 +56,7 @@ public class AnswerSurveyController extends Controller<AnswerSurveyFacade> {
     @ApiSecuredOperation
     @ApiOperation(nickname = "answer_survey_patch", value = "Update answer survey", response = NoContentResponse.class, code = 204)
     public Mono<ResponseEntity> patch(@ApiParam(name = "id", value = "ID of answer to be patch", required = true) @PathVariable String id,
-                                      @ApiParam(name = "to", value = "Answer type to be patch", required = true) @RequestBody AnswerTO to, @ApiIgnore ServerWebExchange exchange) {
+                                      @ApiParam(name = "to", value = "Answer type to be patch", required = true) @RequestBody HashMap to, @ApiIgnore ServerWebExchange exchange) {
         return this.perform((facade, context) -> facade.patch(id, to, context), exchange);
     }
 

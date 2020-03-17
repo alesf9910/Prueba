@@ -2,7 +2,6 @@ package com.fyself.post.service.post.impl;
 
 import com.fyself.post.service.post.AnswerSurveyService;
 import com.fyself.post.service.post.contract.to.AnswerSurveyTO;
-import com.fyself.post.service.post.contract.to.AnswerTO;
 import com.fyself.post.service.post.contract.to.criteria.AnswerSurveyCriteriaTO;
 import com.fyself.post.service.post.datasource.AnswerSurveyRepository;
 import com.fyself.seedwork.service.EntityNotFoundException;
@@ -14,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 
 import static com.fyself.post.service.post.contract.AnswerSurveyBinder.ANSWER_SURVEY_BINDER;
 import static com.fyself.post.tools.LoggerUtils.*;
@@ -60,11 +60,11 @@ public class AnswerSurveyServiceImpl implements AnswerSurveyService {
     }
 
     @Override
-    public Mono<AnswerSurveyTO> patch(String id, AnswerTO to, FySelfContext context) {
+    public Mono<AnswerSurveyTO> patch(String id, HashMap to, FySelfContext context) {
         return repository.getById(id)
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .flatMap(survey ->
-                        just(ANSWER_SURVEY_BINDER.bind(survey, to))
+                        just(ANSWER_SURVEY_BINDER.patch(survey, to))
                 );
     }
 
@@ -79,7 +79,7 @@ public class AnswerSurveyServiceImpl implements AnswerSurveyService {
     public Mono<AnswerSurveyTO> load(String id, String post, FySelfContext context) {
         return repository.getById(id)
                 .filter(survey -> survey.getPost().getId().equals(post))
-                .map(ANSWER_SURVEY_BINDER::bind)
+                .map(ANSWER_SURVEY_BINDER::bindFromSurvey)
                 .switchIfEmpty(error(EntityNotFoundException::new));
     }
 
