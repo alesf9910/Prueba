@@ -38,8 +38,6 @@ public interface PostBinder {
     default Content bind(ContentTO source) {
         if (source instanceof LinkContentTO)
             return this.bind((LinkContentTO) source);
-        if (source instanceof ImageContentTO)
-            return this.bind((ImageContentTO) source);
         if (source instanceof TextContentTO)
             return this.bind((TextContentTO) source);
         if (source instanceof SurveyContentTO)
@@ -49,15 +47,11 @@ public interface PostBinder {
 
     LinkContent bind(LinkContentTO source);
 
-    ImageContent bind(ImageContentTO source);
-
     TextContent bind(TextContentTO source);
 
     default ContentTO bind(Content source) {
         if (source instanceof LinkContent)
             return this.bind((LinkContent) source);
-        if (source instanceof ImageContent)
-            return this.bind((ImageContent) source);
         if (source instanceof TextContent)
             return this.bind((TextContent) source);
         if (source instanceof SurveyContent)
@@ -66,8 +60,6 @@ public interface PostBinder {
     }
 
     LinkContentTO bind(LinkContent source);
-
-    ImageContentTO bind(ImageContent source);
 
     TextContentTO bind(TextContent source);
 
@@ -116,8 +108,6 @@ public interface PostBinder {
     default Content set(Content target, ContentTO source) {
         if (source instanceof LinkContentTO)
             return this.bind((LinkContentTO) source);
-        if (source instanceof ImageContentTO)
-            return this.bind((ImageContentTO) source);
         if (source instanceof TextContentTO)
             return this.bind((TextContentTO) source);
         if (source instanceof SurveyContentTO)

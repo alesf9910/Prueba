@@ -18,6 +18,7 @@ public class PostTO extends DomainAuditTransferObject {
     private Access access;
     private boolean active;
     private boolean blocked;
+    private String urlImage;
 
     @Override
     @ReadOnly
@@ -75,6 +76,14 @@ public class PostTO extends DomainAuditTransferObject {
 
     public void setBlocked(boolean blocked) {
         this.blocked = blocked;
+    }
+
+    public String getUrlImage() {
+        return urlImage;
+    }
+
+    public void setUrlImage(String urlImage) {
+        this.urlImage = urlImage;
     }
 
     public PostTO withId(String id) {

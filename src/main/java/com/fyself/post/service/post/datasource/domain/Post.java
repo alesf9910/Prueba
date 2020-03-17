@@ -14,6 +14,7 @@ public class Post extends DomainAuditEntity {
     private Access access;
     private boolean active;
     private boolean blocked;
+    private String urlImage;
 
 
     public Content getContent() {
@@ -46,5 +47,13 @@ public class Post extends DomainAuditEntity {
 
     public void setBlocked(boolean blocked) {
         this.blocked = blocked;
+    }
+
+    public String getUrlImage() {
+        return urlImage;
+    }
+
+    public void setUrlImage(String urlImage) {
+        this.urlImage = urlImage;
     }
 }
