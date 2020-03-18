@@ -215,4 +215,9 @@ public interface PostBinder {
         List<PostTO> postTOS = source.stream().map(this::bind).collect(Collectors.toList());
         return new PagedList<>(postTOS, 0, 1, source.size());
     }
+
+    default Post bindBlocked(Post post) {
+        post.setBlocked(true);
+        return post;
+    }
 }

@@ -4,14 +4,17 @@ import com.fyself.post.service.post.PostReportService;
 import com.fyself.post.service.post.contract.to.PostReportTO;
 import com.fyself.post.service.post.contract.to.criteria.PostReportCriteriaTO;
 import com.fyself.post.service.post.datasource.PostReportRepository;
+import com.fyself.post.service.post.datasource.PostRepository;
 import com.fyself.seedwork.service.EntityNotFoundException;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import com.fyself.seedwork.service.repository.mongodb.domain.DomainEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Mono;
 
+import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
 import static com.fyself.post.service.post.contract.PostReportBinder.POST_REPORT_BINDER;
 import static com.fyself.post.tools.LoggerUtils.*;
 import static reactor.core.publisher.Mono.error;
@@ -21,9 +24,14 @@ import static reactor.core.publisher.Mono.error;
 public class PostReportServiceImpl implements PostReportService {
 
     final PostReportRepository repository;
+    final PostRepository postRepository;
+    final Long maxReport;
 
-    public PostReportServiceImpl(PostReportRepository repository) {
+    public PostReportServiceImpl(PostReportRepository repository, PostRepository postRepository,
+                                 @Value("${mspost.application.report.max}") Long maxReport) {
         this.repository = repository;
+        this.postRepository = postRepository;
+        this.maxReport = maxReport;
     }
 
     @Override
@@ -32,9 +40,13 @@ public class PostReportServiceImpl implements PostReportService {
                 .flatMap(userId -> repository.save(POST_REPORT_BINDER.bind(to
                         .withOwner(userId)
                         .withCreateAt()
-                        .withUpdateAt()))
-                )
-                .doOnSuccess(entity -> createEvent(entity, context))
+                        .withUpdateAt())))
+                .flatMap(postReport -> repository.countAllByPost(postReport.getPost().getId())
+                        .filter(countReports -> countReports >= maxReport)
+                        .flatMap(ignored -> postRepository.findById(postReport.getPost().getId()))
+                        .flatMap(post -> postRepository.save(POST_BINDER.bindBlocked(post)))
+                        .thenReturn(postReport))
+                .doOnSuccess(postReport -> createEvent(postReport, context))
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .map(DomainEntity::getId);
     }
