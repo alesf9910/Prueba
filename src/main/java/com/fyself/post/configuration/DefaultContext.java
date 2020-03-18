@@ -1,6 +1,7 @@
 package com.fyself.post.configuration;
 
 import com.fyself.seedwork.i18n.MessageContextHolder;
+import com.fyself.seedwork.kafka.configuration.QueuesConfiguration;
 import com.fyself.seedwork.service.repository.mongodb.listeners.CascadeReferenceMongoEventListener;
 import com.fyself.seedwork.web.configuration.DefaultDispatcherContext;
 import org.springframework.beans.factory.annotation.Value;
@@ -75,6 +76,15 @@ public class DefaultContext {
             factory.setValidationMessageSource(messageSource);
             return factory;
         }
+    }
+
+    /**
+     * Configuration class for the streaming context.
+     */
+    @Configuration
+    @Import(QueuesConfiguration.class)
+    public class StreamContext {
+
     }
 
     /**
