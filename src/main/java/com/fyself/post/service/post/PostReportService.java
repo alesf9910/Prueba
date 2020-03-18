@@ -7,6 +7,7 @@ import com.fyself.seedwork.service.context.FySelfContext;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import java.util.stream.DoubleStream;
 
 
 /**
@@ -26,4 +27,6 @@ public interface PostReportService {
     Mono<PostReportTO> load(String id, FySelfContext context);
 
     Mono<PagedList<PostReportTO>> loadAll(PostReportCriteriaTO criteria, FySelfContext context);
+
+    Mono<Long> countAllByPost(String post);
 }

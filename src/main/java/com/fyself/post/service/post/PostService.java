@@ -31,4 +31,5 @@ public interface PostService {
 
     Mono<PagedList<PostTO>> search(@NotNull PostCriteriaTO criteria, FySelfContext context);
 
+    Mono<Void> block(String post);
 }

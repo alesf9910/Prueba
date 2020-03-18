@@ -74,4 +74,12 @@ public class PostServiceImpl implements PostService {
         return repository.findPage(POST_BINDER.bindToCriteria(criteria.withOwner(context.getAccount().get().getId())))
                 .map(POST_BINDER::bindPage);
     }
+
+    @Override
+    public Mono<Void> block(String post) {
+        return repository.findById(post)
+                .map(POST_BINDER::bindBlocked)
+                .flatMap(repository::save)
+                .then();
+    }
 }

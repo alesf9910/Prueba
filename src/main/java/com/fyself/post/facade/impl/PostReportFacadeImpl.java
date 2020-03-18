@@ -9,8 +9,10 @@ import com.fyself.seedwork.facade.Result;
 import com.fyself.seedwork.facade.stereotype.Facade;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
+import org.springframework.beans.factory.annotation.Value;
 import reactor.core.publisher.Mono;
 
+import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
 import static com.fyself.seedwork.facade.Result.successful;
 
 /**
@@ -24,16 +26,24 @@ public class PostReportFacadeImpl implements PostReportFacade {
 
     final PostReportService service;
     final PostService postService;
+    final Long maxReport;
 
-    public PostReportFacadeImpl(PostReportService service, PostService postService) {
+    public PostReportFacadeImpl(PostReportService service, PostService postService, @Value("${mspost.application.report.max}") Long maxReport) {
         this.service = service;
         this.postService = postService;
+        this.maxReport = maxReport;
     }
 
     @Override
     public Mono<Result<String>> create(PostReportTO to, FySelfContext exchange) {
         return postService.load(to.getPost(), exchange)
                 .flatMap(postTO -> service.add(to.withUser(postTO.getOwner()), exchange))
+                .doOnSuccess(
+                        postReport -> service.countAllByPost(to.getPost())
+                        .filter(countReports -> countReports >= maxReport)
+                        .flatMap(ignored -> postService.block(to.getPost()))
+                        .subscribe()
+                )
                 .map(Result::successful);
     }
 
