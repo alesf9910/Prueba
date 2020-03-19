@@ -67,13 +67,8 @@ application:
 spring:
   data:
     mongodb:
-      #      uri: ${application.datasource.protocol}://${application.datasource.username}:${application.datasource.password}@${application.datasource.host}/${application.datasource.database}${application.datasource.options}
-      host: ${application.datasource.host}
-      port: 27017
-      database: ${application.datasource.database}
-      username: ${application.datasource.username}
-      password: ${application.datasource.password}
-      authentication-database: admin
+            uri: ${application.datasource.protocol}://${application.datasource.username}:${application.datasource.password}@${application.datasource.host}/${application.datasource.database}${application.datasource.options}
+
 
   jpa:
     open-in-view: false
