@@ -9,9 +9,11 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.fyself.post.service.upload.datasource.S3FileRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import org.synchronoss.cloud.nio.multipart.util.IOUtils;
 import reactor.core.publisher.Mono;
 
 import java.io.*;
+import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 import static com.amazonaws.services.s3.AmazonS3ClientBuilder.standard;
@@ -42,22 +44,22 @@ public class S3FileRepositoryImpl implements S3FileRepository {
     @Override
     public Mono<String> uploadFile(InputStream inputStream, String folderName) {
         try {
-            File targetFile = new File("src/main/resources/targetFile.tmp");
-            byte[] buffer = new byte[inputStream.available()];
+            String tempName = UUID.randomUUID().toString();
+            File targetFile = new File("src/main/resources/" + tempName + ".tmp");
 
-            inputStream.read(buffer);
-            OutputStream outStream = new FileOutputStream(targetFile);
-            outStream.write(buffer);
+            java.nio.file.Files.copy(inputStream, targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            IOUtils.closeQuietly(inputStream);
 
             var credentials = new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey));
-            AmazonS3 s3client = standard().withCredentials(credentials).build();
+            AmazonS3 s3client = standard().withCredentials(credentials).withRegion("us-east-1").build();
 
             createFolder(bucketName, folderName, s3client);
 
-            String fileName = folderName + SUFFIX + UUID.randomUUID() + ".jpg";
+            String fileName = folderName + SUFFIX + tempName + ".jpg";
 
-            s3client.putObject(new PutObjectRequest(bucketName, fileName, targetFile)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
+            s3client.putObject(new PutObjectRequest(bucketName, fileName, targetFile));
+
+            targetFile.delete();
 
             return just(fileName);
         } catch (IOException e) {

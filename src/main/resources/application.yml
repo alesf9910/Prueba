@@ -70,8 +70,6 @@ application:
 
 
 spring:
-  codec:
-    max-in-memory-size: -1
   data:
     mongodb:
       uri: ${application.datasource.protocol}://${application.datasource.username}:${application.datasource.password}@${application.datasource.host}/${application.datasource.database}${application.datasource.options}
