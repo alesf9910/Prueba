@@ -43,14 +43,14 @@ public class CommentController extends Controller<CommentFacade> {
 
     @PutMapping("/{id}")
     @ApiSecuredOperation
-    @ApiOperation(nickname = "comment_load", value = "Update comment", response = NoContentResponse.class, code = 204)
+    @ApiOperation(nickname = "update_comment", value = "Update comment", response = NoContentResponse.class, code = 204)
     public Mono<ResponseEntity> update(@PathVariable String post, @PathVariable String id, @RequestBody CommentTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.perform((facade, context) -> facade.update(to.withId(id).withPost(post), context), exchange);
     }
 
     @DeleteMapping("/{id}")
     @ApiSecuredOperation
-    @ApiOperation(nickname = "comment_load", value = "Update comment", response = NoContentResponse.class)
+    @ApiOperation(nickname = "delete_comment", value = "Update comment", response = NoContentResponse.class)
     public Mono<ResponseEntity> delete(@PathVariable String post, @PathVariable String id, @ApiIgnore ServerWebExchange exchange) {
         return this.perform((facade, context) -> facade.delete(id, post, context), exchange);
     }
