@@ -27,6 +27,7 @@ mspost:
       topics:
         output:
           logs: com-fyself-dev-logs
+          elastic-answer: elastic-answer
     server:
       port: 8080
 
