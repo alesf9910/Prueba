@@ -29,15 +29,10 @@ import static reactor.core.publisher.Mono.just;
 @Repository("s3FileRepository")
 public class S3FileRepositoryImpl implements S3FileRepository {
     private static final String SUFFIX = "/";
-    private final String accessKey;
-    private final String secretKey;
+
     private final String bucketName;
 
-    public S3FileRepositoryImpl(@Value("${mspost.application.aws.accessKey}") String accessKey,
-                                @Value("${mspost.application.aws.secretKey}") String secretKey,
-                                @Value("${mspost.application.aws.bucketName}") String bucketName) {
-        this.accessKey = accessKey;
-        this.secretKey = secretKey;
+    public S3FileRepositoryImpl(@Value("${mspost.application.aws.bucketName}") String bucketName) {
         this.bucketName = bucketName;
     }
 
@@ -50,8 +45,7 @@ public class S3FileRepositoryImpl implements S3FileRepository {
             java.nio.file.Files.copy(inputStream, targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             IOUtils.closeQuietly(inputStream);
 
-            var credentials = new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey));
-            AmazonS3 s3client = standard().withCredentials(credentials).withRegion("us-east-1").build();
+            AmazonS3 s3client = standard().build();
 
             createFolder(bucketName, folderName, s3client);
 

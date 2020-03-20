@@ -27,8 +27,8 @@ public class UploadFileController extends Controller<UploadFileFacade> {
 
     @ApiSecuredOperation
     @ApiOperation(nickname = "upload_image", value = "Upload image", response = String.class)
-    @RequestMapping(value = "/{type}", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<ResponseEntity> uploadTax(@RequestBody Flux<Part> parts, @PathVariable String type, @ApiIgnore ServerWebExchange exchange) {
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Mono<ResponseEntity> uploadTax(@RequestPart Flux<Part> parts, @RequestPart String type, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.uploadImage(parts, type, context), exchange);
     }
 }
