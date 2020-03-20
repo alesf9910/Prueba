@@ -31,8 +31,6 @@ mspost:
     server:
       port: 8080
     aws:
-      accessKey: {accessKey}
-      secretKey: {secretKey}
       bucketName: {bucketName}
 
 application:
