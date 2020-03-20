@@ -47,8 +47,6 @@ public class S3FileRepositoryImpl implements S3FileRepository {
 
             AmazonS3 s3client = standard().build();
 
-            createFolder(bucketName, folderName, s3client);
-
             String fileName = folderName + SUFFIX + tempName + ".jpg";
 
             s3client.putObject(new PutObjectRequest(bucketName, fileName, targetFile));
@@ -62,22 +60,5 @@ public class S3FileRepositoryImpl implements S3FileRepository {
         }
 
 
-    }
-
-    private static void createFolder(String bucketName, String folderName, AmazonS3 client) {
-        if (!client.doesObjectExist(bucketName, folderName)) {
-
-            // create meta-data for your folder and set content-length to 0
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentLength(0);
-            // create empty content
-            InputStream emptyContent = new ByteArrayInputStream(new byte[0]);
-            // create a PutObjectRequest passing the folder name suffixed by /
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName,
-                    folderName + SUFFIX, emptyContent, metadata);
-            // send request to S3 to create folder
-
-            client.putObject(putObjectRequest);
-        }
     }
 }

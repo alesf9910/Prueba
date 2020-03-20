@@ -42,7 +42,7 @@ application:
     password: ${mspost.application.datasource.password}
     protocol: ${mspost.application.datasource.protocol}
     options: ${mspost.application.datasource.options}
-
+  file: image/jpeg,image/png
   security:
     jwt-token:
       secret: ${mspost.application.security.jwt-token.secret}
