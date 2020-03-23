@@ -42,9 +42,9 @@ public class UploadFileController extends Controller<UploadFileFacade> {
 
     @ApiSecuredOperation
     @ApiOperation(nickname = "download_image", value = "Download image", response = File.class)
-    @RequestMapping(path = "/download/post/{url}", method = RequestMethod.GET)
-    public Mono<ResponseEntity> downloadImage(@PathVariable String url, @ApiIgnore ServerWebExchange exchange) {
-        return uploadFileFacade.downloadImage(url, null).map(this::getResponse);
+    @RequestMapping(path = "/download/{type}/{url}", method = RequestMethod.GET)
+    public Mono<ResponseEntity> downloadImage(@PathVariable String type, @PathVariable String url, @ApiIgnore ServerWebExchange exchange) {
+        return uploadFileFacade.downloadImage(type, url, null).map(this::getResponse);
     }
 
     private ResponseEntity getResponse(Result<S3Object> s3ObjectResult) {

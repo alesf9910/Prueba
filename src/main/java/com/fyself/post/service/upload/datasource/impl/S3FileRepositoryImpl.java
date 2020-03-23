@@ -43,9 +43,9 @@ public class S3FileRepositoryImpl implements S3FileRepository {
     }
 
     @Override
-    public Mono<S3Object> downloadFile(String fileName) {
+    public Mono<S3Object> downloadFile(String folderName, String fileName) {
         AmazonS3 s3client = standard().build();
-        S3Object s3object = s3client.getObject(bucketName, "post/" + fileName);
+        S3Object s3object = s3client.getObject(bucketName, folderName + SUFFIX + fileName);
         return just(s3object);
     }
 }

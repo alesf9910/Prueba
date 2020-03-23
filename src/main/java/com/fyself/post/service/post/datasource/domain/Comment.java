@@ -14,6 +14,7 @@ public class Comment extends DomainAuditEntity {
     @CascadeReference
     private Post post;
     private String content;
+    private String url;
 
     public String getContent() {
         return content;
@@ -29,5 +30,13 @@ public class Comment extends DomainAuditEntity {
 
     public void setPost(Post post) {
         this.post = post;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

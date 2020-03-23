@@ -9,6 +9,6 @@ import reactor.core.publisher.Mono;
 public interface UploadFileFacade {
 
     Mono<Result<String>> uploadImage(Mono<FilePart> part, String typeElement, FySelfContext context);
-    Mono<Result<S3Object>> downloadImage(String fileName, FySelfContext context);
+    Mono<Result<S3Object>> downloadImage(String folderName, String fileName, FySelfContext context);
 
 }
