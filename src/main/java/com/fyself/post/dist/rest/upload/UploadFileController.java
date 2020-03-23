@@ -41,8 +41,8 @@ public class UploadFileController extends Controller<UploadFileFacade> {
     }
 
     @ApiSecuredOperation
-    @ApiOperation(nickname = "upload_image", value = "Upload image", response = File.class)
-    @RequestMapping(path = "/download/post/{url}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+    @ApiOperation(nickname = "download_image", value = "Download image", response = File.class)
+    @RequestMapping(path = "/download/post/{url}", method = RequestMethod.GET)
     public Mono<ResponseEntity> downloadImage(@PathVariable String url, @ApiIgnore ServerWebExchange exchange) {
         return uploadFileFacade.downloadImage(url, null).map(this::getResponse);
     }
