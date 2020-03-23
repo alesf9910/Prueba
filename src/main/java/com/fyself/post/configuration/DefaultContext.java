@@ -52,9 +52,11 @@ public class DefaultContext {
      */
     @Configuration
     @ComponentScan(basePackages={"com.fyself.post.facade.impl",
+            "com.fyself.post.facade.error",
             "com.fyself.post.service.*.impl",
             "com.fyself.post.service.*.contract.validation",
             "com.fyself.post.service.*.contract.validation.*",
+            "com.fyself.post.service.*.datasource",
                                  "com.fyself.seedwork.facade"})
     @EnableReactiveMongoRepositories("com.fyself.post.service.*.datasource")
     public class DataSourceContext {
