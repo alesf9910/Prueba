@@ -30,7 +30,7 @@ public class UploadFileServiceImpl implements UploadFileService {
     }
 
     @Override
-    public Mono<S3Object> downloadImage(String fileName) {
-        return repository.downloadFile(fileName);
+    public Mono<S3Object> downloadImage(String folderName, String fileName) {
+        return repository.downloadFile(folderName, fileName);
     }
 }

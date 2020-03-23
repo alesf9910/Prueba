@@ -15,5 +15,5 @@ import java.io.InputStream;
 public interface UploadFileService {
 
     Mono<String> uploadImage(InputStream inputStream, String typeElement, ObjectMetadata metadata);
-    Mono<S3Object> downloadImage(String fileName);
+    Mono<S3Object> downloadImage(String folderName, String fileName);
 }

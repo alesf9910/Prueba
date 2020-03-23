@@ -47,8 +47,8 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
     }
 
     @Override
-    public Mono<Result<S3Object>> downloadImage(String fileName, FySelfContext context) {
-        return uploadFileService.downloadImage(fileName).map(Result::successful);
+    public Mono<Result<S3Object>> downloadImage(String folderName, String fileName, FySelfContext context) {
+        return uploadFileService.downloadImage(folderName, fileName).map(Result::successful);
     }
 
     private Boolean supported(MediaType type) {

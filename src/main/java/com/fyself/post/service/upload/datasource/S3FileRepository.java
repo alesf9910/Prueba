@@ -16,5 +16,5 @@ public interface S3FileRepository {
 
     Mono<String> uploadFile(InputStream inputStream, String folderName, ObjectMetadata metadata);
 
-    Mono<S3Object> downloadFile(String fileName);
+    Mono<S3Object> downloadFile(String folderName, String fileName);
 }

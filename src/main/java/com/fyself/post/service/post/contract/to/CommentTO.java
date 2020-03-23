@@ -15,6 +15,7 @@ public class CommentTO extends DomainAuditTransferObject {
 
     private String post;
     private String content;
+    private String url;
 
     @NotBlank
     public String getContent() {
@@ -23,6 +24,14 @@ public class CommentTO extends DomainAuditTransferObject {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @NotNull
