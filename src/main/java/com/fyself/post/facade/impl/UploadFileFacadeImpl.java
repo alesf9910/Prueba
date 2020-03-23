@@ -1,6 +1,7 @@
 package com.fyself.post.facade.impl;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
 import com.fyself.post.facade.UploadFileFacade;
 import com.fyself.post.service.upload.UploadFileService;
 import com.fyself.post.tools.InputStreamCollector;
@@ -43,6 +44,11 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
                         .collect(InputStreamCollector::new, (t, dataBuffer) -> t.collectInputStream(dataBuffer.asInputStream()))
                         .flatMap(inputStreamCollector -> uploadFileService.uploadImage(inputStreamCollector.getInputStream(), typeElement, getMetadata(filePart.headers())))
                         .map(Result::successful));
+    }
+
+    @Override
+    public Mono<Result<S3Object>> downloadImage(String fileName, FySelfContext context) {
+        return uploadFileService.downloadImage(fileName).map(Result::successful);
     }
 
     private Boolean supported(MediaType type) {

@@ -1,6 +1,7 @@
 package com.fyself.post.service.upload.datasource;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
 import reactor.core.publisher.Mono;
 
 import java.io.InputStream;
@@ -14,4 +15,6 @@ import java.io.InputStream;
 public interface S3FileRepository {
 
     Mono<String> uploadFile(InputStream inputStream, String folderName, ObjectMetadata metadata);
+
+    Mono<S3Object> downloadFile(String fileName);
 }

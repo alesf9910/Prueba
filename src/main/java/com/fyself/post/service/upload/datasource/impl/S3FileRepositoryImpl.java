@@ -3,6 +3,7 @@ package com.fyself.post.service.upload.datasource.impl;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import com.fyself.post.service.upload.datasource.S3FileRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -39,5 +40,12 @@ public class S3FileRepositoryImpl implements S3FileRepository {
         s3client.putObject(new PutObjectRequest(bucketName, fileName, inputStream, metadata));
 
         return just(fileName);
+    }
+
+    @Override
+    public Mono<S3Object> downloadFile(String fileName) {
+        AmazonS3 s3client = standard().build();
+        S3Object s3object = s3client.getObject(bucketName, "post/" + fileName);
+        return just(s3object);
     }
 }
