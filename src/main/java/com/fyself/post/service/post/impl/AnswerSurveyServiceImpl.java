@@ -4,6 +4,8 @@ import com.fyself.post.service.post.AnswerSurveyService;
 import com.fyself.post.service.post.contract.to.AnswerSurveyTO;
 import com.fyself.post.service.post.contract.to.criteria.AnswerSurveyCriteriaTO;
 import com.fyself.post.service.post.datasource.AnswerSurveyRepository;
+import com.fyself.post.service.post.datasource.domain.AnswerSurvey;
+import com.fyself.post.service.stream.StreamService;
 import com.fyself.seedwork.service.EntityNotFoundException;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
@@ -16,6 +18,7 @@ import javax.validation.Valid;
 import java.util.HashMap;
 
 import static com.fyself.post.service.post.contract.AnswerSurveyBinder.ANSWER_SURVEY_BINDER;
+import static com.fyself.post.service.stream.contract.KafkaMessageBinder.KAFKA_MESSAGE_BINDER;
 import static com.fyself.post.tools.LoggerUtils.*;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
@@ -25,19 +28,18 @@ import static reactor.core.publisher.Mono.just;
 public class AnswerSurveyServiceImpl implements AnswerSurveyService {
 
     final AnswerSurveyRepository repository;
+    private final StreamService streamService;
 
-    public AnswerSurveyServiceImpl(AnswerSurveyRepository repository) {
+    public AnswerSurveyServiceImpl(AnswerSurveyRepository repository, StreamService streamService) {
         this.repository = repository;
+        this.streamService = streamService;
     }
 
     @Override
     public Mono<String> add(@Valid AnswerSurveyTO to, FySelfContext context) {
         return context.authenticatedId()
-                .flatMap(userId -> repository.save(
-                        ANSWER_SURVEY_BINDER.bind(
-                                to.withOwner(userId).withCreateAt().withUpdateAt())
-                        )
-                )
+                .flatMap(userId -> repository.save(ANSWER_SURVEY_BINDER.bind(to.withOwner(userId).withCreateAt().withUpdateAt())))
+                .flatMap(answerSurvey -> this.putInPipeline(answerSurvey).thenReturn(answerSurvey))
                 .doOnSuccess(entity -> createEvent(entity, context))
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .map(DomainEntity::getId);
@@ -86,5 +88,9 @@ public class AnswerSurveyServiceImpl implements AnswerSurveyService {
     @Override
     public Mono<PagedList<AnswerSurveyTO>> loadAll(AnswerSurveyCriteriaTO criteria, FySelfContext context) {
         return repository.findPage(ANSWER_SURVEY_BINDER.bind(criteria)).map(ANSWER_SURVEY_BINDER::bind);
+    }
+
+    private Mono<Void> putInPipeline(AnswerSurvey answer) {
+        return streamService.putInPipelineAnswerElastic(KAFKA_MESSAGE_BINDER.bindAnswer(answer));
     }
 }

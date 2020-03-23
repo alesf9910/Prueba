@@ -34,6 +34,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
 
+	implementation 'org.apache.kafka:kafka-clients:2.2.1'
+	implementation 'org.apache.kafka:kafka-streams:2.2.1'
+	implementation 'io.projectreactor.kafka:reactor-kafka:1.1.0.RELEASE'
+
 	implementation "com.fyself.seedwork:fyself-seed-core:$seedVersion"
 	implementation "com.fyself.seedwork:fyself-seed-service:$seedVersion"
 	implementation "com.fyself.seedwork:fyself-seed-web:$seedVersion"

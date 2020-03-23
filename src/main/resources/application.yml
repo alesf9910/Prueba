@@ -56,7 +56,17 @@ application:
       max-age: ${mspost.application.security.corsConfig.max-age}
   kafka:
     servers: ${mspost.application.kafka.servers}
+    bootstrapServers: ${mspost.application.kafka.servers}
+    groupId: ${application.name}-group
+    enviromentPrefix: dev
+    topicPrefix: com-fyself
 
+    applicationId: ${application.name}
+    baseDir: /tmp
+    queues: profiles-info
+    output-config:
+      concurrency: 20
+      queue: 60
     topics:
       output:
         logs: ${mspost.application.kafka.topics.output.logs}
