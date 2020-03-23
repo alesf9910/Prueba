@@ -1,5 +1,6 @@
 package com.fyself.post.service.upload.impl;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.fyself.post.service.upload.UploadFileService;
 import com.fyself.post.service.upload.datasource.S3FileRepository;
 import org.slf4j.Logger;
@@ -23,7 +24,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 
 
     @Override
-    public Mono<String> uploadImage(InputStream inputStream, String typeElement) {
-        return repository.uploadFile(inputStream, typeElement);
+    public Mono<String> uploadImage(InputStream inputStream, String typeElement, ObjectMetadata metadata) {
+        return repository.uploadFile(inputStream, typeElement, metadata);
     }
 }

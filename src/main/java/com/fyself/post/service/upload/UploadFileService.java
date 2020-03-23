@@ -1,5 +1,6 @@
 package com.fyself.post.service.upload;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import reactor.core.publisher.Mono;
 
 import java.io.InputStream;
@@ -12,5 +13,5 @@ import java.io.InputStream;
  */
 public interface UploadFileService {
 
-    Mono<String> uploadImage(InputStream inputStream, String typeElement);
+    Mono<String> uploadImage(InputStream inputStream, String typeElement, ObjectMetadata metadata);
 }

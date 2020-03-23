@@ -8,6 +8,6 @@ import reactor.core.publisher.Mono;
 
 public interface UploadFileFacade {
 
-    Mono<Result<String>> uploadImage(Flux<FilePart> parts, String typeElement, FySelfContext context);
+    Mono<Result<String>> uploadImage(Mono<FilePart> part, String typeElement, FySelfContext context);
 
 }
