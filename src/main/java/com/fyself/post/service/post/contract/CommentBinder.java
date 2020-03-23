@@ -26,15 +26,18 @@ public interface CommentBinder {
     CommentBinder COMMENT_BINDER = Mappers.getMapper(CommentBinder.class);
 
     @Mapping(target = "post.id", source = "post")
+    @Mapping(target = "father", expression = "java(binFather(source.getFather()))")
     Comment bind(CommentTO source);
 
     @Mapping(target = "post", source = "post.id")
+    @Mapping(target = "father", source = "father.id")
     CommentTO bind(Comment source);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "owner", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "post", ignore = true)
+    @Mapping(target = "father", ignore = true)
     void bind(@MappingTarget Comment target, CommentTO source);
 
     default Comment set(Comment target, CommentTO source) {
@@ -56,5 +59,14 @@ public interface CommentBinder {
     default PagedList<CommentTO> bindPage(Page<Comment> source) {
         List<CommentTO> profiles = source.stream().map(this::bind).collect(Collectors.toList());
         return new PagedList<>(profiles, 0, 1, source.getTotalElements());
+    }
+
+    default Comment binFather(String father) {
+        if (father != null) {
+            var comment = new Comment();
+            comment.setId(father);
+            return comment;
+        }
+        return null;
     }
 }

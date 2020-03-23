@@ -15,6 +15,9 @@ public class Comment extends DomainAuditEntity {
     private Post post;
     private String content;
     private String url;
+    @DBRef
+    @CascadeReference
+    private Comment father;
 
     public String getContent() {
         return content;
@@ -38,5 +41,13 @@ public class Comment extends DomainAuditEntity {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public Comment getFather() {
+        return father;
+    }
+
+    public void setFather(Comment father) {
+        this.father = father;
     }
 }
