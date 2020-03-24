@@ -31,6 +31,7 @@ public interface CommentBinder {
 
     @Mapping(target = "post", source = "post.id")
     @Mapping(target = "father", source = "father.id")
+    @Mapping(target = "childrens", ignore = true)
     CommentTO bind(Comment source);
 
     @Mapping(target = "id", ignore = true)
@@ -68,5 +69,24 @@ public interface CommentBinder {
             return comment;
         }
         return null;
+    }
+
+    default CommentCriteria bindToFatherCriteria(String fatherId) {
+        CommentCriteria criteria = new CommentCriteria();
+        if (fatherId != null) {
+            var father = new Comment();
+            father.setId(fatherId);
+            criteria.setFather(father);
+        }
+        criteria.setPage(0);
+        criteria.setSize(5);
+        return criteria;
+    }
+
+    default CommentTO bindPageOfChildren(Page<Comment> source, Comment entity) {
+        List<CommentTO> childrens = source.stream().map(this::bind).collect(Collectors.toList());
+        CommentTO commentTO = this.bind(entity);
+        commentTO.setChildrens(childrens);
+        return commentTO;
     }
 }

@@ -7,6 +7,7 @@ import com.fyself.seedwork.service.to.annotation.ReadOnly;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static java.time.LocalDateTime.now;
 
@@ -17,6 +18,7 @@ public class CommentTO extends DomainAuditTransferObject {
     private String content;
     private String url;
     private String father;
+    private List<CommentTO> childrens;
 
     @NotBlank
     public String getContent() {
@@ -41,6 +43,14 @@ public class CommentTO extends DomainAuditTransferObject {
 
     public void setFather(String father) {
         this.father = father;
+    }
+
+    public List<CommentTO> getChildrens() {
+        return childrens;
+    }
+
+    public void setChildrens(List<CommentTO> childrens) {
+        this.childrens = childrens;
     }
 
     @NotNull
