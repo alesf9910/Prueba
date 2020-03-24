@@ -47,6 +47,7 @@ public interface CommentBinder {
     }
 
     @Mapping(target = "post.id", ignore = true)
+    @Mapping(target = "father", expression = "java(binFather(source.getFather()))")
     CommentCriteria bind(CommentCriteriaTO source);
 
     default CommentCriteria bindToCriteria(CommentCriteriaTO source, String postId) {
@@ -73,11 +74,9 @@ public interface CommentBinder {
 
     default CommentCriteria bindToFatherCriteria(String fatherId) {
         CommentCriteria criteria = new CommentCriteria();
-        if (fatherId != null) {
-            var father = new Comment();
-            father.setId(fatherId);
-            criteria.setFather(father);
-        }
+        var father = new Comment();
+        father.setId(fatherId);
+        criteria.setFather(father);
         criteria.setPage(0);
         criteria.setSize(5);
         return criteria;

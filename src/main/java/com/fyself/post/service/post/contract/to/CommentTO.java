@@ -45,6 +45,7 @@ public class CommentTO extends DomainAuditTransferObject {
         this.father = father;
     }
 
+    @ReadOnly
     public List<CommentTO> getChildrens() {
         return childrens;
     }
