@@ -24,13 +24,11 @@ import static reactor.core.publisher.Mono.error;
 public class PostReportServiceImpl implements PostReportService {
 
     final PostReportRepository repository;
-    final PostRepository postRepository;
     final Long maxReport;
 
-    public PostReportServiceImpl(PostReportRepository repository, PostRepository postRepository,
+    public PostReportServiceImpl(PostReportRepository repository,
                                  @Value("${mspost.application.report.max}") Long maxReport) {
         this.repository = repository;
-        this.postRepository = postRepository;
         this.maxReport = maxReport;
     }
 
@@ -41,11 +39,6 @@ public class PostReportServiceImpl implements PostReportService {
                         .withOwner(userId)
                         .withCreateAt()
                         .withUpdateAt())))
-                .flatMap(postReport -> repository.countAllByPost(postReport.getPost().getId())
-                        .filter(countReports -> countReports >= maxReport)
-                        .flatMap(ignored -> postRepository.findById(postReport.getPost().getId()))
-                        .flatMap(post -> postRepository.save(POST_BINDER.bindBlocked(post)))
-                        .thenReturn(postReport))
                 .doOnSuccess(postReport -> createEvent(postReport, context))
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .map(DomainEntity::getId);
@@ -84,5 +77,10 @@ public class PostReportServiceImpl implements PostReportService {
     @Override
     public Mono<PagedList<PostReportTO>> loadAll(PostReportCriteriaTO criteria, FySelfContext context) {
         return repository.findPage(POST_REPORT_BINDER.bindToCriteria(criteria)).map(POST_REPORT_BINDER::bind);
+    }
+
+    @Override
+    public Mono<Long> countAllByPost(String post) {
+        return repository.countAllByPost(post);
     }
 }
