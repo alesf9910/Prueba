@@ -32,6 +32,8 @@ mspost:
           post: post
     server:
       port: 8080
+    report:
+      max: 1
     aws:
       bucketName: {bucketName}
 
@@ -83,12 +85,7 @@ spring:
   data:
     mongodb:
       uri: ${application.datasource.protocol}://${application.datasource.username}:${application.datasource.password}@${application.datasource.host}/${application.datasource.database}${application.datasource.options}
-#      host: ${mspost.application.datasource.host}
-#      port: ${mspost.application.datasource.port}
-#      database: ${mspost.application.datasource.database}
-#      username: ${mspost.application.datasource.username}
-#      password: ${mspost.application.datasource.password}
-#      authentication-database: admin
+
   jpa:
     open-in-view: false
   mvc:
