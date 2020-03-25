@@ -207,7 +207,12 @@ public interface PostBinder {
     PostCriteria bindToCriteria(PostCriteriaTO source);
 
     default PagedList<PostTO> bindPage(Page<Post> source) {
-        List<PostTO> profiles = source.stream().map(this::bind).collect(Collectors.toList());
-        return new PagedList<>(profiles, 0, 1, source.getTotalElements());
+        List<PostTO> postTOS = source.stream().map(this::bind).collect(Collectors.toList());
+        return new PagedList<>(postTOS, 0, 1, source.getTotalElements());
+    }
+
+    default PagedList<PostTO> bindList(List<Post> source) {
+        List<PostTO> postTOS = source.stream().map(this::bind).collect(Collectors.toList());
+        return new PagedList<>(postTOS, 0, 1, source.size());
     }
 }

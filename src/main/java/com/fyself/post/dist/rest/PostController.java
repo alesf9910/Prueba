@@ -67,8 +67,29 @@ public class PostController extends Controller<PostFacade> {
     @PostMapping("/search")
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_search", value = "Search Posts", response = SearchResponse.class)
-    public Mono<ResponseEntity> search(@RequestBody PostCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
+    public Mono<ResponseEntity> searchPost(@RequestBody PostCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.search(to, context), exchange);
+    }
+
+    @GetMapping("/search")
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "post_search", value = "Search Posts", response = SearchResponse.class)
+    public Mono<ResponseEntity> searchGet(PostCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.search(to, context), exchange);
+    }
+
+    @GetMapping("/timeline")
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "post_timeline_search", value = "Search Posts that are on the timeline", response = SearchResponse.class)
+    public Mono<ResponseEntity> searchPostTimelineGet(@ApiIgnore ServerWebExchange exchange) {
+        return this.get(PostFacade::searchPostTimeline, exchange);
+    }
+
+    @PostMapping("/timeline")
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "post_timeline_search", value = "Search Posts that are on the timeline", response = SearchResponse.class)
+    public Mono<ResponseEntity> searchPostTimeline(@ApiIgnore ServerWebExchange exchange) {
+        return this.get(PostFacade::searchPostTimeline, exchange);
     }
 
     //<editor-fold desc="Inner classes (Documentation purpose)">

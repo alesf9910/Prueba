@@ -28,6 +28,8 @@ mspost:
         output:
           logs: com-fyself-dev-logs
           elastic-answer: elastic-answer
+        input:
+          post: post
     server:
       port: 8080
     aws:

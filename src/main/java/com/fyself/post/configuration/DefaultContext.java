@@ -85,6 +85,7 @@ public class DefaultContext {
      */
     @Configuration
     @Import(QueuesConfiguration.class)
+    @ComponentScan("com.fyself.post.dist.stream")
     public class StreamContext {
 
     }
