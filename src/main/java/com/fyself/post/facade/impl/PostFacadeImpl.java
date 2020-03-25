@@ -2,6 +2,7 @@ package com.fyself.post.facade.impl;
 
 import com.fyself.post.facade.PostFacade;
 import com.fyself.post.service.post.PostService;
+import com.fyself.post.service.post.PostTimelineService;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
 import com.fyself.seedwork.facade.Result;
@@ -18,9 +19,11 @@ import static com.fyself.seedwork.facade.Result.successful;
 public class PostFacadeImpl implements PostFacade {
 
     private final PostService service;
+    private final PostTimelineService postTimelineService;
 
-    public PostFacadeImpl(PostService service) {
+    public PostFacadeImpl(PostService service, PostTimelineService postTimelineService) {
         this.service = service;
+        this.postTimelineService = postTimelineService;
     }
 
     @Override
@@ -53,5 +56,10 @@ public class PostFacadeImpl implements PostFacade {
     @Override
     public Mono<Result<PagedList<PostTO>>> search(PostCriteriaTO criteria, FySelfContext context) {
         return service.search(criteria, context).map(Result::successful);
+    }
+
+    @Override
+    public Mono<Result<PagedList<PostTO>>> searchPostTimeline(FySelfContext context) {
+        return postTimelineService.search(context).map(Result::successful);
     }
 }

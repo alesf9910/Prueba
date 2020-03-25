@@ -27,4 +27,6 @@ public interface PostFacade {
     Mono<Result<Void>> patch(String id, HashMap to, FySelfContext context);
 
     Mono<Result<PagedList<PostTO>>> search(PostCriteriaTO criteria, FySelfContext context);
+
+    Mono<Result<PagedList<PostTO>>> searchPostTimeline(FySelfContext context);
 }
