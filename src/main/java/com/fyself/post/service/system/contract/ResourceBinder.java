@@ -15,7 +15,7 @@ import static org.mapstruct.factory.Mappers.getMapper;
 /**
  * Binder for the {@link FileContent} system entity.
  *
- * @author evdelacruz
+ * @author Yero
  * @since 0.1.0
  */
 @Mapper(imports = {Map.class, FileFields.class})
