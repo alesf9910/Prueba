@@ -6,6 +6,7 @@ import com.fyself.post.service.post.PostTimelineService;
 import com.fyself.post.service.post.contract.to.PostShareTO;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
+import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
 import com.fyself.seedwork.facade.Result;
 import com.fyself.seedwork.facade.stereotype.Facade;
 import com.fyself.seedwork.service.PagedList;
@@ -60,8 +61,8 @@ public class PostFacadeImpl implements PostFacade {
     }
 
     @Override
-    public Mono<Result<PagedList<PostTO>>> searchPostTimeline(FySelfContext context) {
-        return postTimelineService.search(context).map(Result::successful);
+    public Mono<Result<PagedList<PostTO>>> searchPostTimeline(PostTimelineCriteriaTO criteria, FySelfContext context) {
+        return postTimelineService.search(criteria, context).map(Result::successful);
     }
 
     @Override

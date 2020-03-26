@@ -3,9 +3,12 @@ package com.fyself.post.service.post.contract;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fyself.post.service.post.contract.to.*;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
+import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
 import com.fyself.post.service.post.datasource.domain.Post;
+import com.fyself.post.service.post.datasource.domain.PostTimeline;
 import com.fyself.post.service.post.datasource.domain.subentities.*;
 import com.fyself.post.service.post.datasource.query.PostCriteria;
+import com.fyself.post.service.post.datasource.query.PostTimelineCriteria;
 import com.fyself.seedwork.service.PagedList;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -213,9 +216,11 @@ public interface PostBinder {
         return new PagedList<>(postTOS, 0, 1, source.getTotalElements());
     }
 
-    default PagedList<PostTO> bindList(List<Post> source) {
-        List<PostTO> postTOS = source.stream().map(this::bind).collect(Collectors.toList());
-        return new PagedList<>(postTOS, 0, 1, source.size());
+    PostTimelineCriteria bindToTimelineCriteria(PostTimelineCriteriaTO source);
+
+    default PagedList<PostTO> bindPageTimeline(Page<PostTimeline> source) {
+        List<PostTO> postTOS = source.stream().map(postTimeline -> this.bind(postTimeline.getPost())).collect(Collectors.toList());
+        return new PagedList<>(postTOS, 0, 1, postTOS.size());
     }
 
     default Post bindBlocked(Post post) {
