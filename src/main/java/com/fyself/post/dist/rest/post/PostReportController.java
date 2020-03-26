@@ -1,4 +1,4 @@
-package com.fyself.post.dist.rest;
+package com.fyself.post.dist.rest.post;
 
 import com.fyself.post.facade.PostReportFacade;
 import com.fyself.post.service.post.contract.to.PostReportTO;

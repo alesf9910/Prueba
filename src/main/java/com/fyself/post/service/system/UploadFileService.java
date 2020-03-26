@@ -1,10 +1,13 @@
 package com.fyself.post.service.system;
 
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.S3Object;
+import com.fyself.post.service.system.contract.to.ResourceCriteriaTO;
+import com.fyself.post.service.system.contract.to.ResourceTO;
+import org.springframework.core.io.InputStreamResource;
 import reactor.core.publisher.Mono;
 
-import java.io.InputStream;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 
 /**
  * Service interface for system Image.
@@ -14,6 +17,10 @@ import java.io.InputStream;
  */
 public interface UploadFileService {
 
-    Mono<String> uploadImage(InputStream inputStream, String typeElement, ObjectMetadata metadata);
-    Mono<S3Object> downloadImage(String folderName, String fileName);
+    Mono<Boolean> add(ResourceTO resource);
+
+    Mono<Boolean> delete(ResourceCriteriaTO criteria);
+
+    Mono<InputStreamResource> get(@NotNull @Valid ResourceCriteriaTO criteria);
+
 }
