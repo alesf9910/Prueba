@@ -53,6 +53,7 @@ public class ResourceCriteriaTO extends TransferObject {
         return type;
     }
 
+
     public void setType(String type) {
         this.type = type;
     }
@@ -66,4 +67,8 @@ public class ResourceCriteriaTO extends TransferObject {
         this.name = name;
     }
     //</editor-fold>
+
+    public String getFolder() {
+        return type;
+    }
 }
