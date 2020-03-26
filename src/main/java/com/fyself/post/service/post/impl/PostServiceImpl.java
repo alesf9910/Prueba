@@ -1,6 +1,7 @@
 package com.fyself.post.service.post.impl;
 
 import com.fyself.post.service.post.PostService;
+import com.fyself.post.service.post.contract.to.PostShareTO;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
 import com.fyself.post.service.post.datasource.PostRepository;
@@ -51,7 +52,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Mono<PostTO> load(@NotNull String id, FySelfContext context) {
-        return repository.findById(id).map(POST_BINDER::bind);
+        return repository.findById(id).map(POST_BINDER::bind).switchIfEmpty(error(EntityNotFoundException::new));
     }
 
     @Override
@@ -80,6 +81,22 @@ public class PostServiceImpl implements PostService {
         return repository.findById(post)
                 .map(POST_BINDER::bindBlocked)
                 .flatMap(repository::save)
+                .then();
+    }
+
+    @Override
+    public Mono<Void> shareWith(@NotNull PostShareTO to, FySelfContext context) {
+        return repository.findById(to.getPost())
+                .flatMap(post -> repository.save(POST_BINDER.bindShareWith(post, to)))
+                .switchIfEmpty(error(EntityNotFoundException::new))
+                .then();
+    }
+
+    @Override
+    public Mono<Void> stopShareWith(@NotNull PostShareTO to, FySelfContext context) {
+        return repository.findById(to.getPost())
+                .flatMap(post -> repository.save(POST_BINDER.bindStopShareWith(post, to)))
+                .switchIfEmpty(error(EntityNotFoundException::new))
                 .then();
     }
 }
