@@ -1,6 +1,7 @@
 package com.fyself.post.dist.stream;
 
 import com.fyself.post.service.post.PostTimelineService;
+import com.fyself.post.service.post.contract.to.PostTimelineTO;
 import com.fyself.seedwork.kafka.reactive.ReactiveKafkaMessageQueue;
 import com.fyself.seedwork.kafka.stereotype.Stream;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.fyself.post.service.post.contract.PostTimelineBinder.POST_TIMELINE_BINDER;
+import static com.fyself.post.service.post.contract.to.PostTimelineTO.from;
+import static reactor.core.publisher.Mono.empty;
 import static reactor.core.publisher.Mono.just;
 
 /**
@@ -36,10 +39,8 @@ public class GenericKStreamProcessor {
         return just(source)
                 .filter(map -> source.containsKey("user") && source.containsKey("post") && source.containsKey("contacts"))
                 .flatMapIterable(map -> (List<String>) source.get("contacts"))
-                .flatMap(user -> postTimelineService.create(POST_TIMELINE_BINDER.bin(
-                        user,
-                        source.get("post").toString(),
-                        source.get("user").toString())))
+                .flatMap(user -> postTimelineService.create(from(user, source.get("post").toString(), source.get("user").toString())))
+                .onErrorResume(throwable -> empty())
                 .then();
     }
 }

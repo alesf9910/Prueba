@@ -6,6 +6,8 @@ import com.fyself.seedwork.service.to.annotation.ReadOnly;
 
 import java.time.LocalDateTime;
 
+import static java.time.LocalDateTime.now;
+
 public class PostTimelineTO extends DomainAuditTransferObject {
 
     private static final long serialVersionUID = -8526218291708837581L;
@@ -60,5 +62,15 @@ public class PostTimelineTO extends DomainAuditTransferObject {
     @Override
     public void setUpdatedAt(LocalDateTime updatedAt) {
         super.setUpdatedAt(updatedAt);
+    }
+
+    public static PostTimelineTO from(String userId, String post, String owner) {
+        var to = new PostTimelineTO();
+        to.setOwner(owner);
+        to.setCreatedAt(now());
+        to.setUpdatedAt(now());
+        to.setPost(post);
+        to.setUser(userId);
+        return to;
     }
 }
