@@ -30,6 +30,7 @@ public interface PostBinder {
     PostBinder POST_BINDER = Mappers.getMapper(PostBinder.class);
 
     @Mapping(target = "content", expression = "java(bind(source.getContent()))")
+    @Mapping(target = "sharedWith", ignore = true)
     Post bind(PostTO source);
 
     @Mapping(target = "content", expression = "java(bind(source.getContent()))")
@@ -102,6 +103,7 @@ public interface PostBinder {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "owner", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "sharedWith", ignore = true)
     @Mapping(target = "content", expression = "java(set(target.getContent(), source.getContent()))")
     void bind(@MappingTarget Post target, PostTO source);
 
@@ -219,5 +221,9 @@ public interface PostBinder {
     default Post bindBlocked(Post post) {
         post.setBlocked(true);
         return post;
+    }
+
+    default Post bindShareWith(Post post, PostShareTO to) {
+        return post.setShareUser(to.getSharedWith());
     }
 }

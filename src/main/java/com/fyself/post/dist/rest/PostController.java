@@ -1,6 +1,7 @@
 package com.fyself.post.dist.rest;
 
 import com.fyself.post.facade.PostFacade;
+import com.fyself.post.service.post.contract.to.PostShareTO;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
 import com.fyself.seedwork.service.PagedList;
@@ -92,6 +93,12 @@ public class PostController extends Controller<PostFacade> {
         return this.get(PostFacade::searchPostTimeline, exchange);
     }
 
+    @PostMapping("/{id}/share-with")
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "post_share_with", value = "Share post with user", response = NoContentResponse.class, code = 204)
+    public Mono<ResponseEntity> shareWith(@PathVariable String id, @RequestBody PostShareTO to, @ApiIgnore ServerWebExchange exchange) {
+        return this.perform((facade, context) -> facade.shareWith(to.withId(id), context), exchange);
+    }
     //<editor-fold desc="Inner classes (Documentation purpose)">
     private static class SearchResponse extends PagedList<PostTO> {
     }
