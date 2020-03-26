@@ -27,7 +27,7 @@ import java.io.IOException;
  */
 @RestController
 @RequestMapping("/file")
-@Api(tags = "Upload Files", description = "Endpoint for upload files.")
+@Api(tags = "Upload Files", description = "Endpoint for system files.")
 public class UploadFileController extends Controller<UploadFileFacade> {
 
     @Autowired

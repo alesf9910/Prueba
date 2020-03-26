@@ -1,4 +1,4 @@
-package com.fyself.post.service.upload;
+package com.fyself.post.service.system;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 import java.io.InputStream;
 
 /**
- * Service interface for upload Image.
+ * Service interface for system Image.
  *
  * @author jmmarin
  * @since 0.1.0

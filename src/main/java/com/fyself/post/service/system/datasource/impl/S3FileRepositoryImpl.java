@@ -1,10 +1,10 @@
-package com.fyself.post.service.upload.datasource.impl;
+package com.fyself.post.service.system.datasource.impl;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
-import com.fyself.post.service.upload.datasource.S3FileRepository;
+import com.fyself.post.service.system.datasource.S3FileRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;

@@ -3,7 +3,7 @@ package com.fyself.post.facade.impl;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.fyself.post.facade.UploadFileFacade;
-import com.fyself.post.service.upload.UploadFileService;
+import com.fyself.post.service.system.UploadFileService;
 import com.fyself.post.tools.InputStreamCollector;
 import com.fyself.seedwork.facade.Result;
 import com.fyself.seedwork.facade.stereotype.Facade;
@@ -15,7 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import reactor.core.publisher.Mono;
 
-import static com.fyself.post.service.upload.FileUnSupportedException.fileUnSupportedException;
+import static com.fyself.post.service.system.FileUnSupportedException.fileUnSupportedException;
 import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.error;
 
@@ -35,7 +35,7 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
 
     @Override
     public Mono<Result<String>> uploadImage(Mono<FilePart> part, String typeElement, FySelfContext context) {
-        logger.debug("Attempting to upload image");
+        logger.debug("Attempting to system image");
         return part
                 .ofType(FilePart.class)
                 .filter(filePart -> supported(filePart.headers().getContentType()))

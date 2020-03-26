@@ -1,9 +1,9 @@
-package com.fyself.post.service.upload.impl;
+package com.fyself.post.service.system.impl;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
-import com.fyself.post.service.upload.UploadFileService;
-import com.fyself.post.service.upload.datasource.S3FileRepository;
+import com.fyself.post.service.system.UploadFileService;
+import com.fyself.post.service.system.datasource.S3FileRepository;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

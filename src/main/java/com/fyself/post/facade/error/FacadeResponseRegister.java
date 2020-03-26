@@ -1,6 +1,6 @@
 package com.fyself.post.facade.error;
 
-import com.fyself.post.service.upload.FileUnSupportedException;
+import com.fyself.post.service.system.FileUnSupportedException;
 import com.fyself.seedwork.error.ResponseRegister;
 import com.fyself.seedwork.facade.Result;
 import org.springframework.stereotype.Component;
