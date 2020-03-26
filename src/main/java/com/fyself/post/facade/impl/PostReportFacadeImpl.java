@@ -9,6 +9,7 @@ import com.fyself.seedwork.facade.Result;
 import com.fyself.seedwork.facade.stereotype.Facade;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
+import org.springframework.beans.factory.annotation.Value;
 import reactor.core.publisher.Mono;
 
 import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
@@ -27,7 +28,7 @@ public class PostReportFacadeImpl implements PostReportFacade {
     final PostService postService;
     final Long maxReport;
 
-    public PostReportFacadeImpl(PostReportService service, PostService postService, Long maxReport) {
+    public PostReportFacadeImpl(PostReportService service, PostService postService, @Value("${mspost.application.report.max}") Long maxReport) {
         this.service = service;
         this.postService = postService;
         this.maxReport = maxReport;

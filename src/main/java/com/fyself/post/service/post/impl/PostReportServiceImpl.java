@@ -24,12 +24,9 @@ import static reactor.core.publisher.Mono.error;
 public class PostReportServiceImpl implements PostReportService {
 
     final PostReportRepository repository;
-    final Long maxReport;
 
-    public PostReportServiceImpl(PostReportRepository repository,
-                                 @Value("${mspost.application.report.max}") Long maxReport) {
+    public PostReportServiceImpl(PostReportRepository repository) {
         this.repository = repository;
-        this.maxReport = maxReport;
     }
 
     @Override

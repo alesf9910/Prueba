@@ -21,13 +21,4 @@ public interface PostTimelineBinder {
     @Mapping(target = "post.id", source = "post")
     PostTimeline bind(PostTimelineTO source);
 
-    default PostTimelineTO bin(String userId, String post, String owner) {
-        var to = new PostTimelineTO();
-        to.setOwner(owner);
-        to.setCreatedAt(now());
-        to.setUpdatedAt(now());
-        to.setPost(post);
-        to.setUser(userId);
-        return to;
-    }
 }

@@ -5,6 +5,7 @@ import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.PostTimelineTO;
 import com.fyself.post.service.post.datasource.PostRepository;
 import com.fyself.post.service.post.datasource.PostTimelineRepository;
+import com.fyself.post.service.post.datasource.domain.PostTimeline;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import com.fyself.seedwork.service.repository.mongodb.domain.DomainEntity;
@@ -38,7 +39,7 @@ public class PostTimelineServiceImpl implements PostTimelineService {
     public Mono<PagedList<PostTO>> search(FySelfContext context) {
         return context.authenticatedId()
                 .flatMapMany(repository::findAllByUser)
-                .map(postTimeline -> postTimeline.getPost())
+                .map(PostTimeline::getPost)
                 .collectList()
                 .map(POST_BINDER::bindList);
     }
