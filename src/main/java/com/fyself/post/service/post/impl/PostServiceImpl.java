@@ -91,4 +91,12 @@ public class PostServiceImpl implements PostService {
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .then();
     }
+
+    @Override
+    public Mono<Void> stopShareWith(@NotNull PostShareTO to, FySelfContext context) {
+        return repository.findById(to.getPost())
+                .flatMap(post -> repository.save(POST_BINDER.bindStopShareWith(post, to)))
+                .switchIfEmpty(error(EntityNotFoundException::new))
+                .then();
+    }
 }

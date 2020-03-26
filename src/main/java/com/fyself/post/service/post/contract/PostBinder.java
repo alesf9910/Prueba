@@ -224,6 +224,10 @@ public interface PostBinder {
     }
 
     default Post bindShareWith(Post post, PostShareTO to) {
-        return post.setShareUser(to.getSharedWith());
+        return post.shareUser(to.getSharedWith());
+    }
+
+    default Post bindStopShareWith(Post post, PostShareTO to) {
+        return post.stopShareUser(to.getSharedWith());
     }
 }

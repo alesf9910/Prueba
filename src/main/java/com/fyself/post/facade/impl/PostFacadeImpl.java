@@ -68,4 +68,9 @@ public class PostFacadeImpl implements PostFacade {
     public Mono<Result<Void>> shareWith(PostShareTO to, FySelfContext context) {
         return service.shareWith(to, context).thenReturn(successful());
     }
+
+    @Override
+    public Mono<Result<Void>> stopShareWith(PostShareTO to, FySelfContext context) {
+        return service.stopShareWith(to, context).thenReturn(successful());
+    }
 }

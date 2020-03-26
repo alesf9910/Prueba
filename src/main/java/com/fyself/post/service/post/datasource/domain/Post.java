@@ -68,11 +68,18 @@ public class Post extends DomainAuditEntity {
         this.sharedWith = sharedWith;
     }
 
-    public Post setShareUser(String user) {
+    public Post shareUser(String user) {
         if (this.sharedWith == null) {
             this.sharedWith = Set.of(user);
         } else {
             sharedWith.add(user);
+        }
+        return this;
+    }
+
+    public Post stopShareUser(String user) {
+        if (this.sharedWith != null) {
+            sharedWith.remove(user);
         }
         return this;
     }

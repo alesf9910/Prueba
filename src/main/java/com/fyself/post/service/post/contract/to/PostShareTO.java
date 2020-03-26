@@ -2,6 +2,7 @@ package com.fyself.post.service.post.contract.to;
 
 
 import com.fyself.seedwork.service.to.TransferObject;
+import com.fyself.seedwork.service.to.annotation.ReadOnly;
 
 public class PostShareTO extends TransferObject {
 
@@ -9,6 +10,7 @@ public class PostShareTO extends TransferObject {
     private String post;
     private String sharedWith;
 
+    @ReadOnly
     public String getPost() {
         return post;
     }

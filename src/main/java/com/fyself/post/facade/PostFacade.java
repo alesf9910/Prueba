@@ -32,4 +32,5 @@ public interface PostFacade {
     Mono<Result<PagedList<PostTO>>> searchPostTimeline(FySelfContext context);
 
     Mono<Result<Void>> shareWith(PostShareTO to, FySelfContext context);
+    Mono<Result<Void>> stopShareWith(PostShareTO to, FySelfContext context);
 }

@@ -35,4 +35,5 @@ public interface PostService {
     Mono<Void> block(String post);
 
     Mono<Void> shareWith(@NotNull PostShareTO to, FySelfContext context);
+    Mono<Void> stopShareWith(@NotNull PostShareTO to, FySelfContext context);
 }
