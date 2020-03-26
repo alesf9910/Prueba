@@ -4,6 +4,7 @@ import com.fyself.post.facade.PostFacade;
 import com.fyself.post.service.post.contract.to.PostShareTO;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
+import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.web.Controller;
 import com.fyself.seedwork.web.documentation.annotations.ApiSecuredOperation;
@@ -82,15 +83,15 @@ public class PostController extends Controller<PostFacade> {
     @GetMapping("/timeline")
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_timeline_search", value = "Search Posts that are on the timeline", response = SearchResponse.class)
-    public Mono<ResponseEntity> searchPostTimelineGet(@ApiIgnore ServerWebExchange exchange) {
-        return this.get(PostFacade::searchPostTimeline, exchange);
+    public Mono<ResponseEntity> searchPostTimelineGet(PostTimelineCriteriaTO criteria, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.searchPostTimeline(criteria, context), exchange);
     }
 
     @PostMapping("/timeline")
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_timeline_search", value = "Search Posts that are on the timeline", response = SearchResponse.class)
-    public Mono<ResponseEntity> searchPostTimeline(@ApiIgnore ServerWebExchange exchange) {
-        return this.get(PostFacade::searchPostTimeline, exchange);
+    public Mono<ResponseEntity> searchPostTimeline(@RequestBody PostTimelineCriteriaTO criteria, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.searchPostTimeline(criteria, context), exchange);
     }
 
     @PostMapping("/{id}/share-with")
@@ -106,6 +107,7 @@ public class PostController extends Controller<PostFacade> {
     public Mono<ResponseEntity> stopShareWith(@PathVariable String id, @RequestBody PostShareTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.perform((facade, context) -> facade.stopShareWith(to.withId(id), context), exchange);
     }
+
     //<editor-fold desc="Inner classes (Documentation purpose)">
     private static class SearchResponse extends PagedList<PostTO> {
     }

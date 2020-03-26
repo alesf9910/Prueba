@@ -2,6 +2,7 @@ package com.fyself.post.service.post;
 
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.PostTimelineTO;
+import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import reactor.core.publisher.Mono;
@@ -20,6 +21,6 @@ public interface PostTimelineService {
 
     Mono<String> create(@NotNull @Valid PostTimelineTO to);
 
-    Mono<PagedList<PostTO>> search(FySelfContext context);
+    Mono<PagedList<PostTO>> search(PostTimelineCriteriaTO criteria, FySelfContext context);
 
 }

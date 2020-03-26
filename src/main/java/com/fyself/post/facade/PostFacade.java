@@ -3,6 +3,7 @@ package com.fyself.post.facade;
 import com.fyself.post.service.post.contract.to.PostShareTO;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
+import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
 import com.fyself.seedwork.facade.Result;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
@@ -29,7 +30,7 @@ public interface PostFacade {
 
     Mono<Result<PagedList<PostTO>>> search(PostCriteriaTO criteria, FySelfContext context);
 
-    Mono<Result<PagedList<PostTO>>> searchPostTimeline(FySelfContext context);
+    Mono<Result<PagedList<PostTO>>> searchPostTimeline(PostTimelineCriteriaTO criteria, FySelfContext context);
 
     Mono<Result<Void>> shareWith(PostShareTO to, FySelfContext context);
     Mono<Result<Void>> stopShareWith(PostShareTO to, FySelfContext context);
