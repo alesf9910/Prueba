@@ -11,10 +11,12 @@ import java.io.Serializable;
         visible = true,
         property = "typeContent")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = ImageContentTO.class, name = "IMAGE"),
         @JsonSubTypes.Type(value = LinkContentTO.class, name = "LINK"),
-        @JsonSubTypes.Type(value = SurveyContentTO.class, name = "SURVEY"),
-        @JsonSubTypes.Type(value = TextContentTO.class, name = "TEXT")
+        @JsonSubTypes.Type(value = TextContentTO.class, name = "TEXT"),
+        @JsonSubTypes.Type(value = SurveyContentTO.class, name = "SURVEY_ASK"),
+        @JsonSubTypes.Type(value = ChoiceSurveyTO.class, name = "SURVEY_CHOICE"),
+        @JsonSubTypes.Type(value = HierarchySurveyTO.class, name = "SURVEY_HIERARCHY"),
+        @JsonSubTypes.Type(value = RateSurveyTO.class, name = "SURVEY_RATE")
 })
 public abstract class ContentTO implements Serializable {
 

@@ -14,6 +14,7 @@ public class CommentCriteria extends DomainCriteria<Comment> {
     private static final long serialVersionUID = -1173576727652462350L;
 
     private Post post;
+    private Comment father;
 
     public CommentCriteria() {
         super(Comment.class);
@@ -21,11 +22,15 @@ public class CommentCriteria extends DomainCriteria<Comment> {
 
     @Override
     public CriteriaDefinition getPredicate() {
-        return and(matchPost());
+        return and(matchPost(), matchFather());
     }
 
     private Criteria matchPost() {
         return this.post != null ? where("post").is(this.getPost()) : null;
+    }
+
+    private Criteria matchFather() {
+        return this.father != null ? where("father").is(this.getFather()) : null;
     }
 
     public Post getPost() {
@@ -34,5 +39,13 @@ public class CommentCriteria extends DomainCriteria<Comment> {
 
     public void setPost(Post post) {
         this.post = post;
+    }
+
+    public Comment getFather() {
+        return father;
+    }
+
+    public void setFather(Comment father) {
+        this.father = father;
     }
 }

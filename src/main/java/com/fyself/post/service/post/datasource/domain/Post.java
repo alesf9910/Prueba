@@ -2,22 +2,58 @@ package com.fyself.post.service.post.datasource.domain;
 
 
 import com.fyself.post.service.post.datasource.domain.subentities.Content;
+import com.fyself.post.tools.enums.Access;
 import com.fyself.seedwork.service.repository.mongodb.domain.DomainAuditEntity;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.Set;
 
 @Document(collection = "post")
 public class Post extends DomainAuditEntity {
 
     private static final long serialVersionUID = 8909993127910604604L;
-    private Set<Content> contents;
+    private Content content;
+    private Access access;
+    private boolean active;
+    private boolean blocked;
+    private String urlImage;
 
-    public Set<Content> getContents() {
-        return contents;
+
+    public Content getContent() {
+        return content;
     }
 
-    public void setContents(Set<Content> contents) {
-        this.contents = contents;
+    public void setContent(Content content) {
+        this.content = content;
+    }
+
+    public Access getAccess() {
+        return access;
+    }
+
+    public void setAccess(Access access) {
+        this.access = access;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
+    public String getUrlImage() {
+        return urlImage;
+    }
+
+    public void setUrlImage(String urlImage) {
+        this.urlImage = urlImage;
     }
 }

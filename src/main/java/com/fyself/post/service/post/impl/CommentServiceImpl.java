@@ -44,14 +44,15 @@ public class CommentServiceImpl implements CommentService {
     public Mono<CommentTO> load(@NotNull String id, String post, FySelfContext context) {
         return repository.getById(id)
                 .filter(comment -> comment.getPost().getId().equals(post))
-                .map(COMMENT_BINDER::bind)
+                .flatMap(comment -> repository.findPage(COMMENT_BINDER.bindToFatherCriteria(comment.getId()))
+                        .map(comments -> COMMENT_BINDER.bindPageOfChildren(comments, comment)))
                 .switchIfEmpty(error(EntityNotFoundException::new));
     }
 
     @Override
     public Mono<Void> update(@NotNull @Valid CommentTO to, FySelfContext context) {
         return repository.findById(to.getId())
-                .map(comment -> COMMENT_BINDER.set(comment, to))
+                .map(comment -> COMMENT_BINDER.set(comment, to.withUpdatedAt()))
                 .flatMap(comment -> repository.save(comment)
                         .doOnSuccess(entity -> updateEvent(comment, entity, context)))
                 .switchIfEmpty(error(EntityNotFoundException::new))

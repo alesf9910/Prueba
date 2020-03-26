@@ -1,16 +1,24 @@
 package com.fyself.post.service.post.contract.to;
 
 
+import com.fyself.post.tools.enums.Access;
 import com.fyself.seedwork.service.to.DomainAuditTransferObject;
 import com.fyself.seedwork.service.to.annotation.ReadOnly;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Set;
+
+import static java.time.LocalDateTime.now;
 
 public class PostTO extends DomainAuditTransferObject {
 
     private static final long serialVersionUID = -1060990002867022621L;
-    private Set<ContentTO> contents;
+    private ContentTO content;
+    private Access access;
+    private boolean active;
+    private boolean blocked;
+    private String urlImage;
 
     @Override
     @ReadOnly
@@ -36,16 +44,65 @@ public class PostTO extends DomainAuditTransferObject {
         return super.getId();
     }
 
-    public Set<ContentTO> getContents() {
-        return contents;
+    @NotNull
+    @Valid
+    public ContentTO getContent() {
+        return content;
     }
 
-    public void setContents(Set<ContentTO> contents) {
-        this.contents = contents;
+    public void setContent(ContentTO content) {
+        this.content = content;
     }
 
-    public PostTO withOwner(String owner) {
-        this.setOwner(owner);
+    public Access getAccess() {
+        return access;
+    }
+
+    public void setAccess(Access access) {
+        this.access = access;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
+    public String getUrlImage() {
+        return urlImage;
+    }
+
+    public void setUrlImage(String urlImage) {
+        this.urlImage = urlImage;
+    }
+
+    public PostTO withId(String id) {
+        this.setId(id);
+        return this;
+    }
+
+    public PostTO withUserId(String id) {
+        this.setOwner(id);
+        return this;
+    }
+
+    public PostTO withCreatedAt() {
+        this.setCreatedAt(now());
+        return this;
+    }
+
+    public PostTO withUpdatedAt() {
+        this.setUpdatedAt(now());
         return this;
     }
 }

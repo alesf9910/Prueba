@@ -15,5 +15,4 @@ public interface CommentRepository extends MongoRepository<Comment> {
     default Class<Comment> getEntityClass() {
         return Comment.class;
     }
-
 }

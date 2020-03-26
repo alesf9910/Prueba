@@ -1,6 +1,6 @@
 #Application Properties
 #Application Properties
-mscontacts:
+mspost:
   application:
     name: ms-post
     datasource:
@@ -10,13 +10,6 @@ mscontacts:
       password: ""
       protocol: mongodb
       options: '?authSource=ms-auth'
-
-    elasticsearch:
-      hosts: localhost:9200
-      connectTimeout: 10000
-      connectionRequestTimeout: 10000
-      socketTimeout: 10000
-      maxRetryTimeoutMillis: 60000
 
     security:
       jwt-token:
@@ -34,40 +27,57 @@ mscontacts:
       topics:
         output:
           logs: com-fyself-dev-logs
+          elastic-answer: elastic-answer
+        input:
+          post: post
     server:
       port: 8080
+    report:
+      max: 1
+    aws:
+      bucketName: {bucketName}
 
 application:
-  name: ${mscontacts.application.name}
+  name: ${mspost.application.name}
   datasource:
-    host: ${mscontacts.application.datasource.host}
-    database: ${mscontacts.application.datasource.database}
-    username: ${mscontacts.application.datasource.username}
-    password: ${mscontacts.application.datasource.password}
-    protocol: ${mscontacts.application.datasource.protocol}
-    options: ${mscontacts.application.datasource.options}
-
+    host: ${mspost.application.datasource.host}
+    database: ${mspost.application.datasource.database}
+    username: ${mspost.application.datasource.username}
+    password: ${mspost.application.datasource.password}
+    protocol: ${mspost.application.datasource.protocol}
+    options: ${mspost.application.datasource.options}
+  file: image/jpeg,image/png
   security:
     jwt-token:
-      secret: ${mscontacts.application.security.jwt-token.secret}
+      secret: ${mspost.application.security.jwt-token.secret}
 
     corsConfig:
-      allowed-origins: ${mscontacts.application.security.corsConfig.allowed-origins}
-      allowed-methods: ${mscontacts.application.security.corsConfig.allowed-methods}
-      allowed-headers: ${mscontacts.application.security.corsConfig.allowed-headers}
-      exposed-headers: ${mscontacts.application.security.corsConfig.exposed-headers}
-      allow-credentials: ${mscontacts.application.security.corsConfig.allow-credentials}
-      max-age: ${mscontacts.application.security.corsConfig.max-age}
+      allowed-origins: ${mspost.application.security.corsConfig.allowed-origins}
+      allowed-methods: ${mspost.application.security.corsConfig.allowed-methods}
+      allowed-headers: ${mspost.application.security.corsConfig.allowed-headers}
+      exposed-headers: ${mspost.application.security.corsConfig.exposed-headers}
+      allow-credentials: ${mspost.application.security.corsConfig.allow-credentials}
+      max-age: ${mspost.application.security.corsConfig.max-age}
   kafka:
-    servers: ${mscontacts.application.kafka.servers}
+    servers: ${mspost.application.kafka.servers}
+    bootstrapServers: ${mspost.application.kafka.servers}
+    groupId: ${application.name}-group
+    enviromentPrefix: dev
+    topicPrefix: com-fyself
 
+    applicationId: ${application.name}
+    baseDir: /tmp
+    queues: profiles-info
+    output-config:
+      concurrency: 20
+      queue: 60
     topics:
       output:
-        logs: ${mscontacts.application.kafka.topics.output.logs}
+        logs: ${mspost.application.kafka.topics.output.logs}
 
 
   server:
-    port: ${mscontacts.application.server.port}
+    port: ${mspost.application.server.port}
 
 
 
