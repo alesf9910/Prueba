@@ -60,7 +60,7 @@ public interface CommentBinder {
 
     default PagedList<CommentTO> bindPage(Page<Comment> source) {
         List<CommentTO> profiles = source.stream().map(this::bind).collect(Collectors.toList());
-        return new PagedList<>(profiles, 0, 1, source.getTotalElements());
+        return new PagedList<>(profiles, 0, source.getTotalPages(), source.getTotalElements());
     }
 
     default Comment binFather(String father) {

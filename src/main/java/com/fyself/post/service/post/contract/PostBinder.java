@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static com.fyself.seedwork.util.JsonUtil.MAPPER;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Binder
@@ -212,15 +213,20 @@ public interface PostBinder {
     PostCriteria bindToCriteria(PostCriteriaTO source);
 
     default PagedList<PostTO> bindPage(Page<Post> source) {
-        List<PostTO> postTOS = source.stream().map(this::bind).collect(Collectors.toList());
-        return new PagedList<>(postTOS, 0, 1, source.getTotalElements());
+        List<PostTO> postTOS = source.stream().map(this::bind).collect(toList());
+        return new PagedList<>(postTOS, 0, source.getTotalPages(), source.getTotalElements());
     }
 
     PostTimelineCriteria bindToTimelineCriteria(PostTimelineCriteriaTO source);
 
-    default PagedList<PostTO> bindPageTimeline(Page<PostTimeline> source) {
-        List<PostTO> postTOS = source.stream().map(postTimeline -> this.bind(postTimeline.getPost())).collect(Collectors.toList());
-        return new PagedList<>(postTOS, 0, 1, postTOS.size());
+    default PagedList<PostTO> bindPageTimeline(Page<PostTimeline> source, String userId) {
+        List<PostTO> postTOS = source.stream()
+                .map(PostTimeline::getPost)
+                .filter(post -> post.getSharedWith() != null && post.getSharedWith().contains(userId))
+                .map(this::emptyContent)
+                .map(this::bind)
+                .collect(toList());
+        return new PagedList<>(postTOS, 0, source.getTotalPages(), postTOS.size());
     }
 
     default Post bindBlocked(Post post) {
@@ -234,5 +240,11 @@ public interface PostBinder {
 
     default Post bindStopShareWith(Post post, PostShareTO to) {
         return post.stopShareUser(to.getSharedWith());
+    }
+
+    private Post emptyContent(Post post){
+        if (post.isBlocked() || post.getDeleted())
+           return post.withContent(null);
+        return post;
     }
 }

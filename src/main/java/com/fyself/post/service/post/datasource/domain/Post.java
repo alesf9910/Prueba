@@ -83,4 +83,9 @@ public class Post extends DomainAuditEntity {
         }
         return this;
     }
+
+    public Post withContent(Content content) {
+        this.setContent(content);
+        return this;
+    }
 }
