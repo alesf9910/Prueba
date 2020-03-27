@@ -150,6 +150,100 @@ public class PostController extends Controller<PostFacade> {
 
     @PutMapping("/{id}")
     @ApiSecuredOperation
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "to",
+                    required = true,
+                    dataTypeClass = PostTO.class,
+                    example =
+                            "{\n" +
+                                    " \"content\":{ " +
+                                    " \"link\":\"url\"," +
+                                    " \"typeContent\":\"LINK\"" +
+                                    "}," +
+                                    " \"access\":\"PUBLIC\"," +
+                                    " \"active\":true, " +
+                                    "\"blocked\":false," +
+                                    " \"urlImage\":\"string\"," +
+                                    "}" +
+                                    "\n\n" +
+                                    "OR" +
+                                    "\n\n" +
+                                    "{\n" +
+                                    " \"content\":{ " +
+                                    " \"title\": \"string\"," +
+                                    " \"description\":\"string\"," +
+                                    " \"typeContent\":\"TEXT\"" +
+                                    "}," +
+                                    " \"access\":\"PUBLIC\"," +
+                                    " \"active\":true, " +
+                                    "\"blocked\":false," +
+                                    " \"urlImage\":\"string\"," +
+                                    "}" +
+                                    "\n\n" +
+                                    "OR" +
+                                    "\n\n" +
+                                    "{\n" +
+                                    " \"content\":{ " +
+                                    "\"ask\": \"string\"," +
+                                    " \"typeContent\":\"SURVEY_ASK\"" +
+                                    "}," +
+                                    " \"access\":\"PUBLIC\"," +
+                                    " \"active\":true, " +
+                                    "\"blocked\":false," +
+                                    " \"urlImage\":\"string\"," +
+                                    "}" +
+                                    "\n\n" +
+                                    "OR" +
+                                    "\n\n" +
+                                    "{\n" +
+                                    " \"content\":{ " +
+                                    " \"choices\": [" +
+                                    "  {\"choice\":\"string\"}," +
+                                    "]," +
+                                    " \"ask\":\"string\"," +
+                                    " \"typeContent\":\"SURVEY_CHOICE\"" +
+                                    "}," +
+                                    " \"access\":\"PUBLIC\"," +
+                                    " \"active\":true, " +
+                                    "\"blocked\":false," +
+                                    " \"urlImage\":\"string\"," +
+                                    "}" +
+                                    "\n\n" +
+                                    "OR" +
+                                    "\n\n" +
+                                    "{\n" +
+                                    " \"content\":{ " +
+                                    " \"options\": [" +
+                                    "  {\"option\":\"string\"}," +
+                                    "]," +
+                                    " \"ask\":\"string\"," +
+                                    " \"typeContent\":\"SURVEY_HIERARCHY\"" +
+                                    "}," +
+                                    " \"access\":\"PUBLIC\"," +
+                                    " \"active\":true, " +
+                                    "\"blocked\":false," +
+                                    " \"urlImage\":\"string\"," +
+                                    "}" +
+                                    "\n\n" +
+                                    "OR" +
+                                    "\n\n" +
+                                    "{\n" +
+                                    " \"content\":{ " +
+                                    " \"limits\": [" +
+                                    "  {\"string\":\"integer\"}," +
+                                    "]," +
+                                    " \"ask\":\"string\"," +
+                                    " \"typeContent\":\"SURVEY_RATE\"" +
+                                    "}," +
+                                    " \"access\":\"PUBLIC\"," +
+                                    " \"active\":true, " +
+                                    "\"blocked\":false," +
+                                    " \"urlImage\":\"string\"," +
+                                    "}"
+
+            )
+    })
     @ApiOperation(nickname = "post_load", value = "Update post", response = NoContentResponse.class, code = 204)
     public Mono<ResponseEntity> update(@PathVariable String id, @RequestBody PostTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.perform((facade, context) -> facade.update(to.withId(id), context), exchange);
@@ -157,7 +251,101 @@ public class PostController extends Controller<PostFacade> {
 
     @PatchMapping("/{id}")
     @ApiSecuredOperation
-    @ApiOperation(nickname = "post_load", value = "Update post", response = NoContentResponse.class, code = 204)
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "to",
+                    required = true,
+                    dataTypeClass = PostTO.class,
+                    example =
+                            "{\n" +
+                                    " \"content\":{ " +
+                                    " \"link\":\"url\"," +
+                                    " \"typeContent\":\"LINK\"" +
+                                    "}," +
+                                    " \"access\":\"PUBLIC\"," +
+                                    " \"active\":true, " +
+                                    "\"blocked\":false," +
+                                    " \"urlImage\":\"string\"," +
+                                    "}" +
+                                    "\n\n" +
+                                    "OR" +
+                                    "\n\n" +
+                                    "{\n" +
+                                    " \"content\":{ " +
+                                    " \"title\": \"string\"," +
+                                    " \"description\":\"string\"," +
+                                    " \"typeContent\":\"TEXT\"" +
+                                    "}," +
+                                    " \"access\":\"PUBLIC\"," +
+                                    " \"active\":true, " +
+                                    "\"blocked\":false," +
+                                    " \"urlImage\":\"string\"," +
+                                    "}" +
+                                    "\n\n" +
+                                    "OR" +
+                                    "\n\n" +
+                                    "{\n" +
+                                    " \"content\":{ " +
+                                    "\"ask\": \"string\"," +
+                                    " \"typeContent\":\"SURVEY_ASK\"" +
+                                    "}," +
+                                    " \"access\":\"PUBLIC\"," +
+                                    " \"active\":true, " +
+                                    "\"blocked\":false," +
+                                    " \"urlImage\":\"string\"," +
+                                    "}" +
+                                    "\n\n" +
+                                    "OR" +
+                                    "\n\n" +
+                                    "{\n" +
+                                    " \"content\":{ " +
+                                    " \"choices\": [" +
+                                    "  {\"choice\":\"string\"}," +
+                                    "]," +
+                                    " \"ask\":\"string\"," +
+                                    " \"typeContent\":\"SURVEY_CHOICE\"" +
+                                    "}," +
+                                    " \"access\":\"PUBLIC\"," +
+                                    " \"active\":true, " +
+                                    "\"blocked\":false," +
+                                    " \"urlImage\":\"string\"," +
+                                    "}" +
+                                    "\n\n" +
+                                    "OR" +
+                                    "\n\n" +
+                                    "{\n" +
+                                    " \"content\":{ " +
+                                    " \"options\": [" +
+                                    "  {\"option\":\"string\"}," +
+                                    "]," +
+                                    " \"ask\":\"string\"," +
+                                    " \"typeContent\":\"SURVEY_HIERARCHY\"" +
+                                    "}," +
+                                    " \"access\":\"PUBLIC\"," +
+                                    " \"active\":true, " +
+                                    "\"blocked\":false," +
+                                    " \"urlImage\":\"string\"," +
+                                    "}" +
+                                    "\n\n" +
+                                    "OR" +
+                                    "\n\n" +
+                                    "{\n" +
+                                    " \"content\":{ " +
+                                    " \"limits\": [" +
+                                    "  {\"string\":\"integer\"}," +
+                                    "]," +
+                                    " \"ask\":\"string\"," +
+                                    " \"typeContent\":\"SURVEY_RATE\"" +
+                                    "}," +
+                                    " \"access\":\"PUBLIC\"," +
+                                    " \"active\":true, " +
+                                    "\"blocked\":false," +
+                                    " \"urlImage\":\"string\"," +
+                                    "}"
+
+            )
+    })
+    @ApiOperation(nickname = "post_update", value = "Update post", response = NoContentResponse.class, code = 204)
     public Mono<ResponseEntity> patch(@PathVariable String id, @RequestBody HashMap to, @ApiIgnore ServerWebExchange exchange) {
         return this.perform((facade, context) -> facade.patch(id, to, context), exchange);
     }
