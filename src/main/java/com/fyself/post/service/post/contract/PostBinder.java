@@ -214,7 +214,7 @@ public interface PostBinder {
 
     default PagedList<PostTO> bindPage(Page<Post> source) {
         List<PostTO> postTOS = source.stream().map(this::bind).collect(toList());
-        return new PagedList<>(postTOS, 0, 1, source.getTotalElements());
+        return new PagedList<>(postTOS, 0, source.getTotalPages(), source.getTotalElements());
     }
 
     PostTimelineCriteria bindToTimelineCriteria(PostTimelineCriteriaTO source);
@@ -226,7 +226,7 @@ public interface PostBinder {
                 .map(this::emptyContent)
                 .map(this::bind)
                 .collect(toList());
-        return new PagedList<>(postTOS, 0, 1, postTOS.size());
+        return new PagedList<>(postTOS, 0, source.getTotalPages(), postTOS.size());
     }
 
     default Post bindBlocked(Post post) {
