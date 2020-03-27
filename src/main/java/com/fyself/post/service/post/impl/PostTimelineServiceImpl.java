@@ -4,7 +4,6 @@ import com.fyself.post.service.post.PostTimelineService;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.PostTimelineTO;
 import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
-import com.fyself.post.service.post.datasource.PostRepository;
 import com.fyself.post.service.post.datasource.PostTimelineRepository;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
@@ -23,11 +22,9 @@ import static com.fyself.post.service.post.contract.PostTimelineBinder.POST_TIME
 @Validated
 public class PostTimelineServiceImpl implements PostTimelineService {
     private final PostTimelineRepository repository;
-    private final PostRepository postRepository;
 
-    public PostTimelineServiceImpl(PostTimelineRepository repository, PostRepository postRepository) {
+    public PostTimelineServiceImpl(PostTimelineRepository repository) {
         this.repository = repository;
-        this.postRepository = postRepository;
     }
 
     @Override

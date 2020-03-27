@@ -5,6 +5,7 @@ import com.fyself.post.service.post.contract.to.PostShareTO;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
 import com.fyself.post.service.post.datasource.PostRepository;
+import com.fyself.post.service.post.datasource.PostTimelineRepository;
 import com.fyself.seedwork.service.EntityNotFoundException;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
@@ -19,6 +20,7 @@ import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 
 import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
+import static com.fyself.post.service.post.contract.PostTimelineBinder.POST_TIMELINE_BINDER;
 import static com.fyself.post.tools.LoggerUtils.*;
 import static reactor.core.publisher.Mono.error;
 
@@ -26,15 +28,19 @@ import static reactor.core.publisher.Mono.error;
 @Validated
 public class PostServiceImpl implements PostService {
     private final PostRepository repository;
+    private final PostTimelineRepository postTimelineRepository;
 
-    public PostServiceImpl(PostRepository repository) {
+    public PostServiceImpl(PostRepository repository, PostTimelineRepository postTimelineRepository) {
         this.repository = repository;
+        this.postTimelineRepository = postTimelineRepository;
     }
 
     @Override
     public Mono<String> create(@NotNull @Valid PostTO to, FySelfContext context) {
         return context.authenticatedId()
-                .flatMap(userId -> repository.save(POST_BINDER.bind(to.withUserId(userId).withCreatedAt().withUpdatedAt())))
+                .flatMap(userId -> repository.save(POST_BINDER.bind(to.withUserId(userId).withCreatedAt().withUpdatedAt()))
+                        .flatMap(post -> postTimelineRepository.save(POST_TIMELINE_BINDER.bind(post))
+                                .thenReturn(post)))
                 .doOnSuccess(entity -> createEvent(entity, context))
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .map(DomainEntity::getId);
