@@ -61,6 +61,7 @@ public class DefaultContext {
             "com.fyself.post.service.*.contract.validation",
             "com.fyself.post.service.*.contract.validation.*",
             "com.fyself.post.service.*.datasource",
+            "com.fyself.seedwork.service.repository.file.impl",
                                  "com.fyself.seedwork.facade"})
     @EnableReactiveMongoRepositories("com.fyself.post.service.*.datasource")
     public class DataSourceContext {

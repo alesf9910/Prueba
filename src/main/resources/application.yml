@@ -40,7 +40,7 @@ mspost:
 application:
   aws:
     region: us-east-1
-    bucketName: ${mspost.application.aws.bucketName}
+    bucket: ${mspost.application.aws.bucketName}
 
   name: ${mspost.application.name}
   datasource:
@@ -78,7 +78,7 @@ application:
     baseDir: /tmp
     queues: profiles-info
     output-config:
-      concurrency: 20
+      concurrency: 1
       queue: 60
     topics:
       output:
