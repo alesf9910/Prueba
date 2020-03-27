@@ -38,14 +38,23 @@ mspost:
       bucketName: {bucketName}
 
 application:
+  aws:
+    region: us-east-1
+    bucket: ${mspost.application.aws.bucketName}
+
   name: ${mspost.application.name}
   datasource:
-    host: ${mspost.application.datasource.host}
-    database: ${mspost.application.datasource.database}
-    username: ${mspost.application.datasource.username}
-    password: ${mspost.application.datasource.password}
-    protocol: ${mspost.application.datasource.protocol}
-    options: ${mspost.application.datasource.options}
+    mongo:
+      host: ${mspost.application.datasource.host}
+      database: ${mspost.application.datasource.database}
+      username: ${mspost.application.datasource.username}
+      password: ${mspost.application.datasource.password}
+      protocol: ${mspost.application.datasource.protocol}
+      options: ${mspost.application.datasource.options}
+    storage:
+      type: S3
+      variant: static
+
   file: image/jpeg,image/png
   security:
     jwt-token:
@@ -69,7 +78,7 @@ application:
     baseDir: /tmp
     queues: profiles-info
     output-config:
-      concurrency: 20
+      concurrency: 1
       queue: 60
     topics:
       output:
@@ -84,7 +93,7 @@ application:
 spring:
   data:
     mongodb:
-      uri: ${application.datasource.protocol}://${application.datasource.username}:${application.datasource.password}@${application.datasource.host}/${application.datasource.database}${application.datasource.options}
+      uri: ${application.datasource.mongo.protocol}://${application.datasource.mongo.username}:${application.datasource.mongo.password}@${application.datasource.mongo.host}/${application.datasource.mongo.database}${application.datasource.mongo.options}
 
   jpa:
     open-in-view: false

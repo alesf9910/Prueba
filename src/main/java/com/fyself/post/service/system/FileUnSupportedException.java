@@ -1,4 +1,4 @@
-package com.fyself.post.service.upload;
+package com.fyself.post.service.system;
 
 import com.fyself.seedwork.FySelfException;
 

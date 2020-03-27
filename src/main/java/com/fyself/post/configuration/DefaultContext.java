@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import software.amazon.awssdk.services.s3.S3AsyncClient;
+import software.amazon.awssdk.services.s3.S3AsyncClientBuilder;
 import springfox.documentation.swagger.web.*;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebFlux;
 import javax.validation.Validator;
@@ -23,6 +25,8 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spring.web.plugins.Docket;
 
+import static software.amazon.awssdk.regions.Region.of;
+import static software.amazon.awssdk.services.s3.S3AsyncClient.builder;
 import static springfox.documentation.builders.RequestHandlerSelectors.any;
 import static springfox.documentation.spi.DocumentationType.SWAGGER_2;
 
@@ -57,6 +61,7 @@ public class DefaultContext {
             "com.fyself.post.service.*.contract.validation",
             "com.fyself.post.service.*.contract.validation.*",
             "com.fyself.post.service.*.datasource",
+            "com.fyself.seedwork.service.repository.file.impl",
                                  "com.fyself.seedwork.facade"})
     @EnableReactiveMongoRepositories("com.fyself.post.service.*.datasource")
     public class DataSourceContext {
@@ -64,6 +69,12 @@ public class DefaultContext {
         public MessageSource messageSource() {
             return MessageContextHolder.getSource();
         }
+
+        @Bean
+        public S3AsyncClient s3AsyncClient(@Value("${application.aws.region}") String region) {
+            return builder().region(of(region)).build();
+        }
+
     }
 
     /**
