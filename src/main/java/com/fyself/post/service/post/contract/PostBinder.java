@@ -212,6 +212,14 @@ public interface PostBinder {
 
     PostCriteria bindToCriteria(PostCriteriaTO source);
 
+    default PostCriteria bindToCriteria(PostTimelineCriteriaTO source) {
+        var criteria = new PostCriteria();
+        criteria.setOwner(source.getUser());
+        criteria.setPage(source.getPage());
+        criteria.setSize(source.getSize());
+        return criteria;
+    }
+
     default PagedList<PostTO> bindPage(Page<Post> source) {
         List<PostTO> postTOS = source.stream().map(this::bind).collect(toList());
         return new PagedList<>(postTOS, 0, source.getTotalPages(), source.getTotalElements());
@@ -222,7 +230,7 @@ public interface PostBinder {
     default PagedList<PostTO> bindPageTimeline(Page<PostTimeline> source, String userId) {
         List<PostTO> postTOS = source.stream()
                 .map(PostTimeline::getPost)
-                .filter(post -> post.getSharedWith() != null && post.getSharedWith().contains(userId))
+                .filter(post -> (post.getSharedWith() != null && post.getSharedWith().contains(userId)) || post.getOwner().equals(userId))
                 .map(this::emptyContent)
                 .map(this::bind)
                 .collect(toList());
@@ -242,9 +250,9 @@ public interface PostBinder {
         return post.stopShareUser(to.getSharedWith());
     }
 
-    private Post emptyContent(Post post){
+    private Post emptyContent(Post post) {
         if (post.isBlocked() || post.getDeleted())
-           return post.withContent(null);
+            return post.withContent(null);
         return post;
     }
 }

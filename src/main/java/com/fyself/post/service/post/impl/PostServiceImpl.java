@@ -4,6 +4,7 @@ import com.fyself.post.service.post.PostService;
 import com.fyself.post.service.post.contract.to.PostShareTO;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
+import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
 import com.fyself.post.service.post.datasource.PostRepository;
 import com.fyself.post.service.post.datasource.PostTimelineRepository;
 import com.fyself.seedwork.service.EntityNotFoundException;
@@ -104,5 +105,11 @@ public class PostServiceImpl implements PostService {
                 .flatMap(post -> repository.save(POST_BINDER.bindStopShareWith(post, to)))
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .then();
+    }
+
+    @Override
+    public Mono<PagedList<PostTO>> searchMe(PostTimelineCriteriaTO criteria, FySelfContext context) {
+        return repository.findPage(POST_BINDER.bindToCriteria(criteria.withUser(context.getAccount().get().getId())))
+                .map(POST_BINDER::bindPage);
     }
 }
