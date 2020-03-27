@@ -223,6 +223,7 @@ public interface PostBinder {
         List<PostTO> postTOS = source.stream()
                 .map(PostTimeline::getPost)
                 .filter(post -> post.getSharedWith() != null && post.getSharedWith().contains(userId))
+                .map(this::emptyContent)
                 .map(this::bind)
                 .collect(toList());
         return new PagedList<>(postTOS, 0, 1, postTOS.size());
@@ -239,5 +240,11 @@ public interface PostBinder {
 
     default Post bindStopShareWith(Post post, PostShareTO to) {
         return post.stopShareUser(to.getSharedWith());
+    }
+
+    private Post emptyContent(Post post){
+        if (post.isBlocked() || post.getDeleted())
+           return post.withContent(null);
+        return post;
     }
 }
