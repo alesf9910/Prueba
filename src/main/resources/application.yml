@@ -36,6 +36,7 @@ mspost:
       max: 1
     aws:
       bucketName: {bucketName}
+      url: https://fyself-data-ms-post.s3.amazonaws.com
 
 application:
   aws:
