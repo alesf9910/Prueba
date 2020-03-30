@@ -10,11 +10,9 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 import static com.fyself.post.service.system.contract.ResourceBinder.RESOURCE_BINDER;
 import static org.slf4j.LoggerFactory.getLogger;
+import static reactor.core.publisher.Mono.just;
 
 @Service("uploadFileService")
 public class UploadFileServiceImpl implements UploadFileService {
@@ -22,15 +20,22 @@ public class UploadFileServiceImpl implements UploadFileService {
     private static final Logger logger = getLogger(UploadFileService.class);
     private final FileRepository fileRepository;
     private final String bucket;
+    private final String url;
 
-    public UploadFileServiceImpl(FileRepository fileRepository, @Value("${application.aws.bucket}") String bucket) {
+    public UploadFileServiceImpl(FileRepository fileRepository,
+                                 @Value("${application.aws.bucket}") String bucket,
+                                 @Value("${mspost.application.aws.url}") String url
+    ) {
         this.fileRepository = fileRepository;
         this.bucket = bucket;
+        this.url = url;
     }
 
     @Override
-    public Mono<Boolean> add(ResourceTO resource) {
-        return this.fileRepository.save(RESOURCE_BINDER.bind(resource, bucket));
+    public Mono<String> add(ResourceTO resource) {
+        return this.fileRepository.save(RESOURCE_BINDER.bind(resource, bucket))
+                .filter(Boolean::booleanValue)
+                .map(ing -> String.format("%s/%s/%s", url, resource.getCriteria().getFolder(), resource.getCriteria().getName()));
     }
 
     @Override

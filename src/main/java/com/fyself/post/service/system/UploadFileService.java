@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
  */
 public interface UploadFileService {
 
-    Mono<Boolean> add(ResourceTO resource);
+    Mono<String> add(ResourceTO resource);
 
     Mono<Boolean> delete(ResourceCriteriaTO criteria);
 

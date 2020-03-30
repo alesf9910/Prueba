@@ -14,7 +14,6 @@ import javax.validation.constraints.NotNull;
  */
 public class ResourceCriteriaTO extends TransferObject {
     private static final long serialVersionUID = -3770957766547124589L;
-    private String id;
     private String type;
     private String name;
 
@@ -27,11 +26,6 @@ public class ResourceCriteriaTO extends TransferObject {
     }
 
     //<editor-fold desc="Fluent Encapsulation">
-    public ResourceCriteriaTO withId(String id) {
-        this.setId(id);
-        return this;
-    }
-
     public ResourceCriteriaTO withName(String name) {
         this.setName(name);
         return this;
@@ -39,15 +33,6 @@ public class ResourceCriteriaTO extends TransferObject {
     //</editor-fold>
 
     //<editor-fold desc="Encapsulation">
-    @NotBlank
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     @NotNull
     public String getType() {
         return type;

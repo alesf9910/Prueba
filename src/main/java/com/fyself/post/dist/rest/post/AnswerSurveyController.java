@@ -8,9 +8,7 @@ import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.web.Controller;
 import com.fyself.seedwork.web.documentation.annotations.ApiSecuredOperation;
 import com.fyself.seedwork.web.documentation.responses.NoContentResponse;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ServerWebExchange;
@@ -29,9 +27,62 @@ import java.util.HashMap;
 @RequestMapping("/answer")
 @Api(tags = "Answer", description = "Endpoint to make answer")
 public class AnswerSurveyController extends Controller<AnswerSurveyFacade> {
+
     @PostMapping()
     @ApiSecuredOperation
-    @ApiOperation(nickname = "answer_survey_create", value = "Create answer", response = String.class, code = 201)
+    @ApiOperation(
+            nickname = "answer_survey_create", value = "Create answer", response = String.class, code = 201
+    )
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "to",
+                    required = true,
+                    dataTypeClass = AnswerSurveyTO.class,
+                    example =
+                            "CHOICE\n" +
+                                    "{\n" +
+                                    "\t\"post\" : \"5e418dc8a39dd769595cd042\",\n" +
+                                    "\t\"answer\" : {\n" +
+                                    "\t\t\"type\": \"CHOICE\",\n" +
+                                    "\t\t\"answer\": {\n" +
+                                    "\t\t\t\"a\": true,\n" +
+                                    "\t\t\t\"b\": false\n" +
+                                    "\t\t}\n" +
+                                    "\t}\n" +
+                                    "}\n" +
+                                    "\n" +
+                                    "ASK\n" +
+                                    "{\n" +
+                                    "\t\"post\" : \"5e418dc8a39dd769595cd042\",\n" +
+                                    "\t\"answer\" : {\n" +
+                                    "\t\t\"type\": \"ASK\",\n" +
+                                    "\t\t\"answer\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                                    "\t}\n" +
+                                    "}\n" +
+                                    "\n" +
+                                    "HIERARCHY\n" +
+                                    "{\n" +
+                                    "\t\"post\" : \"5e418dc8a39dd769595cd042\",\n" +
+                                    "\t\"answer\" : {\n" +
+                                    "\t\t\"type\": \"HIERARCHY\",\n" +
+                                    "\t\t\"answer\": {\n" +
+                                    "\t\t\t\"a\": 1,\n" +
+                                    "\t\t\t\"b\": 2\n" +
+                                    "\t\t}\n" +
+                                    "\t}\n" +
+                                    "}\n" +
+                                    "\n" +
+                                    "RATE\n" +
+                                    "{\n" +
+                                    "\t\"post\" : \"5e418dc8a39dd769595cd042\",\n" +
+                                    "\t\"answer\" : {\n" +
+                                    "\t\t\"type\": \"RATE\",\n" +
+                                    "\t\t\"answer\": 1\n" +
+                                    "\t}\n" +
+                                    "}\n"
+
+            )
+    })
     public Mono<ResponseEntity> create(@ApiParam(name = "to", value = "Data answer to be create", required = true) @RequestBody AnswerSurveyTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.create((facade, context) -> facade.create(to, context), exchange);
     }

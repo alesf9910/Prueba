@@ -22,11 +22,11 @@ import static org.mapstruct.factory.Mappers.getMapper;
 public interface ResourceBinder {
     ResourceBinder RESOURCE_BINDER = getMapper(ResourceBinder.class);
 
-    @Mapping(target = "path", expression = "java(String.format(\"%s/%s/%s\", source.getCriteria().getFolder(), source.getCriteria().getName()))")
+    @Mapping(target = "path", expression = "java(String.format(\"%s/%s\", source.getCriteria().getFolder(), source.getCriteria().getName()))")
     @Mapping(target = "credentials", expression = "java(Map.of(FileFields.AWS_BUCKET, bucket))")
     FileContent bind(ResourceTO source, String bucket);
 
-    @Mapping(target = "path", expression = "java(String.format(\"%s/%s/%s\", source.getFolder(), source.getName()))")
+    @Mapping(target = "path", expression = "java(String.format(\"%s/%s\", source.getFolder(), source.getName()))")
     @Mapping(target = "credentials", expression = "java(Map.of(FileFields.AWS_BUCKET, bucket))")
     FileCriteria bind(ResourceCriteriaTO source, String bucket);
 }
