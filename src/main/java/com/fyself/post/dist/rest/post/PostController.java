@@ -115,9 +115,7 @@ public class PostController extends Controller<PostFacade> {
                                     "\n\n" +
                                     "{\n" +
                                     " \"content\":{ " +
-                                    " \"limits\": [" +
-                                    "  {\"string\":\"integer\"}," +
-                                    "]," +
+                                    " \"limits\": {\"string\":\"integer\"}," +
                                     " \"ask\":\"string\"," +
                                     " \"typeContent\":\"SURVEY_RATE\"" +
                                     "}," +

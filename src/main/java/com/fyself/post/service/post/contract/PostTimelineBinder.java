@@ -1,6 +1,7 @@
 package com.fyself.post.service.post.contract;
 
 import com.fyself.post.service.post.contract.to.PostTimelineTO;
+import com.fyself.post.service.post.datasource.domain.Post;
 import com.fyself.post.service.post.datasource.domain.PostTimeline;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,4 +22,10 @@ public interface PostTimelineBinder {
     @Mapping(target = "post.id", source = "post")
     PostTimeline bind(PostTimelineTO source);
 
+    default PostTimeline bind(Post post) {
+        var postTimeline = new PostTimeline();
+        postTimeline.setPost(post);
+        postTimeline.setUser(post.getOwner());
+        return postTimeline;
+    }
 }
