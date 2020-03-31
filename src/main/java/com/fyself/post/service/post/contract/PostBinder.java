@@ -35,6 +35,7 @@ public interface PostBinder {
 
     @Mapping(target = "content", expression = "java(bind(source.getContent()))")
     @Mapping(target = "sharedWith", ignore = true)
+    @Mapping(target = "blocked", constant = "false")
     Post bind(PostTO source);
 
     @Mapping(target = "content", expression = "java(bind(source.getContent()))")
