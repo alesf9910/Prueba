@@ -23,4 +23,8 @@ public interface KafkaMessageBinder {
     default Map bindAnswer(AnswerSurvey answer) {
         return MAPPER.convertValue(answer, Map.class);
     }
+
+    default Map bindPostNotif(String user, String post) {
+        return Map.of("type", "POST", "user", user, "post", post);
+    }
 }
