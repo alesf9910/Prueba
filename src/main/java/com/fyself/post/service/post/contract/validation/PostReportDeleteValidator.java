@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import reactor.core.publisher.Mono;
 
+import static com.fyself.post.tools.Roles.POST_ADMIN;
 import static com.fyself.seedwork.error.ErrorCode.FORBIDDEN_ACCESS;
 import static com.fyself.seedwork.service.validation.MonoBiValidatorFixInterceptor.Position.LAST;
 
@@ -39,7 +40,8 @@ public class PostReportDeleteValidator extends MonoBiValidatorFixInterceptor<Str
     @Override
     protected Mono<Boolean> validate(String value, FySelfContext context) {
         return repository.getById(value)
-                .map(postReport -> postReport.getOwner().equals(context.getAccount().get().getId()))
+                .map(postReport -> postReport.getOwner().equals(context.getAccount().get().getId())
+                        || context.getAccount().get().getRoles().contains(POST_ADMIN))
                 .filter(Boolean::booleanValue)
                 .switchIfEmpty(Mono.just(false));
     }
