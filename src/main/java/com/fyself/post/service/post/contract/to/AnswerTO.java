@@ -12,13 +12,12 @@ import java.io.Serializable;
         visible = true,
         property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = AnswerAskTO.class, name = "ASK"),
-        @JsonSubTypes.Type(value = AnswerChoiceTO.class, name = "CHOICE"),
-        @JsonSubTypes.Type(value = AnswerHierarchyTO.class, name = "HIERARCHY"),
-        @JsonSubTypes.Type(value = AnswerRateTO.class, name = "RATE")
+        @JsonSubTypes.Type(value = AnswerAskTO.class, name = "SURVEY_ASK"),
+        @JsonSubTypes.Type(value = AnswerChoiceTO.class, name = "SURVEY_CHOICE"),
+        @JsonSubTypes.Type(value = AnswerHierarchyTO.class, name = "SURVEY_HIERARCHY"),
+        @JsonSubTypes.Type(value = AnswerRateTO.class, name = "SURVEY_RATE")
 })
 public abstract class AnswerTO implements Serializable {
-
     private static final long serialVersionUID = 9043563622743672733L;
     private TypeSurvey type;
 
