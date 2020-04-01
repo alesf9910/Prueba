@@ -25,16 +25,24 @@ public class StreamServiceImpl implements StreamService {
     private static final Logger logger = LoggerFactory.getLogger(StreamService.class);
     private final ReactiveKafkaMessageQueue queueManager;
     private final String topic_logstash_answer;
+    private final String topic_notification;
 
     public StreamServiceImpl(ReactiveKafkaMessageQueue queueManager,
-                             @Value("${mspost.application.kafka.topics.output.elastic-answer}") String topic_logstash_answer) {
+                             @Value("${mspost.application.kafka.topics.output.elastic-answer}") String topic_logstash_answer,
+                             @Value("${mspost.application.kafka.topics.output.notification-socket}") String topic_notification) {
         this.queueManager = queueManager;
         this.topic_logstash_answer = topic_logstash_answer;
+        this.topic_notification = topic_notification;
     }
 
     @Override
     public Mono<Void> putInPipelineAnswerElastic(Map message) {
         return this.send(message, topic_logstash_answer);
+    }
+
+    @Override
+    public Mono<Void> putInPipelinePostNotif(Map message) {
+        return this.send(message, topic_notification);
     }
 
     //<editor-fold desc="Encapsulation">

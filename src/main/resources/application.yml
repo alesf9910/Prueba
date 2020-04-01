@@ -28,6 +28,7 @@ mspost:
         output:
           logs: com-fyself-dev-logs
           elastic-answer: elastic-answer
+          notification-socket: notification-socket
         input:
           post: post
     server:
