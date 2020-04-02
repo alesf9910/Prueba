@@ -58,9 +58,8 @@ public interface CommentBinder {
         return criteria;
     }
 
-    default PagedList<CommentTO> bindPage(Page<Comment> source) {
-        List<CommentTO> profiles = source.stream().map(this::bind).collect(Collectors.toList());
-        return new PagedList<>(profiles, 0, source.getTotalPages(), source.getTotalElements());
+    default PagedList<CommentTO> bindPage(List<CommentTO> tos, Page<Comment> source) {
+        return new PagedList<>(tos, 0, source.getTotalPages(), source.getTotalElements());
     }
 
     default Comment binFather(String father) {
@@ -85,7 +84,7 @@ public interface CommentBinder {
     default CommentTO bindPageOfChildren(Page<Comment> source, Comment entity) {
         List<CommentTO> childrens = source.stream().map(this::bind).collect(Collectors.toList());
         CommentTO commentTO = this.bind(entity);
-        commentTO.setChildrens(childrens);
+        commentTO.setChildrens(new PagedList<>(childrens, 0, source.getTotalPages(), source.getTotalElements()));
         return commentTO;
     }
 }
