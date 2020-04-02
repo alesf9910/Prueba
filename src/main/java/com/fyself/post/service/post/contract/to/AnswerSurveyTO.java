@@ -14,12 +14,13 @@ public class AnswerSurveyTO extends DomainAuditTransferObject {
     private String post;
     private AnswerTO answer;
 
-    public AnswerSurveyTO() {
-    }
-
     public AnswerSurveyTO(String post, AnswerTO answer) {
         this.post = post;
         this.answer = answer;
+    }
+
+    public AnswerSurveyTO() {
+
     }
 
     @Override
@@ -54,7 +55,6 @@ public class AnswerSurveyTO extends DomainAuditTransferObject {
         this.post = post;
     }
 
-    @NotNull
     public AnswerTO getAnswer() {
         return answer;
     }
@@ -85,6 +85,10 @@ public class AnswerSurveyTO extends DomainAuditTransferObject {
 
     public AnswerSurveyTO withCreateAt(LocalDateTime time) {
         this.setCreatedAt(time);
+        return this;
+    }
+    public AnswerSurveyTO withUpdateAt(LocalDateTime time) {
+        this.setUpdatedAt(time);
         return this;
     }
 

@@ -39,44 +39,46 @@ public class AnswerSurveyController extends Controller<AnswerSurveyFacade> {
                     required = true,
                     dataTypeClass = AnswerSurveyTO.class,
                     example =
-                            "CHOICE\n" +
+                            "SURVEY_CHOICE\n" +
                                     "{\n" +
                                     "\t\"post\" : \"5e418dc8a39dd769595cd042\",\n" +
                                     "\t\"answer\" : {\n" +
-                                    "\t\t\"type\": \"CHOICE\",\n" +
+                                    "\t\t\"type\": \"SURVEY_CHOICE\",\n" +
+                                    "\t\t\"answer\": [\n" +
+                                    "\t\t\t\"id-option-1\": \n" +
+                                    "\t\t\t\"id-option-2\": \n" +
+                                    "\t\t\t\"id-option-n\": \n" +
+                                    "\t\t]\n" +
+                                    "\t}\n" +
+                                    "}\n" +
+                                    "\n" +
+                                    "SURVEY_ASK\n" +
+                                    "{\n" +
+                                    "\t\"post\" : \"5e418dc8a39dd769595cd042\",\n" +
+                                    "\t\"answer\" : {\n" +
+                                    "\t\t\"type\": \"SURVEY_ASK\",\n" +
+                                    "\t\t\"answer\": \"TEXT\"\n" +
+                                    "\t}\n" +
+                                    "}\n" +
+                                    "\n" +
+                                    "SURVEY_HIERARCHY\n" +
+                                    "{\n" +
+                                    "\t\"post\" : \"5e418dc8a39dd769595cd042\",\n" +
+                                    "\t\"answer\" : {\n" +
+                                    "\t\t\"type\": \"SURVEY_HIERARCHY\",\n" +
                                     "\t\t\"answer\": {\n" +
-                                    "\t\t\t\"a\": true,\n" +
-                                    "\t\t\t\"b\": false\n" +
+                                    "\t\t\t\"id-option-1\": 3,\n" +
+                                    "\t\t\t\"id-option-2\": 6\n" +
+                                    "\t\t\t\"id-option-n\": n\n" +
                                     "\t\t}\n" +
                                     "\t}\n" +
                                     "}\n" +
                                     "\n" +
-                                    "ASK\n" +
+                                    "SURVEY_RATE\n" +
                                     "{\n" +
                                     "\t\"post\" : \"5e418dc8a39dd769595cd042\",\n" +
                                     "\t\"answer\" : {\n" +
-                                    "\t\t\"type\": \"ASK\",\n" +
-                                    "\t\t\"answer\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
-                                    "\t}\n" +
-                                    "}\n" +
-                                    "\n" +
-                                    "HIERARCHY\n" +
-                                    "{\n" +
-                                    "\t\"post\" : \"5e418dc8a39dd769595cd042\",\n" +
-                                    "\t\"answer\" : {\n" +
-                                    "\t\t\"type\": \"HIERARCHY\",\n" +
-                                    "\t\t\"answer\": {\n" +
-                                    "\t\t\t\"a\": 1,\n" +
-                                    "\t\t\t\"b\": 2\n" +
-                                    "\t\t}\n" +
-                                    "\t}\n" +
-                                    "}\n" +
-                                    "\n" +
-                                    "RATE\n" +
-                                    "{\n" +
-                                    "\t\"post\" : \"5e418dc8a39dd769595cd042\",\n" +
-                                    "\t\"answer\" : {\n" +
-                                    "\t\t\"type\": \"RATE\",\n" +
+                                    "\t\t\"type\": \"SURVEY_RATE\",\n" +
                                     "\t\t\"answer\": 1\n" +
                                     "\t}\n" +
                                     "}\n"

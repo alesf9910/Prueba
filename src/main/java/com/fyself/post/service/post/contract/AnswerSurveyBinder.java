@@ -82,11 +82,11 @@ public interface AnswerSurveyBinder {
 
     default Answer buildSurveyAnswer(AnswerSurveyTO source) {
         switch (source.getAnswer().getType()) {
-            case ASK:
+            case SURVEY_ASK:
                 return ANSWER_ASK_BINDER.bind((AnswerAskTO) source.getAnswer());
-            case RATE:
+            case SURVEY_RATE:
                 return ANSWER_RATE_BINDER.bind((AnswerRateTO) source.getAnswer());
-            case CHOICE:
+            case SURVEY_CHOICE:
                 return ANSWER_CHOICE_BINDER.bind((AnswerChoiceTO) source.getAnswer());
             default:
                 return ANSWER_HIERARCHY_BINDER.bind((AnswerHierarchyTO) source.getAnswer());
@@ -95,11 +95,11 @@ public interface AnswerSurveyBinder {
 
     default AnswerTO buildSurveyAnswer(AnswerSurvey source) {
         switch (source.getAnswer().getType()) {
-            case ASK:
+            case SURVEY_ASK:
                 return ANSWER_ASK_BINDER.bind((AnswerAsk) source.getAnswer());
-            case RATE:
+            case SURVEY_RATE:
                 return ANSWER_RATE_BINDER.bind((AnswerRate) source.getAnswer());
-            case CHOICE:
+            case SURVEY_CHOICE:
                 return ANSWER_CHOICE_BINDER.bind((AnswerChoice) source.getAnswer());
             default:
                 return ANSWER_HIERARCHY_BINDER.bind((AnswerHierarchy) source.getAnswer());
