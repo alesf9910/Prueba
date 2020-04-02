@@ -3,6 +3,8 @@ package com.fyself.post.service.post.contract.to.criteria;
 import com.fyself.post.service.post.datasource.domain.enums.TypeSurvey;
 import com.fyself.seedwork.service.to.CriteriaTO;
 
+import java.util.List;
+
 public class AnswerSurveyCriteriaTO extends CriteriaTO {
     private static final long serialVersionUID = 2138765270323056960L;
 
@@ -10,12 +12,14 @@ public class AnswerSurveyCriteriaTO extends CriteriaTO {
     private TypeSurvey typeSurvey;
     private String user;
     private String owner;
+    private List<String> postIds;
 
-    public AnswerSurveyCriteriaTO(TypeSurvey typeSurvey, String user, String owner, String post) {
+    public AnswerSurveyCriteriaTO(TypeSurvey typeSurvey, String user, String owner, String post, List<String> postIds) {
         this.typeSurvey = typeSurvey;
         this.user = user;
         this.owner = owner;
         this.post = post;
+        this.postIds = postIds;
     }
 
     public TypeSurvey getTypeSurvey() {
@@ -50,6 +54,14 @@ public class AnswerSurveyCriteriaTO extends CriteriaTO {
         this.post = post;
     }
 
+    public List<String> getPostIds() {
+        return postIds;
+    }
+
+    public void setPostIds(List<String> postIds) {
+        this.postIds = postIds;
+    }
+
     public AnswerSurveyCriteriaTO withAnswer(TypeSurvey answer) {
         this.setTypeSurvey(answer);
         return this;
@@ -67,6 +79,11 @@ public class AnswerSurveyCriteriaTO extends CriteriaTO {
 
     public AnswerSurveyCriteriaTO withUser(String user) {
         this.setUser(user);
+        return this;
+    }
+
+    public AnswerSurveyCriteriaTO withPostIds(List<String> postIds) {
+        setPostIds(postIds);
         return this;
     }
 }

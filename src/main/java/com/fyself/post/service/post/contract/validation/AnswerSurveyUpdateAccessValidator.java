@@ -55,19 +55,10 @@ public class AnswerSurveyUpdateAccessValidator extends MonoBiValidatorFixInterce
                 .flatMap(
                         userId -> repository.getById(value.getId())
                                 .map(
-                                        survey -> survey.getOwner().equals(userId)
+                                        survey -> survey.getOwner().equals(userId) && survey.getAnswer().getType().equals(value.getAnswer().getType())
                                 )
                 )
                 .filter(Boolean::booleanValue)
-                .switchIfEmpty(Mono.just(false))
-                .flatMap(
-                        aBoolean -> {
-                            return repository.getById(value.getId())
-                                    .map(
-                                            survey -> survey.getAnswer().getType().equals(value.getAnswer().getType())
-                                    );
-                        }
-                ).filter(Boolean::booleanValue)
                 .switchIfEmpty(Mono.just(false));
     }
 }

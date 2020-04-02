@@ -1,8 +1,11 @@
 package com.fyself.post.service.post.impl;
 
 import com.fyself.post.service.post.AnswerSurveyService;
+import com.fyself.post.service.post.PostService;
 import com.fyself.post.service.post.contract.to.AnswerSurveyTO;
+import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.criteria.AnswerSurveyCriteriaTO;
+import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
 import com.fyself.post.service.post.datasource.AnswerSurveyRepository;
 import com.fyself.post.service.post.datasource.domain.AnswerSurvey;
 import com.fyself.post.service.stream.StreamService;
@@ -15,7 +18,9 @@ import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static com.fyself.post.service.post.contract.AnswerSurveyBinder.ANSWER_SURVEY_BINDER;
 import static com.fyself.post.service.stream.contract.KafkaMessageBinder.KAFKA_MESSAGE_BINDER;
@@ -28,10 +33,12 @@ import static reactor.core.publisher.Mono.just;
 public class AnswerSurveyServiceImpl implements AnswerSurveyService {
 
     final AnswerSurveyRepository repository;
+    final PostService postService;
     private final StreamService streamService;
 
-    public AnswerSurveyServiceImpl(AnswerSurveyRepository repository, StreamService streamService) {
+    public AnswerSurveyServiceImpl(AnswerSurveyRepository repository, PostService postService, StreamService streamService) {
         this.repository = repository;
+        this.postService = postService;
         this.streamService = streamService;
     }
 
@@ -90,7 +97,28 @@ public class AnswerSurveyServiceImpl implements AnswerSurveyService {
         return repository.findPage(ANSWER_SURVEY_BINDER.bind(criteria)).map(ANSWER_SURVEY_BINDER::bind);
     }
 
+    @Override
+    public Mono<PagedList<AnswerSurveyTO>> loadAllByMe(AnswerSurveyCriteriaTO criteria, FySelfContext context) {
+        return postService.searchMe(buildPostCriteria(context.getAccount().get().getId()), context)
+                .map(PagedList::getElements)
+                .map(this::getPostIds)
+                .flatMap(ids -> repository.findPage(ANSWER_SURVEY_BINDER.bind(criteria.withPostIds(ids))))
+                .map(ANSWER_SURVEY_BINDER::bind);
+    }
+
     private Mono<Void> putInPipeline(AnswerSurvey answer) {
         return streamService.putInPipelineAnswerElastic(KAFKA_MESSAGE_BINDER.bindAnswer(answer));
+    }
+
+    private PostTimelineCriteriaTO buildPostCriteria(String user) {
+        PostTimelineCriteriaTO criteria = new PostTimelineCriteriaTO().withUser(user);
+        criteria.setMe(true);
+        return criteria;
+    }
+
+    private List<String> getPostIds(List<PostTO> posts) {
+        List<String> ids = new ArrayList<>();
+        new ArrayList<>(posts).forEach(post -> ids.add(post.getId()));
+        return ids;
     }
 }
