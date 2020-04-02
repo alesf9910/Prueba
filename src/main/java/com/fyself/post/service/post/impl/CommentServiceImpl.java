@@ -10,6 +10,7 @@ import com.fyself.seedwork.service.context.FySelfContext;
 import com.fyself.seedwork.service.repository.mongodb.domain.DomainEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
@@ -71,6 +72,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Mono<PagedList<CommentTO>> search(@NotNull CommentCriteriaTO criteria, String post, FySelfContext context) {
         return repository.findPage(COMMENT_BINDER.bindToCriteria(criteria, post))
-                .map(COMMENT_BINDER::bindPage);
+                .flatMap(pageComents -> Flux.fromIterable(pageComents)
+                        .flatMap(comment -> repository.findPage(COMMENT_BINDER.bindToFatherCriteria(comment.getId()))
+                                .map(comments -> COMMENT_BINDER.bindPageOfChildren(comments, comment)))
+                        .collectList()
+                        .map(commentTOS -> COMMENT_BINDER.bindPage(commentTOS, pageComents)));
     }
 }

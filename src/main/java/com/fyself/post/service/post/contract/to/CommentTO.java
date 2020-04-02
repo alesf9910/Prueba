@@ -1,13 +1,13 @@
 package com.fyself.post.service.post.contract.to;
 
 
+import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.to.DomainAuditTransferObject;
 import com.fyself.seedwork.service.to.annotation.ReadOnly;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static java.time.LocalDateTime.now;
 
@@ -18,7 +18,7 @@ public class CommentTO extends DomainAuditTransferObject {
     private String content;
     private String url;
     private String father;
-    private List<CommentTO> childrens;
+    private PagedList<CommentTO> childrens;
 
     @NotBlank
     public String getContent() {
@@ -46,11 +46,11 @@ public class CommentTO extends DomainAuditTransferObject {
     }
 
     @ReadOnly
-    public List<CommentTO> getChildrens() {
+    public PagedList<CommentTO> getChildrens() {
         return childrens;
     }
 
-    public void setChildrens(List<CommentTO> childrens) {
+    public void setChildrens(PagedList<CommentTO> childrens) {
         this.childrens = childrens;
     }
 
