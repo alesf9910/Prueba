@@ -21,4 +21,6 @@ public interface AnswerSurveyService {
     Mono<AnswerSurveyTO> load(String id, String post, FySelfContext context);
 
     Mono<PagedList<AnswerSurveyTO>> loadAll(AnswerSurveyCriteriaTO criteria, FySelfContext context);
+
+    Mono<PagedList<AnswerSurveyTO>> loadAllByMe(AnswerSurveyCriteriaTO criteria, FySelfContext context);
 }

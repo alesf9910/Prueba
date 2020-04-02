@@ -7,6 +7,8 @@ import com.fyself.seedwork.service.repository.mongodb.criteria.DomainCriteria;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 
+import java.util.List;
+
 import static com.fyself.seedwork.service.repository.mongodb.criteria.Criterion.and;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -18,6 +20,7 @@ public class AnswerSurveyCriteria extends DomainCriteria<AnswerSurvey> {
     private TypeSurvey typeSurvey;
     private String user;
     private String owner;
+    private List<String> postIds;
 
     public AnswerSurveyCriteria() {
         super(AnswerSurvey.class);
@@ -25,7 +28,7 @@ public class AnswerSurveyCriteria extends DomainCriteria<AnswerSurvey> {
 
     @Override
     public CriteriaDefinition getPredicate() {
-        return and(this.matchPost(), this.matchAnswer(), this.matchOwner(), this.matchUser());
+        return and(this.matchPost(), this.matchAnswer(), this.matchOwner(), this.matchPostId());
     }
 
     private Criteria matchPost() {
@@ -40,8 +43,8 @@ public class AnswerSurveyCriteria extends DomainCriteria<AnswerSurvey> {
         return this.owner != null ? where("owner").is(this.getOwner()) : null;
     }
 
-    private Criteria matchUser() {
-        return this.user != null ? where("user").is(this.getUser()) : null;
+    private Criteria matchPostId() {
+        return !this.getPostIds().isEmpty() ? where("post").in(this.getPostIds()) : null;
     }
 
     public Post getPost() {
@@ -76,4 +79,11 @@ public class AnswerSurveyCriteria extends DomainCriteria<AnswerSurvey> {
         this.owner = owner;
     }
 
+    public List<String> getPostIds() {
+        return postIds;
+    }
+
+    public void setPostIds(List<String> postIds) {
+        this.postIds = postIds;
+    }
 }

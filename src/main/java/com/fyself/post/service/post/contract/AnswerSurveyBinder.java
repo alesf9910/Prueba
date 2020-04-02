@@ -72,6 +72,7 @@ public interface AnswerSurveyBinder {
         criteria.setTypeSurvey(source.getTypeSurvey());
         criteria.setOwner(source.getOwner());
         criteria.setUser(source.getUser());
+        criteria.setPostIds(source.getPostIds());
         return criteria;
     }
 
