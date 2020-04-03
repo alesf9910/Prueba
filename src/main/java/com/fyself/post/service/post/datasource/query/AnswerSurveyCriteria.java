@@ -32,7 +32,7 @@ public class AnswerSurveyCriteria extends DomainCriteria<AnswerSurvey> {
     }
 
     private Criteria matchPost() {
-        return this.typeSurvey != null ? where("post.id").is(this.getPost()) : null;
+        return this.post != null ? where("post.id").is(this.getPost().getId()) : null;
     }
 
     private Criteria matchAnswer() {
