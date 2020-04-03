@@ -44,7 +44,7 @@ public class AnswerSurveyCriteria extends DomainCriteria<AnswerSurvey> {
     }
 
     private Criteria matchPostId() {
-        return !this.getPostIds().isEmpty() ? where("post").in(this.getPostIds()) : null;
+        return this.getPostIds() != null && !this.getPostIds().isEmpty() ? where("post.id").in(this.getPostIds()) : null;
     }
 
     public Post getPost() {
