@@ -5,6 +5,7 @@ import com.fyself.post.service.post.contract.to.PostShareTO;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
 import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
+import com.fyself.post.service.post.datasource.AnswerSurveyRepository;
 import com.fyself.post.service.post.datasource.PostRepository;
 import com.fyself.post.service.post.datasource.PostTimelineRepository;
 import com.fyself.seedwork.service.EntityNotFoundException;
@@ -17,23 +18,27 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
 import java.util.HashMap;
 
+import static com.fyself.post.service.post.contract.AnswerSurveyBinder.ANSWER_SURVEY_BINDER;
 import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
 import static com.fyself.post.service.post.contract.PostTimelineBinder.POST_TIMELINE_BINDER;
 import static com.fyself.post.tools.LoggerUtils.*;
+import static reactor.core.publisher.Flux.fromIterable;
 import static reactor.core.publisher.Mono.error;
+import static reactor.core.publisher.Mono.just;
 
 @Service("postService")
 @Validated
 public class PostServiceImpl implements PostService {
     private final PostRepository repository;
     private final PostTimelineRepository postTimelineRepository;
+    final AnswerSurveyRepository answerSurveyRepository;
 
-    public PostServiceImpl(PostRepository repository, PostTimelineRepository postTimelineRepository) {
+    public PostServiceImpl(PostRepository repository, PostTimelineRepository postTimelineRepository, AnswerSurveyRepository answerSurveyRepository) {
         this.repository = repository;
         this.postTimelineRepository = postTimelineRepository;
+        this.answerSurveyRepository = answerSurveyRepository;
     }
 
     @Override
@@ -59,7 +64,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Mono<PostTO> load(@NotNull String id, FySelfContext context) {
-        return repository.findById(id).map(POST_BINDER::bind).switchIfEmpty(error(EntityNotFoundException::new));
+        return repository.findById(id)
+                .flatMap(post -> answerSurveyRepository.findByPostAndUser(post.getId(), context.getAccount().get().getId())
+                        .map(ANSWER_SURVEY_BINDER::bindFromSurvey)
+                        .map(answerSurveyTO -> POST_BINDER.bindPostWithAnswer(post, answerSurveyTO))
+                        .switchIfEmpty(just(POST_BINDER.bind(post))))
+                .switchIfEmpty(error(EntityNotFoundException::new));
     }
 
     @Override
@@ -80,7 +90,14 @@ public class PostServiceImpl implements PostService {
     @Override
     public Mono<PagedList<PostTO>> search(@NotNull PostCriteriaTO criteria, FySelfContext context) {
         return repository.findPage(POST_BINDER.bindToCriteria(criteria.withOwner(context.getAccount().get().getId())))
-                .map(POST_BINDER::bindPage);
+                .map(POST_BINDER::bindPage)
+                .flatMap(postTOPagedList -> fromIterable(postTOPagedList.getElements())
+                        .flatMap(postTO -> answerSurveyRepository.findByPostAndUser(postTO.getId(), context.getAccount().get().getId())
+                                .map(ANSWER_SURVEY_BINDER::bindFromSurvey)
+                                .map(answerSurveyTO -> POST_BINDER.bindPostTOWithAnswer(postTO, answerSurveyTO))
+                                .switchIfEmpty(just(postTO)))
+                        .collectList()
+                        .map(postTOS -> POST_BINDER.bind(postTOPagedList, postTOS)));
     }
 
     @Override

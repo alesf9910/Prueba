@@ -41,6 +41,17 @@ public interface PostBinder {
     @Mapping(target = "content", expression = "java(bind(source.getContent()))")
     PostTO bind(Post source);
 
+    default PostTO bindPostWithAnswer(Post source, AnswerSurveyTO answerSurveyTO) {
+        var postTO = bind(source);
+        ((SurveyContentTO) postTO.getContent()).setAnswer(answerSurveyTO.getAnswer());
+        return postTO;
+    }
+
+    default PostTO bindPostTOWithAnswer(PostTO source, AnswerSurveyTO answerSurveyTO) {
+        ((SurveyContentTO) source.getContent()).setAnswer(answerSurveyTO.getAnswer());
+        return source;
+    }
+
     default Content bind(ContentTO source) {
         if (source instanceof LinkContentTO)
             return this.bind((LinkContentTO) source);
@@ -255,5 +266,10 @@ public interface PostBinder {
         if (post.isBlocked() || post.getDeleted())
             return post.withContent(null);
         return post;
+    }
+
+    default PagedList<PostTO> bind(PagedList<PostTO> postTOPagedList, List<PostTO> postTOS) {
+        postTOPagedList.setElements(postTOS);
+        return postTOPagedList;
     }
 }
