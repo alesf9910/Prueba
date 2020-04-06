@@ -30,7 +30,7 @@ public class CommentCriteria extends DomainCriteria<Comment> {
     }
 
     private Criteria matchFather() {
-        return this.father != null ? where("father").is(this.getFather()) : null;
+       return where("father").is(this.getFather());
     }
 
     public Post getPost() {
