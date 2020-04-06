@@ -28,7 +28,7 @@ public class UserRepositoryImpl implements UserRepository {
     private static final String USER_PATH = "/api/user/";
 
     public UserRepositoryImpl(
-            @Value("${application.security.ms-auth.baseUrl}") String baseUrl,
+            @Value("${mspost.application.security.ms-auth.baseUrl}") String baseUrl,
             WebClient.Builder webClientBuilder
     ) {
         this.baseUrl = baseUrl;

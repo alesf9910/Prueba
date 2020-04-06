@@ -12,6 +12,7 @@ import reactor.core.publisher.Mono;
 
 import static com.fyself.seedwork.error.ErrorCode.INVALID_VALUE;
 import static com.fyself.seedwork.service.validation.MonoBiValidatorFixInterceptor.Position.LAST;
+import static reactor.core.publisher.Mono.just;
 
 /**
  * Check for report validations
@@ -42,7 +43,8 @@ public class PostShareNotMeValidator extends MonoBiValidatorFixInterceptor<PostS
             return Mono.just(false);
         }
 
-        return repository.findById(value.getPost())
-                .map(post -> !post.getOwner().equals(value.getSharedWith()));
+        return repository.getById(value.getPost())
+                .map(post -> !post.getOwner().equals(value.getSharedWith()))
+                .switchIfEmpty(just(true));
     }
 }
