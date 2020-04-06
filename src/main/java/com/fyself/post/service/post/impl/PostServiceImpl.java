@@ -54,7 +54,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Mono<Void> update(@NotNull @Valid PostTO to, FySelfContext context) {
-        return repository.findById(to.getId())
+        return repository.getById(to.getId())
                 .map(post -> POST_BINDER.set(post, to.withUpdatedAt()))
                 .flatMap(post -> repository.save(post)
                         .doOnSuccess(entity -> updateEvent(post, entity, context)))
@@ -64,7 +64,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Mono<PostTO> load(@NotNull String id, FySelfContext context) {
-        return repository.findById(id)
+        return repository.getById(id)
                 .flatMap(post -> answerSurveyRepository.findByPostAndUser(post.getId(), context.getAccount().get().getId())
                         .map(ANSWER_SURVEY_BINDER::bindFromSurvey)
                         .map(answerSurveyTO -> POST_BINDER.bindPostWithAnswer(post, answerSurveyTO))
@@ -74,7 +74,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Mono<Void> delete(@NotNull String id, FySelfContext context) {
-        return repository.findById(id)
+        return repository.getById(id)
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .flatMap(post -> repository.softDelete(post).doOnSuccess(entity -> deleteEvent(post, context)))
                 .then();
@@ -82,7 +82,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Mono<PostTO> patch(@NotNull String id, HashMap to, FySelfContext context) {
-        return repository.findById(id)
+        return repository.getById(id)
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .map(post -> POST_BINDER.pacth(post, to));
     }

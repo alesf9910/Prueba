@@ -43,6 +43,7 @@ public class PostUpdateNoTypeValidator extends MonoBiValidatorFixInterceptor<Pos
         if (value.getContent().getTypeContent().toString().isBlank())
             return just(true);
         return repository.getById(value.getId())
-                .map(post -> post.getContent().getTypeContent().equals(value.getContent().getTypeContent()));
+                .map(post -> post.getContent().getTypeContent().equals(value.getContent().getTypeContent()))
+                .switchIfEmpty(just(true));
     }
 }
