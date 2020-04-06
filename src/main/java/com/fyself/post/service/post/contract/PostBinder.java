@@ -224,6 +224,13 @@ public interface PostBinder {
 
     PostCriteria bindToCriteria(PostCriteriaTO source);
 
+    default PostCriteriaTO bindToCriteriaTO(PostTimelineCriteriaTO source) {
+        var criteria = new PostCriteriaTO();
+        criteria.setPage(source.getPage());
+        criteria.setSize(source.getSize());
+        return criteria;
+    }
+
     default PostCriteria bindToCriteria(PostTimelineCriteriaTO source) {
         var criteria = new PostCriteria();
         criteria.setOwner(source.getUser());

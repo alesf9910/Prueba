@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 
+import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
 import static com.fyself.seedwork.facade.Result.successful;
 
 @Facade("postFacade")
@@ -64,7 +65,7 @@ public class PostFacadeImpl implements PostFacade {
     public Mono<Result<PagedList<PostTO>>> searchPostTimeline(PostTimelineCriteriaTO criteria, FySelfContext context) {
         return Mono.fromSupplier(() -> criteria)
                 .filter(PostTimelineCriteriaTO::isMe)
-                .flatMap(criteriaTO -> service.searchMe(criteriaTO, context))
+                .flatMap(criteriaTO -> service.search(POST_BINDER.bindToCriteriaTO(criteria), context))
                 .switchIfEmpty(postTimelineService.search(criteria, context))
                 .map(Result::successful);
     }
