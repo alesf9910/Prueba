@@ -224,6 +224,13 @@ public interface PostBinder {
 
     PostCriteria bindToCriteria(PostCriteriaTO source);
 
+    default PostCriteriaTO bindToCriteriaTO(PostTimelineCriteriaTO source) {
+        var criteria = new PostCriteriaTO();
+        criteria.setPage(source.getPage());
+        criteria.setSize(source.getSize());
+        return criteria;
+    }
+
     default PostCriteria bindToCriteria(PostTimelineCriteriaTO source) {
         var criteria = new PostCriteria();
         criteria.setOwner(source.getUser());
@@ -242,7 +249,6 @@ public interface PostBinder {
     default PagedList<PostTO> bindPageTimeline(Page<PostTimeline> source, String userId) {
         List<PostTO> postTOS = source.stream()
                 .map(PostTimeline::getPost)
-                .filter(post -> (post.getSharedWith() != null && post.getSharedWith().contains(userId)) || post.getOwner().equals(userId))
                 .map(this::emptyContent)
                 .map(this::bind)
                 .collect(toList());

@@ -40,7 +40,7 @@ public class PostCriteria extends DomainCriteria<Post> {
     }
 
     private Criteria matchOwner() {
-        return this.blocked ? where("owner").is(this.getOwner()) : null;
+        return this.owner != null ? where("owner").is(this.getOwner()) : null;
     }
 
     public Access getAccess() {
