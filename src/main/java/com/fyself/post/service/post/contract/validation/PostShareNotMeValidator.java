@@ -10,7 +10,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import reactor.core.publisher.Mono;
 
-import static com.fyself.seedwork.error.ErrorCode.FORBIDDEN_ACCESS;
+import static com.fyself.seedwork.error.ErrorCode.INVALID_VALUE;
 import static com.fyself.seedwork.service.validation.MonoBiValidatorFixInterceptor.Position.LAST;
 
 /**
@@ -27,7 +27,7 @@ public class PostShareNotMeValidator extends MonoBiValidatorFixInterceptor<PostS
 
     public PostShareNotMeValidator(PostRepository repository) {
         this.repository = repository;
-        this.setCode(FORBIDDEN_ACCESS);
+        this.setCode(INVALID_VALUE);
     }
 
     @Around("execution(public * com.fyself.post.service.post.PostService+.shareWith(..))")
