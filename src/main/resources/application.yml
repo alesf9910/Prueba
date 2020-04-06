@@ -22,6 +22,8 @@ mspost:
         exposed-headers: "Authorization"
         allow-credentials: true
         max-age: 1800
+      ms-auth:
+        baseUrl: https://staging-backend.fyself.com/msauth
     kafka:
       servers: 3.223.152.25:9092
       topics:

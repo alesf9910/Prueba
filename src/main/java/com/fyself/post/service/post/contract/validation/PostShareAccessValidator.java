@@ -12,6 +12,7 @@ import reactor.core.publisher.Mono;
 
 import static com.fyself.seedwork.error.ErrorCode.FORBIDDEN_ACCESS;
 import static com.fyself.seedwork.service.validation.MonoBiValidatorFixInterceptor.Position.LAST;
+import static reactor.core.publisher.Mono.just;
 
 /**
  * Check for report validations
@@ -40,10 +41,11 @@ public class PostShareAccessValidator extends MonoBiValidatorFixInterceptor<Post
     protected Mono<Boolean> validate(PostShareTO value, FySelfContext context) {
 
         if (context.getAccount().isEmpty()) {
-            return Mono.just(false);
+            return just(false);
         }
 
-        return repository.findById(value.getPost())
-                .map(post -> post.getOwner().equals(context.getAccount().get().getId()));
+        return repository.getById(value.getPost())
+                .map(post -> post.getOwner().equals(context.getAccount().get().getId()))
+                .switchIfEmpty(just(true));
     }
 }
