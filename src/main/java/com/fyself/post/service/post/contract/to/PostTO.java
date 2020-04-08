@@ -8,6 +8,7 @@ import com.fyself.seedwork.service.to.annotation.ReadOnly;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import static java.time.LocalDateTime.now;
 
@@ -19,6 +20,7 @@ public class PostTO extends DomainAuditTransferObject {
     private boolean active;
     private boolean blocked;
     private String urlImage;
+    private Set<String> sharedWith;
 
     @Override
     @ReadOnly
@@ -104,5 +106,14 @@ public class PostTO extends DomainAuditTransferObject {
     public PostTO withUpdatedAt() {
         this.setUpdatedAt(now());
         return this;
+    }
+
+    @ReadOnly
+    public Set<String> getSharedWith() {
+        return sharedWith;
+    }
+
+    public void setSharedWith(Set<String> sharedWith) {
+        this.sharedWith = sharedWith;
     }
 }
