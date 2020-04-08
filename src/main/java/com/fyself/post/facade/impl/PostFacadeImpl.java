@@ -3,6 +3,7 @@ package com.fyself.post.facade.impl;
 import com.fyself.post.facade.PostFacade;
 import com.fyself.post.service.post.PostService;
 import com.fyself.post.service.post.PostTimelineService;
+import com.fyself.post.service.post.contract.to.PostShareBulkTO;
 import com.fyself.post.service.post.contract.to.PostShareTO;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
@@ -73,6 +74,11 @@ public class PostFacadeImpl implements PostFacade {
     @Override
     public Mono<Result<Void>> shareWith(PostShareTO to, FySelfContext context) {
         return service.shareWith(to, context).thenReturn(successful());
+    }
+
+    @Override
+    public Mono<Result<Void>> shareBulk(PostShareBulkTO to, FySelfContext context) {
+        return service.shareBulk(to, context).thenReturn(successful());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.fyself.post.service.post;
 
+import com.fyself.post.service.post.contract.to.PostShareBulkTO;
 import com.fyself.post.service.post.contract.to.PostShareTO;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
@@ -36,6 +37,7 @@ public interface PostService {
     Mono<Void> block(String post);
 
     Mono<Void> shareWith(@NotNull PostShareTO to, FySelfContext context);
+    Mono<Void> shareBulk(@NotNull PostShareBulkTO to, FySelfContext context);
     Mono<Void> stopShareWith(@NotNull PostShareTO to, FySelfContext context);
 
     Mono<PagedList<PostTO>> searchMe(PostTimelineCriteriaTO criteria, FySelfContext context);

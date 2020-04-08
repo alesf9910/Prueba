@@ -1,6 +1,7 @@
 package com.fyself.post.dist.rest.post;
 
 import com.fyself.post.facade.PostFacade;
+import com.fyself.post.service.post.contract.to.PostShareBulkTO;
 import com.fyself.post.service.post.contract.to.PostShareTO;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
@@ -388,6 +389,13 @@ public class PostController extends Controller<PostFacade> {
     @ApiOperation(nickname = "post_stop_share_with", value = "Stop share post with user", response = NoContentResponse.class, code = 204)
     public Mono<ResponseEntity> stopShareWith(@PathVariable String id, @RequestBody PostShareTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.perform((facade, context) -> facade.stopShareWith(to.withId(id), context), exchange);
+    }
+
+    @PostMapping("/{id}/share-bulk")
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "post_share_with", value = "Share post with user", response = NoContentResponse.class, code = 204)
+    public Mono<ResponseEntity> shareBulk(@PathVariable String id, @RequestBody PostShareBulkTO to, @ApiIgnore ServerWebExchange exchange) {
+        return this.perform((facade, context) -> facade.shareBulk(to.withId(id), context), exchange);
     }
 
     //<editor-fold desc="Inner classes (Documentation purpose)">
