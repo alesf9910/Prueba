@@ -77,6 +77,11 @@ public class Post extends DomainAuditEntity {
         return this;
     }
 
+    public Post shareBulk(Set<String> users) {
+        this.setSharedWith(users);
+        return this;
+    }
+
     public Post stopShareUser(String user) {
         if (this.sharedWith != null) {
             sharedWith.remove(user);

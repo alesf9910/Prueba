@@ -15,9 +15,9 @@ import static com.fyself.seedwork.service.validation.MonoBiValidatorFixIntercept
 import static reactor.core.publisher.Mono.just;
 
 /**
- * Check for report validations
+ * Check for share post validations
  *
- * @author Alejandro
+ * @author jmmarin
  * @since 0.0.1
  */
 @Aspect

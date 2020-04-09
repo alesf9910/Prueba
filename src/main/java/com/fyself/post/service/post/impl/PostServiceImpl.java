@@ -1,6 +1,7 @@
 package com.fyself.post.service.post.impl;
 
 import com.fyself.post.service.post.PostService;
+import com.fyself.post.service.post.contract.to.PostShareBulkTO;
 import com.fyself.post.service.post.contract.to.PostShareTO;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
@@ -112,6 +113,14 @@ public class PostServiceImpl implements PostService {
     public Mono<Void> shareWith(@NotNull PostShareTO to, FySelfContext context) {
         return repository.findById(to.getPost())
                 .flatMap(post -> repository.save(POST_BINDER.bindShareWith(post, to)))
+                .switchIfEmpty(error(EntityNotFoundException::new))
+                .then();
+    }
+
+    @Override
+    public Mono<Void> shareBulk(@NotNull PostShareBulkTO to, FySelfContext context) {
+        return repository.findById(to.getPost())
+                .flatMap(post -> repository.save(POST_BINDER.bindShareBulk(post, to)))
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .then();
     }

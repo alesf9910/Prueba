@@ -1,5 +1,6 @@
 package com.fyself.post.facade;
 
+import com.fyself.post.service.post.contract.to.PostShareBulkTO;
 import com.fyself.post.service.post.contract.to.PostShareTO;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
@@ -33,5 +34,6 @@ public interface PostFacade {
     Mono<Result<PagedList<PostTO>>> searchPostTimeline(PostTimelineCriteriaTO criteria, FySelfContext context);
 
     Mono<Result<Void>> shareWith(PostShareTO to, FySelfContext context);
+    Mono<Result<Void>> shareBulk(PostShareBulkTO to, FySelfContext context);
     Mono<Result<Void>> stopShareWith(PostShareTO to, FySelfContext context);
 }
