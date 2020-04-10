@@ -228,6 +228,7 @@ public interface PostBinder {
         var criteria = new PostCriteriaTO();
         criteria.setPage(source.getPage());
         criteria.setSize(source.getSize());
+        criteria.setType(source.getType());
         return criteria;
     }
 

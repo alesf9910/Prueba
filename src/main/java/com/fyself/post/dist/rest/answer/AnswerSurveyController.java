@@ -1,4 +1,4 @@
-package com.fyself.post.dist.rest.post;
+package com.fyself.post.dist.rest.answer;
 
 import com.fyself.post.facade.AnswerSurveyFacade;
 import com.fyself.post.service.post.contract.to.AnswerSurveyTO;

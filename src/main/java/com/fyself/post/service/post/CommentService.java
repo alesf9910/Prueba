@@ -28,4 +28,6 @@ public interface CommentService {
 
     Mono<PagedList<CommentTO>> search(@NotNull CommentCriteriaTO criteria, String post, FySelfContext context);
 
+    Mono<Long> count(String post);
+
 }

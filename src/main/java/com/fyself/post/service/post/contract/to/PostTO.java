@@ -21,6 +21,20 @@ public class PostTO extends DomainAuditTransferObject {
     private boolean blocked;
     private String urlImage;
     private Set<String> sharedWith;
+    private Long comments;
+
+    @ReadOnly
+    public Long getComments() {
+        return comments;
+    }
+
+    public void setComments(Long comments) {
+        this.comments = comments;
+    }
+    public PostTO putCount(Long comments) {
+        this.comments = comments;
+        return this;
+    }
 
     @Override
     @ReadOnly
