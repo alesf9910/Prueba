@@ -6,6 +6,7 @@ import com.fyself.post.service.post.contract.to.AnswerSurveyTO;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.criteria.AnswerSurveyCriteriaTO;
 import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
+import com.fyself.post.service.post.contract.to.criteria.enums.TypeSearch;
 import com.fyself.post.service.post.datasource.AnswerSurveyRepository;
 import com.fyself.post.service.post.datasource.domain.AnswerSurvey;
 import com.fyself.post.service.stream.StreamService;
@@ -112,7 +113,7 @@ public class AnswerSurveyServiceImpl implements AnswerSurveyService {
 
     private PostTimelineCriteriaTO buildPostCriteria(String user) {
         PostTimelineCriteriaTO criteria = new PostTimelineCriteriaTO().withUser(user);
-        criteria.setMe(true);
+        criteria.setType(TypeSearch.ME);
         return criteria;
     }
 
