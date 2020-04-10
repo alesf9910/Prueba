@@ -1,4 +1,4 @@
-package com.fyself.post.dist.rest.post;
+package com.fyself.post.dist.rest.comments;
 
 import com.fyself.post.facade.CommentFacade;
 import com.fyself.post.service.post.contract.to.CommentTO;

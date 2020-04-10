@@ -1,6 +1,7 @@
 package com.fyself.post.facade.impl;
 
 import com.fyself.post.facade.PostFacade;
+import com.fyself.post.service.post.CommentService;
 import com.fyself.post.service.post.PostService;
 import com.fyself.post.service.post.PostTimelineService;
 import com.fyself.post.service.post.contract.to.PostShareBulkTO;
@@ -8,6 +9,7 @@ import com.fyself.post.service.post.contract.to.PostShareTO;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
 import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
+import com.fyself.post.service.post.contract.to.criteria.enums.TypeSearch;
 import com.fyself.seedwork.facade.Result;
 import com.fyself.seedwork.facade.stereotype.Facade;
 import com.fyself.seedwork.service.PagedList;
@@ -24,10 +26,12 @@ public class PostFacadeImpl implements PostFacade {
 
     private final PostService service;
     private final PostTimelineService postTimelineService;
+    private final CommentService commentService;
 
-    public PostFacadeImpl(PostService service, PostTimelineService postTimelineService) {
+    public PostFacadeImpl(PostService service, PostTimelineService postTimelineService, CommentService commentService) {
         this.service = service;
         this.postTimelineService = postTimelineService;
+        this.commentService = commentService;
     }
 
     @Override
@@ -37,7 +41,9 @@ public class PostFacadeImpl implements PostFacade {
 
     @Override
     public Mono<Result<PostTO>> load(String post, FySelfContext context) {
-        return service.load(post, context).map(Result::successful);
+        return service.load(post, context)
+                .flatMap(postTOResult -> commentService.count(post).map(postTOResult::putCount))
+                .map(Result::successful);
     }
 
     @Override
@@ -64,10 +70,11 @@ public class PostFacadeImpl implements PostFacade {
 
     @Override
     public Mono<Result<PagedList<PostTO>>> searchPostTimeline(PostTimelineCriteriaTO criteria, FySelfContext context) {
-        return Mono.fromSupplier(() -> criteria)
-                .filter(PostTimelineCriteriaTO::isMe)
-                .flatMap(criteriaTO -> service.search(POST_BINDER.bindToCriteriaTO(criteria), context))
-                .switchIfEmpty(postTimelineService.search(criteria, context))
+        if (criteria.getType()== TypeSearch.ME)
+            return postTimelineService.search(criteria, context)
+                    .map(Result::successful);
+        else
+            return service.search(POST_BINDER.bindToCriteriaTO(criteria), context)
                 .map(Result::successful);
     }
 

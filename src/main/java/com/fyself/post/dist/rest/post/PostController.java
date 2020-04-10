@@ -132,21 +132,18 @@ public class PostController extends Controller<PostFacade> {
     public Mono<ResponseEntity> create(@RequestBody PostTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.create((facade, context) -> facade.create(to, context), exchange);
     }
-
     @GetMapping("/{id}")
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_load", value = "Load post", response = ResponseEntity.class)
     public Mono<ResponseEntity> load(@PathVariable String id, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.load(id, context), exchange);
     }
-
     @DeleteMapping("/{id}")
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_load", value = "Update post", response = NoContentResponse.class)
     public Mono<ResponseEntity> delete(@PathVariable String id, @ApiIgnore ServerWebExchange exchange) {
         return this.perform((facade, context) -> facade.delete(id, context), exchange);
     }
-
     @PutMapping("/{id}")
     @ApiSecuredOperation
     @ApiImplicitParams({
@@ -247,7 +244,6 @@ public class PostController extends Controller<PostFacade> {
     public Mono<ResponseEntity> update(@PathVariable String id, @RequestBody PostTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.perform((facade, context) -> facade.update(to.withId(id), context), exchange);
     }
-
     @PatchMapping("/{id}")
     @ApiSecuredOperation
     @ApiImplicitParams({
@@ -355,7 +351,6 @@ public class PostController extends Controller<PostFacade> {
     public Mono<ResponseEntity> searchPost(@RequestBody PostCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.search(to, context), exchange);
     }
-
     @GetMapping("/search")
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_search", value = "Search Posts", response = SearchResponse.class)
@@ -377,13 +372,13 @@ public class PostController extends Controller<PostFacade> {
         return this.get((facade, context) -> facade.searchPostTimeline(criteria, context), exchange);
     }
 
+
     @PostMapping("/{id}/share-with")
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_share_with", value = "Share post with user", response = NoContentResponse.class, code = 204)
     public Mono<ResponseEntity> shareWith(@PathVariable String id, @RequestBody PostShareTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.perform((facade, context) -> facade.shareWith(to.withId(id), context), exchange);
     }
-
     @PostMapping("/{id}/stop-share-with")
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_stop_share_with", value = "Stop share post with user", response = NoContentResponse.class, code = 204)

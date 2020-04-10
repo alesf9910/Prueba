@@ -4,6 +4,8 @@ import com.fyself.post.service.post.CommentService;
 import com.fyself.post.service.post.contract.to.CommentTO;
 import com.fyself.post.service.post.contract.to.criteria.CommentCriteriaTO;
 import com.fyself.post.service.post.datasource.CommentRepository;
+import com.fyself.post.service.post.datasource.domain.Post;
+import com.fyself.post.service.post.datasource.query.CommentCriteria;
 import com.fyself.seedwork.service.EntityNotFoundException;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
@@ -77,5 +79,14 @@ public class CommentServiceImpl implements CommentService {
                                 .map(comments -> COMMENT_BINDER.bindPageOfChildren(comments, comment)))
                         .collectList()
                         .map(commentTOS -> COMMENT_BINDER.bindPage(commentTOS, pageComents)));
+    }
+
+    @Override
+    public Mono<Long> count(String post) {
+        CommentCriteria criteria = new CommentCriteria();
+        Post postP = new Post();
+        postP.setId(post);
+        criteria.setPost(postP);
+        return repository.count(criteria);
     }
 }
