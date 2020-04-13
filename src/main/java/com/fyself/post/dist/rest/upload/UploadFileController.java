@@ -30,4 +30,5 @@ public class UploadFileController extends Controller<UploadFileFacade> {
     public Mono<ResponseEntity> uploadImage(@RequestPart Mono<FilePart> part, @RequestPart String type, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.uploadImage(part, type, context), exchange);
     }
+
 }
