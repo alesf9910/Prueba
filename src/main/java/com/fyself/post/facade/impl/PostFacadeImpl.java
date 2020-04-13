@@ -67,10 +67,9 @@ public class PostFacadeImpl implements PostFacade {
     public Mono<Result<PagedList<PostTO>>> search(PostCriteriaTO criteria, FySelfContext context) {
         return service.search(criteria, context).map(Result::successful);
     }
-
     @Override
     public Mono<Result<PagedList<PostTO>>> searchPostTimeline(PostTimelineCriteriaTO criteria, FySelfContext context) {
-        if (criteria.getType()== TypeSearch.ME)
+        if (criteria.getType()== TypeSearch.ALL)
             return postTimelineService.search(criteria, context)
                     .map(Result::successful);
         else
