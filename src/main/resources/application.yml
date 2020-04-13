@@ -38,8 +38,8 @@ mspost:
     report:
       max: 1
     aws:
-      bucketName: {bucketName}
-      url: https://staging-static-files.fyself.com
+      bucketName: staging-static-files.fyself.com
+      url: http://staging-static-files.fyself.com
 
 application:
   aws:
