@@ -30,9 +30,12 @@ public interface PostFacade {
     Mono<Result<Void>> patch(String id, HashMap to, FySelfContext context);
 
     Mono<Result<PagedList<PostTO>>> search(PostCriteriaTO criteria, FySelfContext context);
+
     Mono<Result<PagedList<PostTO>>> searchPostTimeline(PostTimelineCriteriaTO criteria, FySelfContext context);
 
     Mono<Result<Void>> shareWith(PostShareTO to, FySelfContext context);
+
     Mono<Result<Void>> shareBulk(PostShareBulkTO to, FySelfContext context);
+
     Mono<Result<Void>> stopShareWith(PostShareTO to, FySelfContext context);
 }
