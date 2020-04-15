@@ -71,6 +71,11 @@ public class AnswerSurveyTO extends DomainAuditTransferObject {
         return this;
     }
 
+    public AnswerSurveyTO withAnswerId(String id) {
+        this.setId(id);
+        return this;
+    }
+
     public AnswerSurveyTO withOwner(String owner) {
         this.setOwner(owner);
         return this;

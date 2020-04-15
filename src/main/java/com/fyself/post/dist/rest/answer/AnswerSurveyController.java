@@ -102,7 +102,7 @@ public class AnswerSurveyController extends Controller<AnswerSurveyFacade> {
     @ApiOperation(nickname = "answer_survey_update", value = "Update answer reports", response = NoContentResponse.class, code = 204)
     public Mono<ResponseEntity> update(@ApiParam(name = "id", value = "ID of answer to be answered", required = true) @PathVariable String id,
                                        @ApiParam(name = "to", value = "Answer data to be update", required = true) @RequestBody AnswerSurveyTO to, @ApiIgnore ServerWebExchange exchange) {
-        return this.perform((facade, context) -> facade.update(to.withId(id), context), exchange);
+        return this.perform((facade, context) -> facade.update(to.withAnswerId(id), context), exchange);
     }
 
     @PatchMapping("/{id}")
