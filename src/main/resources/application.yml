@@ -63,7 +63,8 @@ application:
   security:
     jwt-token:
       secret: ${mspost.application.security.jwt-token.secret}
-
+    ms:
+      baseUrl: https://staging-backend.fyself.com/
     corsConfig:
       allowed-origins: ${mspost.application.security.corsConfig.allowed-origins}
       allowed-methods: ${mspost.application.security.corsConfig.allowed-methods}
@@ -92,7 +93,8 @@ application:
   server:
     port: ${mspost.application.server.port}
 
-
+  web:
+    type: static
 
 spring:
   data:

@@ -16,10 +16,13 @@ import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.services.s3.S3AsyncClientBuilder;
 import springfox.documentation.swagger.web.*;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebFlux;
+
 import javax.validation.Validator;
+
 import static com.fyself.post.Main.TITLE;
 import static com.fyself.post.Main.VERSION;
 import static java.util.Collections.emptyList;
+
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
@@ -42,6 +45,12 @@ public class DefaultContext {
 
     }
 
+    @Configuration
+    @ComponentScan("com.fyself.seedwork.service.repository.restclient.impl")
+    public class WebClientContext {
+
+    }
+
     @Bean
     public CascadeReferenceMongoEventListener CascadingMongoEventListener() {
         return new CascadeReferenceMongoEventListener();
@@ -55,14 +64,16 @@ public class DefaultContext {
      * @since 0.1.0
      */
     @Configuration
-    @ComponentScan(basePackages={"com.fyself.post.facade.impl",
+    @ComponentScan(basePackages = {"com.fyself.post.facade.impl",
             "com.fyself.post.facade.error",
             "com.fyself.post.service.*.impl",
             "com.fyself.post.service.*.contract.validation",
             "com.fyself.post.service.*.contract.validation.*",
             "com.fyself.post.service.*.datasource",
+            "com.fyself.post.service.system.datasource.impl",
+            "com.fyself.seedwork.service.repository.*.impl",
             "com.fyself.seedwork.service.repository.file.impl",
-                                 "com.fyself.seedwork.facade"})
+            "com.fyself.seedwork.facade"})
     @EnableReactiveMongoRepositories("com.fyself.post.service.*.datasource")
     public class DataSourceContext {
         @Bean
@@ -115,7 +126,8 @@ public class DefaultContext {
                 "urn:tos",
                 DEFAULT_CONTACT,
                 null, null, emptyList());
-        private @Value("${application.name}") String path;
+        private @Value("${application.name}")
+        String path;
 
         @Bean
         public Docket api() {
@@ -127,7 +139,7 @@ public class DefaultContext {
         }
 
         @Bean
-        public UiConfiguration uiConfig(){
+        public UiConfiguration uiConfig() {
             return UiConfigurationBuilder.builder()
                     .deepLinking(true)
                     .displayOperationId(false)

@@ -12,6 +12,7 @@ import reactor.core.publisher.Mono;
 import static com.fyself.post.tools.enums.Access.PUBLIC;
 import static com.fyself.seedwork.error.ErrorCode.FORBIDDEN_ACCESS;
 import static com.fyself.seedwork.service.validation.MonoBiValidatorFixInterceptor.Position.LAST;
+import static reactor.core.publisher.Mono.just;
 
 /**
  * Check for report validations
@@ -41,15 +42,16 @@ public class PostCommentGetAccessValidator extends MonoBiValidatorFixInterceptor
     protected Mono<Boolean> validate(String value, FySelfContext context) {
 
         if (value == null) {
-            return Mono.just(true);
+            return just(true);
         }
 
         if (value.trim().equals("")) {
-            return Mono.just(true);
+            return just(true);
         }
 
         return repository.getById(value)
-                .map(comment -> comment.getPost().getAccess().equals(PUBLIC) && !comment.getPost().isBlocked())
-                .switchIfEmpty(Mono.just(false));
+                .map(comment -> comment.getPost().getOwner().equals(context.getAccount().get().getId()) || (comment.getPost().getAccess().equals(PUBLIC) && !comment.getPost().isBlocked()))
+                .onErrorResume(throwable -> just(false))
+                .switchIfEmpty(just(false));
     }
 }
