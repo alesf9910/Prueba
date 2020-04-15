@@ -1,6 +1,8 @@
 package com.fyself.post.service.post.contract.validation;
 
 import com.fyself.post.service.post.datasource.CommentRepository;
+import com.fyself.post.service.post.datasource.PostRepository;
+import com.fyself.post.tools.enums.Access;
 import com.fyself.seedwork.service.context.FySelfContext;
 import com.fyself.seedwork.service.validation.MonoBiValidatorFixInterceptor;
 import com.fyself.seedwork.service.validation.stereotype.ValidatorInterceptor;
@@ -11,6 +13,7 @@ import reactor.core.publisher.Mono;
 
 import static com.fyself.seedwork.error.ErrorCode.INVALID_VALUE;
 import static com.fyself.seedwork.service.validation.MonoBiValidatorFixInterceptor.Position.LAST;
+import static reactor.core.publisher.Mono.just;
 
 /**
  * Check for comment validations
@@ -36,13 +39,23 @@ public class CommentChildrenNotLoadValidator extends MonoBiValidatorFixIntercept
 
     @Override
     protected Mono<Boolean> validate(String value, FySelfContext context) {
-        if (value == null) {
-            return Mono.just(true);
+        if (value == null || value.isBlank()) {
+            return just(true);
         }
-        if (value.isBlank()) {
-            return Mono.just(true);
+
+        if (context.getAccount().isEmpty()) {
+            return just(false);
         }
+
         return repository.getById(value)
-                .map(comment -> comment.getFather() == null);
+                .map(comment -> comment.getFather() == null)
+                //check if i'm the post owner
+                .zipWith(repository.getById(value).map(comment -> comment.getPost().getAccess().equals(Access.PUBLIC) || comment.getPost().getOwner().equals(context.getAccount().get().getId())))
+                //evaluate the conditions
+                .map(conditions -> conditions.getT1() || conditions.getT2())
+                //if not satisfy any condition
+                .switchIfEmpty(just(false))
+                //if error occur
+                .onErrorResume(throwable -> just(false));
     }
 }
