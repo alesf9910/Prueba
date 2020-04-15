@@ -55,7 +55,7 @@ public interface AnswerSurveyBinder {
         survey.setAnswer(source);
         survey.setCreatedAt(target.getCreatedAt());
         survey.withOwner(target.getOwner());
-        survey.withAnswerId(target.getId());
+        survey.withId(target.getId());
         survey.setPost(target.getPost().getId());
         return survey;
     }
