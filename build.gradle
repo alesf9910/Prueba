@@ -53,6 +53,7 @@ dependencies {
 	implementation 'ch.qos.logback:logback-classic:1.2.3'
 	implementation 'com.github.ua-parser:uap-java:1.4.3'
 
+	compile 'commons-codec:commons-codec:1.14'
 
 	implementation platform('software.amazon.awssdk:bom:2.5.29')
 	implementation 'software.amazon.awssdk:s3'

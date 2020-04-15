@@ -46,7 +46,7 @@ public class AnswerSurveyServiceImpl implements AnswerSurveyService {
     @Override
     public Mono<String> add(@Valid AnswerSurveyTO to, FySelfContext context) {
         return context.authenticatedId()
-                .flatMap(userId -> repository.save(ANSWER_SURVEY_BINDER.bind(to.withOwner(userId).withCreateAt().withUpdateAt())))
+                .flatMap(userId -> repository.save(ANSWER_SURVEY_BINDER.bind(to.withOwner(userId).withId(to.getPost()).withCreateAt().withUpdateAt())))
                 .flatMap(answerSurvey -> this.putInPipeline(answerSurvey).thenReturn(answerSurvey))
                 .doOnSuccess(entity -> createEvent(entity, context))
                 .switchIfEmpty(error(EntityNotFoundException::new))
