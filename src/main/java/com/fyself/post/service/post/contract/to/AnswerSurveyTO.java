@@ -2,6 +2,8 @@ package com.fyself.post.service.post.contract.to;
 
 import com.fyself.seedwork.service.to.DomainAuditTransferObject;
 import com.fyself.seedwork.service.to.annotation.ReadOnly;
+import org.apache.commons.codec.digest.DigestUtils;
+
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -63,8 +65,9 @@ public class AnswerSurveyTO extends DomainAuditTransferObject {
         this.answer = answer;
     }
 
-    public AnswerSurveyTO withAnswerId(String answerId) {
-        this.setId(answerId);
+    public AnswerSurveyTO withId(String id) {
+        String answer = DigestUtils.md5Hex(String.format("%s%s", id, this.getOwner()));
+        this.setId(answer);
         return this;
     }
 
@@ -87,6 +90,7 @@ public class AnswerSurveyTO extends DomainAuditTransferObject {
         this.setCreatedAt(time);
         return this;
     }
+
     public AnswerSurveyTO withUpdateAt(LocalDateTime time) {
         this.setUpdatedAt(time);
         return this;
