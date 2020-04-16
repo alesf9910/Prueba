@@ -43,12 +43,12 @@ public interface PostBinder {
 
     default PostTO bindPostWithAnswer(Post source, AnswerSurveyTO answerSurveyTO) {
         var postTO = bind(source);
-        ((SurveyContentTO) postTO.getContent()).setAnswer(answerSurveyTO.getAnswer());
+        ((SurveyContentTO) postTO.getContent()).setAnswer(answerSurveyTO);
         return postTO;
     }
 
     default PostTO bindPostTOWithAnswer(PostTO source, AnswerSurveyTO answerSurveyTO) {
-        ((SurveyContentTO) source.getContent()).setAnswer(answerSurveyTO.getAnswer());
+        ((SurveyContentTO) source.getContent()).setAnswer(answerSurveyTO);
         return source;
     }
 

@@ -9,7 +9,7 @@ public class SurveyContentTO extends ContentTO {
 
     private static final long serialVersionUID = 2597014116630110418L;
     private String ask;
-    private AnswerTO answer;
+    private AnswerSurveyTO answer;
 
     @NotBlank
     public String getAsk() {
@@ -21,11 +21,11 @@ public class SurveyContentTO extends ContentTO {
     }
 
     @ReadOnly
-    public AnswerTO getAnswer() {
+    public AnswerSurveyTO getAnswer() {
         return answer;
     }
 
-    public void setAnswer(AnswerTO answer) {
+    public void setAnswer(AnswerSurveyTO answer) {
         this.answer = answer;
     }
 }
