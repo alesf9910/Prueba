@@ -73,4 +73,14 @@ public class PostTimelineTO extends DomainAuditTransferObject {
         to.setUser(userId);
         return to;
     }
+
+    public PostTimelineTO withCreatedAt() {
+        this.setCreatedAt(now());
+        return this;
+    }
+
+    public PostTimelineTO withUpdatedAt() {
+        this.setUpdatedAt(now());
+        return this;
+    }
 }

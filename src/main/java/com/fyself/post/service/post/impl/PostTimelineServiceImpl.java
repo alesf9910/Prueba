@@ -35,7 +35,7 @@ public class PostTimelineServiceImpl implements PostTimelineService {
 
     @Override
     public Mono<String> create(@NotNull @Valid PostTimelineTO to) {
-        return repository.save(POST_TIMELINE_BINDER.bind(to)).map(DomainEntity::getId);
+        return repository.save(POST_TIMELINE_BINDER.bind(to.withCreatedAt().withUpdatedAt())).map(DomainEntity::getId);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class PostTimelineServiceImpl implements PostTimelineService {
                         .flatMap(postTO -> answerSurveyRepository.findByPostAndUser(postTO.getId(), context.getAccount().get().getId())
                                 .map(ANSWER_SURVEY_BINDER::bindFromSurvey)
                                 .map(answerSurveyTO -> POST_BINDER.bindPostTOWithAnswer(postTO, answerSurveyTO))
-                                .switchIfEmpty(just(postTO)))
+                                .switchIfEmpty(just(postTO)), 1)
                         .collectList()
                         .map(postTOS -> POST_BINDER.bind(postTOPagedList, postTOS)));
     }
