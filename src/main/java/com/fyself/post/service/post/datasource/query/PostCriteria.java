@@ -4,6 +4,7 @@ import com.fyself.post.service.post.contract.to.criteria.enums.TypeSearch;
 import com.fyself.post.service.post.datasource.domain.Post;
 import com.fyself.post.tools.enums.Access;
 import com.fyself.seedwork.service.repository.mongodb.criteria.DomainCriteria;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 
@@ -88,5 +89,10 @@ public class PostCriteria extends DomainCriteria<Post> {
     }
     public void setType(TypeSearch type) {
         this.type = type;
+    }
+
+    @Override
+    public Sort getSort() {
+        return Sort.by(Sort.Order.desc("createdAt"));
     }
 }

@@ -6,5 +6,4 @@ import java.util.Map;
 
 public interface StreamService {
     Mono<Void> putInPipelineAnswerElastic(Map message);
-    Mono<Void> putInPipelinePostNotif(Map message);
 }
