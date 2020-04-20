@@ -54,8 +54,10 @@ public interface PostBinder {
     }
 
     default Content bind(ContentTO source) {
-        if (source instanceof LinkContentTO)
-            return this.bind((LinkContentTO) source);
+        if (source instanceof AwardContentTO)
+            return this.bind((AwardContentTO) source);
+       if (source instanceof ProfileContentTO)
+            return this.bind((ProfileContentTO) source);
         if (source instanceof TextContentTO)
             return this.bind((TextContentTO) source);
         if (source instanceof SurveyContentTO)
@@ -63,13 +65,17 @@ public interface PostBinder {
         return null;
     }
 
-    LinkContent bind(LinkContentTO source);
+    AwardContent bind(AwardContentTO source);
+
+    ProfileContent bind(ProfileContentTO source);
 
     TextContent bind(TextContentTO source);
 
     default ContentTO bind(Content source) {
-        if (source instanceof LinkContent)
-            return this.bind((LinkContent) source);
+        if (source instanceof AwardContent)
+            return this.bind((AwardContent) source);
+        if (source instanceof ProfileContent)
+            return this.bind((ProfileContent) source);
         if (source instanceof TextContent)
             return this.bind((TextContent) source);
         if (source instanceof SurveyContent)
@@ -77,7 +83,9 @@ public interface PostBinder {
         return null;
     }
 
-    LinkContentTO bind(LinkContent source);
+    AwardContentTO bind(AwardContent source);
+
+    ProfileContentTO bind(ProfileContent source);
 
     TextContentTO bind(TextContent source);
 
@@ -125,8 +133,10 @@ public interface PostBinder {
     void bind(@MappingTarget Post target, PostTO source);
 
     default Content set(Content target, ContentTO source) {
-        if (source instanceof LinkContentTO)
-            return this.bind((LinkContentTO) source);
+        if (source instanceof AwardContentTO)
+            return this.bind((AwardContentTO) source);
+        if (source instanceof ProfileContentTO)
+            return this.bind((ProfileContentTO) source);
         if (source instanceof TextContentTO)
             return this.bind((TextContentTO) source);
         if (source instanceof SurveyContentTO)
