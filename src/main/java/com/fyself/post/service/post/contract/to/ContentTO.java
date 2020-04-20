@@ -11,7 +11,8 @@ import java.io.Serializable;
         visible = true,
         property = "typeContent")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = LinkContentTO.class, name = "LINK"),
+        @JsonSubTypes.Type(value = ProfileContentTO.class, name = "PROFILE"),
+        @JsonSubTypes.Type(value = AwardContentTO.class, name = "AWARD"),
         @JsonSubTypes.Type(value = TextContentTO.class, name = "TEXT"),
         @JsonSubTypes.Type(value = SurveyContentTO.class, name = "SURVEY_ASK"),
         @JsonSubTypes.Type(value = ChoiceSurveyTO.class, name = "SURVEY_CHOICE"),
