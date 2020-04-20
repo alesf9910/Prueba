@@ -48,7 +48,8 @@ public interface PostBinder {
     }
 
     default PostTO bindPostTOWithAnswer(PostTO source, AnswerSurveyTO answerSurveyTO) {
-        ((SurveyContentTO) source.getContent()).setAnswer(answerSurveyTO);
+        if (source.getContent() != null)
+            ((SurveyContentTO) source.getContent()).setAnswer(answerSurveyTO);
         return source;
     }
 
