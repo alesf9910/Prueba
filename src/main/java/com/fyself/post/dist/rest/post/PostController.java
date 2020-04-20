@@ -44,13 +44,32 @@ public class PostController extends Controller<PostFacade> {
                     example =
                             "{\n" +
                                     " \"content\":{ " +
-                                    " \"link\":\"url\"," +
-                                    " \"typeContent\":\"LINK\"" +
+                                    " \"award\":\"string\"," +
+                                    " \"title\":\"string\"," +
+                                    " \"description\":\"string\"," +
+                                    " \"fyCoins\":double," +
+                                    " \"typeContent\":\"AWARD\"" +
                                     "}," +
                                     " \"access\":\"PUBLIC\"," +
                                     " \"active\":true, " +
                                     "\"blocked\":false," +
-                                    " \"urlImage\":\"string\"," +
+                                    " \"urlImage\":\"string\"" +
+                                    "}" +
+                                    "\n\n" +
+                                    "OR" +
+                                    "\n\n" +
+                                    "{\n" +
+                                    " \"content\":{ " +
+                                    " \"profile\":\"string\"," +
+                                    " \"title\":\"string\"," +
+                                    " \"description\":\"string\"," +
+                                    " \"fyCoins\":double," +
+                                    " \"typeContent\":\"PROFILE\"" +
+                                    "}," +
+                                    " \"access\":\"PUBLIC\"," +
+                                    " \"active\":true, " +
+                                    "\"blocked\":false," +
+                                    " \"urlImage\":\"string\"" +
                                     "}" +
                                     "\n\n" +
                                     "OR" +
@@ -64,7 +83,7 @@ public class PostController extends Controller<PostFacade> {
                                     " \"access\":\"PUBLIC\"," +
                                     " \"active\":true, " +
                                     "\"blocked\":false," +
-                                    " \"urlImage\":\"string\"," +
+                                    " \"urlImage\":\"string\"" +
                                     "}" +
                                     "\n\n" +
                                     "OR" +
@@ -77,7 +96,7 @@ public class PostController extends Controller<PostFacade> {
                                     " \"access\":\"PUBLIC\"," +
                                     " \"active\":true, " +
                                     "\"blocked\":false," +
-                                    " \"urlImage\":\"string\"," +
+                                    " \"urlImage\":\"string\"" +
                                     "}" +
                                     "\n\n" +
                                     "OR" +
@@ -93,7 +112,7 @@ public class PostController extends Controller<PostFacade> {
                                     " \"access\":\"PUBLIC\"," +
                                     " \"active\":true, " +
                                     "\"blocked\":false," +
-                                    " \"urlImage\":\"string\"," +
+                                    " \"urlImage\":\"string\"" +
                                     "}" +
                                     "\n\n" +
                                     "OR" +
@@ -109,7 +128,7 @@ public class PostController extends Controller<PostFacade> {
                                     " \"access\":\"PUBLIC\"," +
                                     " \"active\":true, " +
                                     "\"blocked\":false," +
-                                    " \"urlImage\":\"string\"," +
+                                    " \"urlImage\":\"string\"" +
                                     "}" +
                                     "\n\n" +
                                     "OR" +
@@ -123,9 +142,8 @@ public class PostController extends Controller<PostFacade> {
                                     " \"access\":\"PUBLIC\"," +
                                     " \"active\":true, " +
                                     "\"blocked\":false," +
-                                    " \"urlImage\":\"string\"," +
+                                    " \"urlImage\":\"string\"" +
                                     "}"
-
             )
     })
     @ApiOperation(nickname = "post_create", value = "Create post", response = String.class, code = 201)
@@ -154,13 +172,32 @@ public class PostController extends Controller<PostFacade> {
                     example =
                             "{\n" +
                                     " \"content\":{ " +
-                                    " \"link\":\"url\"," +
-                                    " \"typeContent\":\"LINK\"" +
+                                    " \"award\":\"string\"," +
+                                    " \"title\":\"string\"," +
+                                    " \"description\":\"string\"," +
+                                    " \"fyCoins\":double," +
+                                    " \"typeContent\":\"AWARD\"" +
                                     "}," +
                                     " \"access\":\"PUBLIC\"," +
                                     " \"active\":true, " +
                                     "\"blocked\":false," +
-                                    " \"urlImage\":\"string\"," +
+                                    " \"urlImage\":\"string\"" +
+                                    "}" +
+                                    "\n\n" +
+                                    "OR" +
+                                    "\n\n" +
+                                    "{\n" +
+                                    " \"content\":{ " +
+                                    " \"profile\":\"string\"," +
+                                    " \"title\":\"string\"," +
+                                    " \"description\":\"string\"," +
+                                    " \"fyCoins\":double," +
+                                    " \"typeContent\":\"PROFILE\"" +
+                                    "}," +
+                                    " \"access\":\"PUBLIC\"," +
+                                    " \"active\":true, " +
+                                    "\"blocked\":false," +
+                                    " \"urlImage\":\"string\"" +
                                     "}" +
                                     "\n\n" +
                                     "OR" +
@@ -174,7 +211,7 @@ public class PostController extends Controller<PostFacade> {
                                     " \"access\":\"PUBLIC\"," +
                                     " \"active\":true, " +
                                     "\"blocked\":false," +
-                                    " \"urlImage\":\"string\"," +
+                                    " \"urlImage\":\"string\"" +
                                     "}" +
                                     "\n\n" +
                                     "OR" +
@@ -187,7 +224,7 @@ public class PostController extends Controller<PostFacade> {
                                     " \"access\":\"PUBLIC\"," +
                                     " \"active\":true, " +
                                     "\"blocked\":false," +
-                                    " \"urlImage\":\"string\"," +
+                                    " \"urlImage\":\"string\"" +
                                     "}" +
                                     "\n\n" +
                                     "OR" +
@@ -203,7 +240,7 @@ public class PostController extends Controller<PostFacade> {
                                     " \"access\":\"PUBLIC\"," +
                                     " \"active\":true, " +
                                     "\"blocked\":false," +
-                                    " \"urlImage\":\"string\"," +
+                                    " \"urlImage\":\"string\"" +
                                     "}" +
                                     "\n\n" +
                                     "OR" +
@@ -219,25 +256,22 @@ public class PostController extends Controller<PostFacade> {
                                     " \"access\":\"PUBLIC\"," +
                                     " \"active\":true, " +
                                     "\"blocked\":false," +
-                                    " \"urlImage\":\"string\"," +
+                                    " \"urlImage\":\"string\"" +
                                     "}" +
                                     "\n\n" +
                                     "OR" +
                                     "\n\n" +
                                     "{\n" +
                                     " \"content\":{ " +
-                                    " \"limits\": [" +
-                                    "  {\"string\":\"integer\"}," +
-                                    "]," +
+                                    " \"limits\": {\"string\":\"integer\"}," +
                                     " \"ask\":\"string\"," +
                                     " \"typeContent\":\"SURVEY_RATE\"" +
                                     "}," +
                                     " \"access\":\"PUBLIC\"," +
                                     " \"active\":true, " +
                                     "\"blocked\":false," +
-                                    " \"urlImage\":\"string\"," +
+                                    " \"urlImage\":\"string\"" +
                                     "}"
-
             )
     })
     @ApiOperation(nickname = "post_load", value = "Update post", response = NoContentResponse.class, code = 204)
