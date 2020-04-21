@@ -29,6 +29,7 @@ public interface KafkaMessageBinder {
 
         Map<String, Object> response = new HashMap<>();
 
+        response.put("id", answer.getId());
         response.put("post", answer.getPost().getId());
         response.put("type", answer.getAnswer().getType().toString().toLowerCase());
 
