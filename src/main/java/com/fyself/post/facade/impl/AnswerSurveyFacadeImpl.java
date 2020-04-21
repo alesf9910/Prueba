@@ -68,4 +68,9 @@ public class AnswerSurveyFacadeImpl implements AnswerSurveyFacade {
                 .flatMap(userId -> service.loadAllByMe(criteria, context))
                 .map(Result::successful);
     }
+
+    @Override
+    public Mono<Result<Void>> sync(FySelfContext context) {
+        return service.sync(context).map(Result::successful);
+    }
 }

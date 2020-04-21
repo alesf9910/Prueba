@@ -24,4 +24,6 @@ public interface AnswerSurveyFacade {
     Mono<Result<PagedList<AnswerSurveyTO>>> search(AnswerSurveyCriteriaTO criteria, FySelfContext context);
     Mono<Result<PagedList<AnswerSurveyTO>>> searchByMe(AnswerSurveyCriteriaTO criteria, FySelfContext context);
     Mono<Result<PagedList<AnswerSurveyTO>>> searchToMe(AnswerSurveyCriteriaTO criteria, FySelfContext context);
+
+    Mono<Result<Void>> sync(FySelfContext context);
 }

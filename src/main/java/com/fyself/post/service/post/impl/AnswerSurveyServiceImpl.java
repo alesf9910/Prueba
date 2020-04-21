@@ -109,6 +109,11 @@ public class AnswerSurveyServiceImpl implements AnswerSurveyService {
                 .map(ANSWER_SURVEY_BINDER::bind);
     }
 
+    @Override
+    public Mono<Void> sync(FySelfContext context) {
+        return repository.findAll().flatMap(this::putInPipeline, 1).then();
+    }
+
     private Mono<Void> putInPipeline(AnswerSurvey answer) {
         return streamService.putInPipelineAnswerElastic(KAFKA_MESSAGE_BINDER.bindAnswer(answer));
     }
