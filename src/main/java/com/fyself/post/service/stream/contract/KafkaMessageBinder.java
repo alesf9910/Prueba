@@ -9,10 +9,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.fyself.seedwork.util.JsonUtil.MAPPER;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Temporal binder for the kafka service operations.
@@ -66,6 +69,7 @@ public interface KafkaMessageBinder {
 
     default void SURVEY_ASK(Map<String, Object> response, AnswerAsk answer) {
         response.put("response", answer.getAnswer());
+        response.put("tags", Arrays.asList(answer.getAnswer().split(" ")).stream().filter(s -> s.length()>3).collect(toList()));
     }
 
     default Map bindPostNotif(String user, String post) {
