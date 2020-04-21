@@ -62,7 +62,7 @@ public class LoggerUtils {
                 .setResources(Set.of(entity.getId()))
                 .setAction("update")
                 .setUser(context.getAccount().isPresent() ? context.getAccount().get().getId() : "")
-                .setDetails(Map.of(entity.getClass().getSimpleName().toLowerCase().concat(".").concat("last"), category, entity.getClass().getSimpleName().toLowerCase().concat(".").concat("value"), entity));
+                .setDetails(Map.of(entity.getClass().getSimpleName().toLowerCase().concat(".").concat("value"), entity));
         LoggerUtils.getInstance().sendLogs(context.getAgentInfo().get(), bussines);
     }
 
