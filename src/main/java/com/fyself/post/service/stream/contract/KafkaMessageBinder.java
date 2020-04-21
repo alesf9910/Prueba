@@ -21,7 +21,7 @@ import static com.fyself.seedwork.util.JsonUtil.MAPPER;
  * @since 0.1.0
  */
 @SuppressWarnings("unchecked")
-@Mapper(imports = {SimpleDateFormat.class})
+@Mapper
 public interface KafkaMessageBinder {
     KafkaMessageBinder KAFKA_MESSAGE_BINDER = Mappers.getMapper(KafkaMessageBinder.class);
 

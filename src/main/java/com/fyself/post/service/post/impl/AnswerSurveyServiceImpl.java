@@ -47,7 +47,7 @@ public class AnswerSurveyServiceImpl implements AnswerSurveyService {
     public Mono<String> add(@Valid AnswerSurveyTO to, FySelfContext context) {
         return context.authenticatedId()
                 .flatMap(userId -> repository.save(ANSWER_SURVEY_BINDER.bind(to.withOwner(userId).withId(to.getPost()).withCreateAt().withUpdateAt())))
-                .flatMap(answerSurvey -> this.putInPipeline(answerSurvey).thenReturn(answerSurvey))
+                .doOnSuccess(survey -> this.putInPipeline(survey).subscribe())
                 .doOnSuccess(entity -> createEvent(entity, context))
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .map(DomainEntity::getId);
@@ -62,7 +62,9 @@ public class AnswerSurveyServiceImpl implements AnswerSurveyService {
                                         to.withCreateAt(survey.getCreatedAt())
                                                 .withUpdateAt()
                                                 .withOwner(userId))
-                                        ).doOnSuccess(entity -> updateEvent(survey, entity, context))
+                                        )
+                                                .doOnSuccess(entity -> updateEvent(survey, entity, context))
+                                                .doOnSuccess(response -> this.putInPipeline(response).subscribe())
                                 )
                 )
                 .switchIfEmpty(error(EntityNotFoundException::new))
