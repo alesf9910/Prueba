@@ -36,116 +36,116 @@ public class PostController extends Controller<PostFacade> {
 
     @PostMapping()
     @ApiSecuredOperation
-    @ApiImplicitParams({
-            @ApiImplicitParam(
-                    name = "to",
-                    required = true,
-                    dataTypeClass = PostTO.class,
-                    example =
-                            "{\n" +
-                                    " \"content\":{ " +
-                                    " \"award\":\"string\"," +
-                                    " \"title\":\"string\"," +
-                                    " \"description\":\"string\"," +
-                                    " \"fyCoins\":double," +
-                                    " \"typeContent\":\"AWARD\"" +
-                                    "}," +
-                                    " \"access\":\"PUBLIC\"," +
-                                    " \"active\":true, " +
-                                    "\"blocked\":false," +
-                                    " \"urlImage\":\"string\"" +
-                                    "}" +
-                                    "\n\n" +
-                                    "OR" +
-                                    "\n\n" +
-                                    "{\n" +
-                                    " \"content\":{ " +
-                                    " \"profile\":\"string\"," +
-                                    " \"title\":\"string\"," +
-                                    " \"description\":\"string\"," +
-                                    " \"fyCoins\":double," +
-                                    " \"typeContent\":\"PROFILE\"" +
-                                    "}," +
-                                    " \"access\":\"PUBLIC\"," +
-                                    " \"active\":true, " +
-                                    "\"blocked\":false," +
-                                    " \"urlImage\":\"string\"" +
-                                    "}" +
-                                    "\n\n" +
-                                    "OR" +
-                                    "\n\n" +
-                                    "{\n" +
-                                    " \"content\":{ " +
-                                    " \"title\": \"string\"," +
-                                    " \"description\":\"string\"," +
-                                    " \"typeContent\":\"TEXT\"" +
-                                    "}," +
-                                    " \"access\":\"PUBLIC\"," +
-                                    " \"active\":true, " +
-                                    "\"blocked\":false," +
-                                    " \"urlImage\":\"string\"" +
-                                    "}" +
-                                    "\n\n" +
-                                    "OR" +
-                                    "\n\n" +
-                                    "{\n" +
-                                    " \"content\":{ " +
-                                    "\"ask\": \"string\"," +
-                                    " \"typeContent\":\"SURVEY_ASK\"" +
-                                    "}," +
-                                    " \"access\":\"PUBLIC\"," +
-                                    " \"active\":true, " +
-                                    "\"blocked\":false," +
-                                    " \"urlImage\":\"string\"" +
-                                    "}" +
-                                    "\n\n" +
-                                    "OR" +
-                                    "\n\n" +
-                                    "{\n" +
-                                    " \"content\":{ " +
-                                    " \"choices\": [" +
-                                    "  {\"choice\":\"string\"}," +
-                                    "]," +
-                                    " \"ask\":\"string\"," +
-                                    " \"typeContent\":\"SURVEY_CHOICE\"" +
-                                    "}," +
-                                    " \"access\":\"PUBLIC\"," +
-                                    " \"active\":true, " +
-                                    "\"blocked\":false," +
-                                    " \"urlImage\":\"string\"" +
-                                    "}" +
-                                    "\n\n" +
-                                    "OR" +
-                                    "\n\n" +
-                                    "{\n" +
-                                    " \"content\":{ " +
-                                    " \"options\": [" +
-                                    "  {\"option\":\"string\"}," +
-                                    "]," +
-                                    " \"ask\":\"string\"," +
-                                    " \"typeContent\":\"SURVEY_HIERARCHY\"" +
-                                    "}," +
-                                    " \"access\":\"PUBLIC\"," +
-                                    " \"active\":true, " +
-                                    "\"blocked\":false," +
-                                    " \"urlImage\":\"string\"" +
-                                    "}" +
-                                    "\n\n" +
-                                    "OR" +
-                                    "\n\n" +
-                                    "{\n" +
-                                    " \"content\":{ " +
-                                    " \"limits\": {\"string\":\"integer\"}," +
-                                    " \"ask\":\"string\"," +
-                                    " \"typeContent\":\"SURVEY_RATE\"" +
-                                    "}," +
-                                    " \"access\":\"PUBLIC\"," +
-                                    " \"active\":true, " +
-                                    "\"blocked\":false," +
-                                    " \"urlImage\":\"string\"" +
-                                    "}"
-            )
-    })
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(
+//                    name = "to",
+//                    required = true,
+//                    dataTypeClass = PostTO.class,
+//                    example =
+//                            "{\n" +
+//                                    " \"content\":{ " +
+//                                    " \"award\":\"string\"," +
+//                                    " \"title\":\"string\"," +
+//                                    " \"description\":\"string\"," +
+//                                    " \"fyCoins\":double," +
+//                                    " \"typeContent\":\"AWARD\"" +
+//                                    "}," +
+//                                    " \"access\":\"PUBLIC\"," +
+//                                    " \"active\":true, " +
+//                                    "\"blocked\":false," +
+//                                    " \"urlImage\":\"string\"" +
+//                                    "}" +
+//                                    "\n\n" +
+//                                    "OR" +
+//                                    "\n\n" +
+//                                    "{\n" +
+//                                    " \"content\":{ " +
+//                                    " \"profile\":\"string\"," +
+//                                    " \"title\":\"string\"," +
+//                                    " \"description\":\"string\"," +
+//                                    " \"fyCoins\":double," +
+//                                    " \"typeContent\":\"PROFILE\"" +
+//                                    "}," +
+//                                    " \"access\":\"PUBLIC\"," +
+//                                    " \"active\":true, " +
+//                                    "\"blocked\":false," +
+//                                    " \"urlImage\":\"string\"" +
+//                                    "}" +
+//                                    "\n\n" +
+//                                    "OR" +
+//                                    "\n\n" +
+//                                    "{\n" +
+//                                    " \"content\":{ " +
+//                                    " \"title\": \"string\"," +
+//                                    " \"description\":\"string\"," +
+//                                    " \"typeContent\":\"TEXT\"" +
+//                                    "}," +
+//                                    " \"access\":\"PUBLIC\"," +
+//                                    " \"active\":true, " +
+//                                    "\"blocked\":false," +
+//                                    " \"urlImage\":\"string\"" +
+//                                    "}" +
+//                                    "\n\n" +
+//                                    "OR" +
+//                                    "\n\n" +
+//                                    "{\n" +
+//                                    " \"content\":{ " +
+//                                    "\"ask\": \"string\"," +
+//                                    " \"typeContent\":\"SURVEY_ASK\"" +
+//                                    "}," +
+//                                    " \"access\":\"PUBLIC\"," +
+//                                    " \"active\":true, " +
+//                                    "\"blocked\":false," +
+//                                    " \"urlImage\":\"string\"" +
+//                                    "}" +
+//                                    "\n\n" +
+//                                    "OR" +
+//                                    "\n\n" +
+//                                    "{\n" +
+//                                    " \"content\":{ " +
+//                                    " \"choices\": [" +
+//                                    "  {\"choice\":\"string\"}," +
+//                                    "]," +
+//                                    " \"ask\":\"string\"," +
+//                                    " \"typeContent\":\"SURVEY_CHOICE\"" +
+//                                    "}," +
+//                                    " \"access\":\"PUBLIC\"," +
+//                                    " \"active\":true, " +
+//                                    "\"blocked\":false," +
+//                                    " \"urlImage\":\"string\"" +
+//                                    "}" +
+//                                    "\n\n" +
+//                                    "OR" +
+//                                    "\n\n" +
+//                                    "{\n" +
+//                                    " \"content\":{ " +
+//                                    " \"options\": [" +
+//                                    "  {\"option\":\"string\"}," +
+//                                    "]," +
+//                                    " \"ask\":\"string\"," +
+//                                    " \"typeContent\":\"SURVEY_HIERARCHY\"" +
+//                                    "}," +
+//                                    " \"access\":\"PUBLIC\"," +
+//                                    " \"active\":true, " +
+//                                    "\"blocked\":false," +
+//                                    " \"urlImage\":\"string\"" +
+//                                    "}" +
+//                                    "\n\n" +
+//                                    "OR" +
+//                                    "\n\n" +
+//                                    "{\n" +
+//                                    " \"content\":{ " +
+//                                    " \"limits\": {\"string\":\"integer\"}," +
+//                                    " \"ask\":\"string\"," +
+//                                    " \"typeContent\":\"SURVEY_RATE\"" +
+//                                    "}," +
+//                                    " \"access\":\"PUBLIC\"," +
+//                                    " \"active\":true, " +
+//                                    "\"blocked\":false," +
+//                                    " \"urlImage\":\"string\"" +
+//                                    "}"
+//            )
+//    })
     @ApiOperation(nickname = "post_create", value = "Create post", response = String.class, code = 201)
     public Mono<ResponseEntity> create(@RequestBody PostTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.create((facade, context) -> facade.create(to, context), exchange);
