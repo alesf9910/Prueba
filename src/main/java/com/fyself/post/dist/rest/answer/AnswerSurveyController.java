@@ -134,6 +134,15 @@ public class AnswerSurveyController extends Controller<AnswerSurveyFacade> {
         return this.get((facade, context) -> facade.search(to, context), exchange);
     }
 
+
+    @GetMapping("/sync")
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "answer_survey_search_sync", value = "Search answer", response = NoContentResponse.class)
+    public Mono<ResponseEntity> searchPost(@ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.sync(context), exchange);
+    }
+
+
     @GetMapping("/tome")
     @ApiSecuredOperation
     @ApiOperation(nickname = "answer_survey_to_me_search_get", value = "Search answer made for me", response = SearchResponse.class)
