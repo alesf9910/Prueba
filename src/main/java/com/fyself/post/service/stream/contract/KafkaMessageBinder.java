@@ -72,13 +72,14 @@ public interface KafkaMessageBinder {
         response.put("tag", Arrays.asList(answer.getAnswer().split(" ")).stream().filter(s -> s.length()>3).collect(toList()));
     }
 
-    default Map bindPostNotif(String user, String post) {
+    default Map bindPostNotif(String user, String post, String from) {
         PayloadTO payload = new PayloadTO();
         payload.setBody(Map.of("post", post));
 
         MessageTO message = new MessageTO();
         message.setType("POST");
         message.setTo(user);
+        message.setFrom(from);
         message.setPayload(payload);
 
         return toMap(message);
