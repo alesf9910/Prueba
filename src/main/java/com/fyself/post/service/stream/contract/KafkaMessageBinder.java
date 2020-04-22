@@ -5,16 +5,16 @@ import com.fyself.post.service.post.datasource.domain.subentities.AnswerAsk;
 import com.fyself.post.service.post.datasource.domain.subentities.AnswerChoice;
 import com.fyself.post.service.post.datasource.domain.subentities.AnswerHierarchy;
 import com.fyself.post.service.post.datasource.domain.subentities.AnswerRate;
+import com.fyself.post.service.stream.contract.to.MessageTO;
+import com.fyself.post.service.stream.contract.to.PayloadTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.fyself.seedwork.util.JsonUtil.MAPPER;
+import static com.fyself.post.tools.Mapper.toMap;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -73,6 +73,14 @@ public interface KafkaMessageBinder {
     }
 
     default Map bindPostNotif(String user, String post) {
-        return Map.of("type", "POST", "user", user, "post", post);
+        PayloadTO payload = new PayloadTO();
+        payload.setBody(Map.of("post", post));
+
+        MessageTO message = new MessageTO();
+        message.setType("POST");
+        message.setTo(user);
+        message.setPayload(payload);
+
+        return toMap(message);
     }
 }
