@@ -44,7 +44,7 @@ public class GenericKStreamProcessor {
                 .filter(map -> source.containsKey("user") && source.containsKey("post") && source.containsKey("contacts"))
                 .flatMapIterable(map -> (List<String>) source.get("contacts"))
                 .flatMap(user -> postTimelineService.create(from(user, source.get("post").toString(), source.get("user").toString()))
-                        .map(ignored -> Tuples.of(this.output_topic_notification, KAFKA_MESSAGE_BINDER.bindPostNotif(user, source.get("post").toString()))))
+                        .map(ignored -> Tuples.of(this.output_topic_notification, KAFKA_MESSAGE_BINDER.bindPostNotif(user, source.get("post").toString(), source.get("user").toString()))))
                 .onErrorResume(throwable -> empty());
     }
 }
