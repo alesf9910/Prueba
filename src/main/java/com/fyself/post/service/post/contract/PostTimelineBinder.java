@@ -26,6 +26,8 @@ public interface PostTimelineBinder {
         var postTimeline = new PostTimeline();
         postTimeline.setPost(post);
         postTimeline.setUser(post.getOwner());
+        postTimeline.setCreatedAt(post.getCreatedAt());
+        postTimeline.setCreatedAt(post.getUpdatedAt());
         return postTimeline;
     }
 }
