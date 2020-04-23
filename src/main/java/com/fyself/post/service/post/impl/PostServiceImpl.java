@@ -96,7 +96,7 @@ public class PostServiceImpl implements PostService {
                         .flatMap(postTO -> answerSurveyRepository.findByPostAndUser(postTO.getId(), context.getAccount().get().getId())
                                 .map(ANSWER_SURVEY_BINDER::bindFromSurvey)
                                 .map(answerSurveyTO -> POST_BINDER.bindPostTOWithAnswer(postTO, answerSurveyTO))
-                                .switchIfEmpty(just(postTO)))
+                                .switchIfEmpty(just(postTO)), 1)
                         .collectList()
                         .map(postTOS -> POST_BINDER.bind(postTOPagedList, postTOS)));
     }
