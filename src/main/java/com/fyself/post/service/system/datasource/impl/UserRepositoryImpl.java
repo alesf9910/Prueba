@@ -33,7 +33,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     public UserRepositoryImpl(
-            @Value("${mspost.application.security.ms-auth.baseUrl}") String baseUrl,
+            @Value("${application.security.ms.baseUrl}") String baseUrl,
             FySelfHttpClient client
     ) {
         this.baseUrl = baseUrl;
