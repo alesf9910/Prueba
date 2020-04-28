@@ -9,6 +9,7 @@ import com.fyself.post.service.post.datasource.domain.PostTimeline;
 import com.fyself.post.service.post.datasource.domain.subentities.*;
 import com.fyself.post.service.post.datasource.query.PostCriteria;
 import com.fyself.post.service.post.datasource.query.PostTimelineCriteria;
+import com.fyself.post.tools.enums.Access;
 import com.fyself.seedwork.service.PagedList;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,6 +17,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -313,16 +315,16 @@ public interface PostBinder {
 
 
         return Map.of(
-                "id", source.getId(),
-                "owner", source.getOwner(),
-                "access", source.getAccess().toString(),
-                "shared", source.getSharedWith(),
-                "createAt", source.getCreatedAt(),
-                "block", source.isBlocked(),
-                "active", source.isActive(),
-                "deleted", source.isDeleted(),
-                "content", content,
-                "raw", write(source.getContent())
+                "id", Optional.ofNullable(source.getId()).orElse(""),
+                "owner", Optional.ofNullable(source.getOwner()).orElse(""),
+                "access", Optional.ofNullable(source.getAccess().toString()).orElse(Access.PRIVATE.toString()),
+                "shared", Optional.ofNullable(source.getSharedWith()).orElse(Set.of()),
+                "createAt", Optional.ofNullable(source.getCreatedAt()).orElse(LocalDateTime.now()),
+                "block", Optional.ofNullable(source.isBlocked()).orElse(false),
+                "active", Optional.ofNullable(source.isActive()).orElse(false),
+                "deleted", Optional.ofNullable(source.isDeleted()).orElse(false),
+                "content", Optional.ofNullable(content).orElse(""),
+                "raw", Optional.ofNullable(write(source.getContent())).orElse("")
 
         );
     }
