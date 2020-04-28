@@ -11,6 +11,8 @@ import com.fyself.seedwork.kafka.logback.message.Logger;
 import java.util.Map;
 import java.util.Set;
 
+import static com.fyself.seedwork.util.JsonUtil.write;
+
 
 public class LoggerUtils {
     private static LoggerUtils INSTANCE = null;
@@ -35,34 +37,33 @@ public class LoggerUtils {
         logger.info(log.serialize());
     }
 
-
-    static public void customEvent(String custom, DomainEntity entity, FySelfContext context) {
-        BusinessInfo bussines = BusinessInfo.newInstance().setResourcetype(entity.getClass().getSimpleName().toLowerCase())
-                .setEvent(entity.getClass().getSimpleName().toLowerCase().concat(".").concat("create"))
-                .setResources(Set.of(entity.getId()))
-                .setAction(custom)
-                .setUser(context.getAccount().isPresent() ? context.getAccount().get().getId() : "")
-                .setDetails(Map.of(entity.getClass().getSimpleName().toLowerCase().concat(".").concat("value"), entity));
-        LoggerUtils.getInstance().sendLogs(context.getAgentInfo().get(), bussines);
-    }
-
     static public void createEvent(DomainEntity entity, FySelfContext context) {
         BusinessInfo bussines = BusinessInfo.newInstance().setResourcetype(entity.getClass().getSimpleName().toLowerCase())
                 .setEvent(entity.getClass().getSimpleName().toLowerCase().concat(".").concat("create"))
                 .setResources(Set.of(entity.getId()))
                 .setAction("create")
-                .setUser(context.getAccount().isPresent() ? context.getAccount().get().getId() : "")
-                .setDetails(Map.of(entity.getClass().getSimpleName().toLowerCase().concat(".").concat("value"), entity));
+                .setUser(context.getAccount().isPresent() ? context.getAccount().get().getId() : "");
+        bussines = bussines.setDetails(DETAILS(entity));
         LoggerUtils.getInstance().sendLogs(context.getAgentInfo().get(), bussines);
     }
 
-    static public void updateEvent(DomainEntity category, DomainEntity entity, FySelfContext context) {
+    private static Map<String, Object> DETAILS(DomainEntity entity) {
+        switch (entity.getClass().getSimpleName().toLowerCase()) {
+            default:
+                return Map.of(
+                        "entity", entity.getClass().getSimpleName().toLowerCase(),
+                        "value", write(entity)
+                );
+        }
+    }
+
+    static public void updateEvent(DomainEntity entity, FySelfContext context) {
         BusinessInfo bussines = BusinessInfo.newInstance().setResourcetype(entity.getClass().getSimpleName().toLowerCase())
                 .setEvent(entity.getClass().getSimpleName().toLowerCase().concat(".").concat("update"))
                 .setResources(Set.of(entity.getId()))
                 .setAction("update")
-                .setUser(context.getAccount().isPresent() ? context.getAccount().get().getId() : "")
-                .setDetails(Map.of(entity.getClass().getSimpleName().toLowerCase().concat(".").concat("value"), entity));
+                .setUser(context.getAccount().isPresent() ? context.getAccount().get().getId() : "");
+        bussines = bussines.setDetails(DETAILS(entity));
         LoggerUtils.getInstance().sendLogs(context.getAgentInfo().get(), bussines);
     }
 
@@ -71,8 +72,8 @@ public class LoggerUtils {
                 .setEvent(entity.getClass().getSimpleName().toLowerCase().concat(".").concat("delete"))
                 .setResources(Set.of(entity.getId()))
                 .setAction("delete")
-                .setUser(context.getAccount().isPresent() ? context.getAccount().get().getId() : "")
-                .setDetails(Map.of(entity.getClass().getSimpleName().toLowerCase().concat(".").concat("value"), entity));
+                .setUser(context.getAccount().isPresent() ? context.getAccount().get().getId() : "");
+        bussines = bussines.setDetails(DETAILS(entity));
         LoggerUtils.getInstance().sendLogs(context.getAgentInfo().get(), bussines);
     }
 }

@@ -63,7 +63,7 @@ public class AnswerSurveyServiceImpl implements AnswerSurveyService {
                                                 .withUpdateAt()
                                                 .withOwner(userId))
                                         )
-                                                .doOnSuccess(entity -> updateEvent(survey, entity, context))
+                                                .doOnSuccess(entity -> updateEvent(entity, context))
                                                 .doOnSuccess(response -> this.putInPipeline(response).subscribe())
                                 )
                 )

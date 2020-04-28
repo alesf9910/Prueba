@@ -46,7 +46,7 @@ public class PostReportServiceImpl implements PostReportService {
         return context.authenticatedId()
                 .flatMap(userId -> repository.getById(to.getId()))
                 .flatMap(postReport -> repository.save(POST_REPORT_BINDER.set(postReport, to.withUpdateAt()))
-                        .doOnSuccess(entity -> updateEvent(postReport, entity, context))
+                        .doOnSuccess(entity -> updateEvent(entity, context))
                 )
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .then();

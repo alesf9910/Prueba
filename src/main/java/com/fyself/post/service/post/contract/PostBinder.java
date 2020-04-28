@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static com.fyself.seedwork.util.JsonUtil.MAPPER;
+import static com.fyself.seedwork.util.JsonUtil.write;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -56,7 +57,7 @@ public interface PostBinder {
     default Content bind(ContentTO source) {
         if (source instanceof AwardContentTO)
             return this.bind((AwardContentTO) source);
-       if (source instanceof ProfileContentTO)
+        if (source instanceof ProfileContentTO)
             return this.bind((ProfileContentTO) source);
         if (source instanceof TextContentTO)
             return this.bind((TextContentTO) source);
@@ -294,4 +295,36 @@ public interface PostBinder {
         postTOPagedList.setElements(postTOS);
         return postTOPagedList;
     }
+
+    default Map<String, Object> bindIndex(Post source) {
+
+        String content;
+
+        if (source.getContent() instanceof AwardContent)
+            content = ((AwardContent) source.getContent()).getDescription();
+        else if (source.getContent() instanceof ProfileContent)
+            content = ((ProfileContent) source.getContent()).getDescription();
+        else if (source.getContent() instanceof TextContent)
+            content = ((TextContent) source.getContent()).getDescription();
+        else if (source.getContent() instanceof SurveyContent) {
+            content = ((SurveyContent) source.getContent()).getAsk();
+        } else
+            content = "";
+
+
+        return Map.of(
+                "id", source.getId(),
+                "owner", source.getOwner(),
+                "access", source.getAccess().toString(),
+                "shared", source.getSharedWith(),
+                "createAt", source.getCreatedAt(),
+                "block", source.isBlocked(),
+                "active", source.isActive(),
+                "deleted", source.isDeleted(),
+                "content", content,
+                "raw", write(source.getContent())
+
+        );
+    }
+
 }

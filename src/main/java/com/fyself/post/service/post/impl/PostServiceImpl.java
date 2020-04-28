@@ -9,6 +9,7 @@ import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
 import com.fyself.post.service.post.datasource.AnswerSurveyRepository;
 import com.fyself.post.service.post.datasource.PostRepository;
 import com.fyself.post.service.post.datasource.PostTimelineRepository;
+import com.fyself.post.service.stream.StreamService;
 import com.fyself.seedwork.service.EntityNotFoundException;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
@@ -32,14 +33,16 @@ import static reactor.core.publisher.Mono.just;
 @Service("postService")
 @Validated
 public class PostServiceImpl implements PostService {
-    private final PostRepository repository;
-    private final PostTimelineRepository postTimelineRepository;
+    final PostRepository repository;
+    final PostTimelineRepository postTimelineRepository;
     final AnswerSurveyRepository answerSurveyRepository;
+    final StreamService streamService;
 
-    public PostServiceImpl(PostRepository repository, PostTimelineRepository postTimelineRepository, AnswerSurveyRepository answerSurveyRepository) {
+    public PostServiceImpl(PostRepository repository, PostTimelineRepository postTimelineRepository, AnswerSurveyRepository answerSurveyRepository, StreamService streamService) {
         this.repository = repository;
         this.postTimelineRepository = postTimelineRepository;
         this.answerSurveyRepository = answerSurveyRepository;
+        this.streamService = streamService;
     }
 
     @Override
@@ -49,6 +52,7 @@ public class PostServiceImpl implements PostService {
                         .flatMap(post -> postTimelineRepository.save(POST_TIMELINE_BINDER.bind(post))
                                 .thenReturn(post)))
                 .doOnSuccess(entity -> createEvent(entity, context))
+                .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity)))
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .map(DomainEntity::getId);
     }
@@ -58,7 +62,9 @@ public class PostServiceImpl implements PostService {
         return repository.getById(to.getId())
                 .map(post -> POST_BINDER.set(post, to.withUpdatedAt()))
                 .flatMap(post -> repository.save(post)
-                        .doOnSuccess(entity -> updateEvent(post, entity, context)))
+                        .doOnSuccess(entity -> updateEvent(entity, context))
+                        .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity)))
+                )
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .then();
     }
@@ -77,7 +83,10 @@ public class PostServiceImpl implements PostService {
     public Mono<Void> delete(@NotNull String id, FySelfContext context) {
         return repository.getById(id)
                 .switchIfEmpty(error(EntityNotFoundException::new))
-                .flatMap(post -> repository.softDelete(post).doOnSuccess(entity -> deleteEvent(post, context)))
+                .flatMap(post -> repository.softDelete(post)
+                        .doOnSuccess(entity -> deleteEvent(post, context))
+                        .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity)))
+                )
                 .then();
     }
 
@@ -106,6 +115,7 @@ public class PostServiceImpl implements PostService {
         return repository.findById(post)
                 .map(POST_BINDER::bindBlocked)
                 .flatMap(repository::save)
+                .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity)))
                 .then();
     }
 
@@ -113,6 +123,7 @@ public class PostServiceImpl implements PostService {
     public Mono<Void> shareWith(@NotNull PostShareTO to, FySelfContext context) {
         return repository.findById(to.getPost())
                 .flatMap(post -> repository.save(POST_BINDER.bindShareWith(post, to)))
+                .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity)))
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .then();
     }
@@ -121,6 +132,7 @@ public class PostServiceImpl implements PostService {
     public Mono<Void> shareBulk(@NotNull PostShareBulkTO to, FySelfContext context) {
         return repository.findById(to.getPost())
                 .flatMap(post -> repository.save(POST_BINDER.bindShareBulk(post, to)))
+                .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity)))
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .then();
     }
@@ -129,6 +141,7 @@ public class PostServiceImpl implements PostService {
     public Mono<Void> stopShareWith(@NotNull PostShareTO to, FySelfContext context) {
         return repository.findById(to.getPost())
                 .flatMap(post -> repository.save(POST_BINDER.bindStopShareWith(post, to)))
+                .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity)))
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .then();
     }
@@ -138,4 +151,6 @@ public class PostServiceImpl implements PostService {
         return repository.findPage(POST_BINDER.bindToCriteria(criteria.withUser(context.getAccount().get().getId())))
                 .map(POST_BINDER::bindPage);
     }
+
+
 }

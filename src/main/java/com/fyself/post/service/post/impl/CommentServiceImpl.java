@@ -57,7 +57,7 @@ public class CommentServiceImpl implements CommentService {
         return repository.findById(to.getId())
                 .map(comment -> COMMENT_BINDER.set(comment, to.withUpdatedAt()))
                 .flatMap(comment -> repository.save(comment)
-                        .doOnSuccess(entity -> updateEvent(comment, entity, context)))
+                        .doOnSuccess(entity -> updateEvent(entity, context)))
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .then();
     }

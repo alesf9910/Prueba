@@ -31,6 +31,8 @@ mspost:
           logs: com-fyself-dev-logs
           elastic-answer: elastic-answer
           notification-socket: notification-socket
+          elastic-post: elastic-post
+
         input:
           post: post
     server:
@@ -82,9 +84,8 @@ application:
     applicationId: ${application.name}
     baseDir: /tmp
     queues: profiles-info
-    output-config:
-      concurrency: 1
-      queue: 60
+    concurrency: 1
+    queue: 20
     topics:
       output:
         logs: ${mspost.application.kafka.topics.output.logs}
