@@ -24,12 +24,15 @@ import static reactor.core.publisher.Mono.error;
 public class StreamServiceImpl implements StreamService {
     private static final Logger logger = LoggerFactory.getLogger(StreamService.class);
     private final ReactiveKafkaMessageQueue queueManager;
+    private final String topic_logstash_post;
     private final String topic_logstash_answer;
 
 
     public StreamServiceImpl(ReactiveKafkaMessageQueue queueManager,
+                             @Value("${mspost.application.kafka.topics.output.elastic-post}") String topic_logstash_post ,
                              @Value("${mspost.application.kafka.topics.output.elastic-answer}") String topic_logstash_answer) {
         this.queueManager = queueManager;
+        this.topic_logstash_post = topic_logstash_post;
         this.topic_logstash_answer = topic_logstash_answer;
 
     }
@@ -37,6 +40,11 @@ public class StreamServiceImpl implements StreamService {
     @Override
     public Mono<Void> putInPipelineAnswerElastic(Map message) {
         return this.send(message, topic_logstash_answer);
+    }
+
+    @Override
+    public Mono<Void> putInPipelinePostElastic(Map message) {
+        return this.send(message, topic_logstash_post);
     }
 
     //<editor-fold desc="Encapsulation">
