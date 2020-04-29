@@ -271,7 +271,7 @@ public interface PostBinder {
 
     default PagedList<PostTO> bindPageTimeline(Page<PostTimeline> source, String userId) {
         List<PostTO> postTOS = source.stream()
-                .map(PostTimeline::getPost)
+                .map(PostTimeline::getPostModified)
                 .map(this::emptyContent)
                 .map(this::bind)
                 .collect(toList());
