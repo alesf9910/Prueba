@@ -28,7 +28,15 @@ public class AnswerSurveyCriteria extends DomainCriteria<AnswerSurvey> {
 
     @Override
     public CriteriaDefinition getPredicate() {
-        return and(this.matchPost(), this.matchAnswer(), this.matchOwner(), this.matchPostId());
+        if (!this.getPostIds().isEmpty() && this.getPost() == null) {
+            return and(this.matchAnswer(), this.matchPostId());
+        }
+
+        if (this.matchPost() != null) {
+            return and(this.matchPost(), this.matchOwner());
+        }
+
+        return and(this.matchPost(), this.matchAnswer(), this.matchOwner());
     }
 
     private Criteria matchPost() {

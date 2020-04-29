@@ -1,5 +1,6 @@
 package com.fyself.post.service.post.contract.to.criteria;
 
+import com.fyself.post.service.post.contract.to.criteria.enums.TypeSearch;
 import com.fyself.post.service.post.datasource.domain.enums.TypeSurvey;
 import com.fyself.seedwork.service.to.CriteriaTO;
 
@@ -13,14 +14,7 @@ public class AnswerSurveyCriteriaTO extends CriteriaTO {
     private String user;
     private String owner;
     private List<String> postIds;
-
-    public AnswerSurveyCriteriaTO(TypeSurvey typeSurvey, String user, String owner, String post, List<String> postIds) {
-        this.typeSurvey = typeSurvey;
-        this.user = user;
-        this.owner = owner;
-        this.post = post;
-        this.postIds = postIds;
-    }
+    private TypeSearch typeSearch;
 
     public TypeSurvey getTypeSurvey() {
         return typeSurvey;
@@ -85,5 +79,13 @@ public class AnswerSurveyCriteriaTO extends CriteriaTO {
     public AnswerSurveyCriteriaTO withPostIds(List<String> postIds) {
         setPostIds(postIds);
         return this;
+    }
+
+    public TypeSearch getTypeSearch() {
+        return typeSearch;
+    }
+
+    public void setTypeSearch(TypeSearch typeSearch) {
+        this.typeSearch = typeSearch;
     }
 }
