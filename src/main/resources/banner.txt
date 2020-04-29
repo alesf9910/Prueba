@@ -1,0 +1,6 @@
+${AnsiColor.BLACK}=======================================
+${AnsiColor.GREEN}      ${application.title}
+${AnsiColor.BLACK}=======================================
+${AnsiColor.BLACK}Application Version : ${AnsiColor.BRIGHT_CYAN}${application.version}
+${AnsiColor.BLACK}Spring Boot Version : ${AnsiColor.CYAN}${spring-boot.version}
+${AnsiColor.BLACK}=======================================

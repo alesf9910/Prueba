@@ -1,0 +1,118 @@
+#Application Properties
+#Application Properties
+mspost:
+  application:
+    name: ms-post
+    datasource:
+      host: ""
+      database: ""
+      username: ""
+      password: ""
+      protocol: mongodb
+      options: '?authSource=ms-auth'
+
+    security:
+      jwt-token:
+        secret: ""
+
+      corsConfig:
+        allowed-origins: "*"
+        allowed-methods: "*"
+        allowed-headers: "*"
+        exposed-headers: "Authorization"
+        allow-credentials: true
+        max-age: 1800
+      ms-auth:
+        baseUrl: https://staging-backend.fyself.com/msauth
+    kafka:
+      servers: 3.223.152.25:9092
+      topics:
+        output:
+          logs: com-fyself-dev-logs
+          elastic-answer: elastic-answer
+          notification-socket: notification-socket
+          elastic-post: elastic-post
+
+        input:
+          post: post
+    server:
+      port: 8080
+    report:
+      max: 1
+    aws:
+      bucketName: staging-static-files.fyself.com
+      url: http://staging-static-files.fyself.com
+
+application:
+  aws:
+    region: us-east-1
+    bucket: ${mspost.application.aws.bucketName}
+
+  name: ${mspost.application.name}
+  datasource:
+    mongo:
+      host: ${mspost.application.datasource.host}
+      database: ${mspost.application.datasource.database}
+      username: ${mspost.application.datasource.username}
+      password: ${mspost.application.datasource.password}
+      protocol: ${mspost.application.datasource.protocol}
+      options: ${mspost.application.datasource.options}
+    storage:
+      type: S3
+      variant: static
+
+  file: image/jpeg,image/png
+  security:
+    jwt-token:
+      secret: ${mspost.application.security.jwt-token.secret}
+    ms:
+      baseUrl: https://staging-backend.fyself.com/
+    corsConfig:
+      allowed-origins: ${mspost.application.security.corsConfig.allowed-origins}
+      allowed-methods: ${mspost.application.security.corsConfig.allowed-methods}
+      allowed-headers: ${mspost.application.security.corsConfig.allowed-headers}
+      exposed-headers: ${mspost.application.security.corsConfig.exposed-headers}
+      allow-credentials: ${mspost.application.security.corsConfig.allow-credentials}
+      max-age: ${mspost.application.security.corsConfig.max-age}
+  kafka:
+    servers: ${mspost.application.kafka.servers}
+    bootstrapServers: ${mspost.application.kafka.servers}
+    groupId: ${application.name}-group2
+    enviromentPrefix: dev
+    topicPrefix: com-fyself
+
+    applicationId: ${application.name}
+    baseDir: /tmp
+    queues: profiles-info
+    concurrency: 1
+    queue: 20
+    topics:
+      output:
+        logs: ${mspost.application.kafka.topics.output.logs}
+
+
+  server:
+    port: ${mspost.application.server.port}
+
+  web:
+    type: static
+
+spring:
+  data:
+    mongodb:
+      uri: ${application.datasource.mongo.protocol}://${application.datasource.mongo.username}:${application.datasource.mongo.password}@${application.datasource.mongo.host}/${application.datasource.mongo.database}${application.datasource.mongo.options}
+
+  jpa:
+    open-in-view: false
+  mvc:
+    favicon:
+      enabled: false
+    servlet:
+      load-on-startup: 1
+  output:
+    ansi:
+      enabled: always
+
+#Server Properties
+server:
+  port: ${application.server.port}
