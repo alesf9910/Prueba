@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fyself.post.service.post.contract.to.*;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
 import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
+import com.fyself.post.service.post.contract.to.criteria.enums.TypeSearch;
 import com.fyself.post.service.post.datasource.domain.Post;
 import com.fyself.post.service.post.datasource.domain.PostTimeline;
 import com.fyself.post.service.post.datasource.domain.subentities.*;
@@ -248,6 +249,13 @@ public interface PostBinder {
 
     default PostCriteria bindToCriteria(PostTimelineCriteriaTO source) {
         var criteria = new PostCriteria();
+
+        if (source.getType() == null) {
+            criteria.setType(TypeSearch.ALL);
+        } else {
+            criteria.setType(source.getType());
+        }
+
         criteria.setOwner(source.getUser());
         criteria.setPage(source.getPage());
         criteria.setSize(source.getSize());
