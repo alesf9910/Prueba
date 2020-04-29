@@ -30,4 +30,11 @@ public class PostTimeline extends DomainAuditEntity {
     public void setUser(String user) {
         this.user = user;
     }
+
+    public static Post getPostModified(PostTimeline postTimeline) {
+        Post p = postTimeline.getPost();
+        p.setCreatedAt(postTimeline.getCreatedAt());
+        return p;
+
+    }
 }
