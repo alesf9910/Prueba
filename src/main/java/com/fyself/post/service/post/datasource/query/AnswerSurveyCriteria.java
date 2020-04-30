@@ -1,5 +1,6 @@
 package com.fyself.post.service.post.datasource.query;
 
+import com.fyself.post.service.post.contract.to.criteria.enums.TypeSearch;
 import com.fyself.post.service.post.datasource.domain.AnswerSurvey;
 import com.fyself.post.service.post.datasource.domain.Post;
 import com.fyself.post.service.post.datasource.domain.enums.TypeSurvey;
@@ -21,6 +22,7 @@ public class AnswerSurveyCriteria extends DomainCriteria<AnswerSurvey> {
     private String user;
     private String owner;
     private List<String> postIds;
+    private TypeSearch typeSearch;
 
     public AnswerSurveyCriteria() {
         super(AnswerSurvey.class);
@@ -93,5 +95,13 @@ public class AnswerSurveyCriteria extends DomainCriteria<AnswerSurvey> {
 
     public void setPostIds(List<String> postIds) {
         this.postIds = postIds;
+    }
+
+    public TypeSearch getTypeSearch() {
+        return typeSearch;
+    }
+
+    public void setTypeSearch(TypeSearch typeSearch) {
+        this.typeSearch = typeSearch;
     }
 }

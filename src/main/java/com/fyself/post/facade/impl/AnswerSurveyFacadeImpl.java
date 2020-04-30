@@ -57,15 +57,13 @@ public class AnswerSurveyFacadeImpl implements AnswerSurveyFacade {
 
     @Override
     public Mono<Result<PagedList<AnswerSurveyTO>>> searchByMe(AnswerSurveyCriteriaTO criteria, FySelfContext context) {
-        return context.authenticatedId()
-                .flatMap(userId -> service.loadAll(criteria.withOwner(userId), context))
+        return service.loadAll(criteria.withOwner(context.getAccount().get().getId()), context)
                 .map(Result::successful);
     }
 
     @Override
     public Mono<Result<PagedList<AnswerSurveyTO>>> searchToMe(AnswerSurveyCriteriaTO criteria, FySelfContext context) {
-        return context.authenticatedId()
-                .flatMap(userId -> service.loadAllByMe(criteria, context))
+        return service.loadAllByMe(criteria, context)
                 .map(Result::successful);
     }
 

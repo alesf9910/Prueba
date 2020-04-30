@@ -85,7 +85,7 @@ public class PostFacadeImpl implements PostFacade {
 
     private Mono<PagedList<PostTO>> updateComments(PagedList<PostTO> page, FySelfContext context) {
         return Flux.fromIterable(page.getElements())
-                .flatMap(postTOResult -> commentService.count(postTOResult.getId()).map(postTOResult::putCount))
+                .flatMap(postTOResult -> commentService.count(postTOResult.getId()).map(postTOResult::putCount), 1)
                 .collectList()
                 .map(elements -> {page.setElements(elements); return page;});
     }
