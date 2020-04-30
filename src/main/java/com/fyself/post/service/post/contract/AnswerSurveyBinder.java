@@ -60,20 +60,11 @@ public interface AnswerSurveyBinder {
         return survey;
     }
 
+    @Mapping(target = "post.id", source = "post")
+    AnswerSurveyCriteria bindAnswerCriteria(AnswerSurveyCriteriaTO source);
+
     default AnswerSurveyCriteria bind(AnswerSurveyCriteriaTO source) {
-        AnswerSurveyCriteria criteria = new AnswerSurveyCriteria();
-
-        if (source.getPost() != null) {
-            Post post = new Post();
-            post.setId(source.getPost());
-            criteria.setPost(post);
-        }
-
-        criteria.setTypeSurvey(source.getTypeSurvey());
-        criteria.setOwner(source.getOwner());
-        criteria.setUser(source.getUser());
-        criteria.setPostIds(source.getPostIds());
-        return criteria;
+        return bindAnswerCriteria(source);
     }
 
     default PagedList<AnswerSurveyTO> bind(Page<AnswerSurvey> source) {
