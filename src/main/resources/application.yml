@@ -23,7 +23,7 @@ mspost:
         allow-credentials: true
         max-age: 1800
       ms-auth:
-        baseUrl: https://staging-backend.fyself.com/msauth
+        baseurl: https://staging-backend.fyself.com/msauth
     kafka:
       servers: 3.223.152.25:9092
       topics:
@@ -66,7 +66,7 @@ application:
     jwt-token:
       secret: ${mspost.application.security.jwt-token.secret}
     ms:
-      baseUrl: https://staging-backend.fyself.com/
+      baseurl: https://staging-backend.fyself.com/
     corsConfig:
       allowed-origins: ${mspost.application.security.corsConfig.allowed-origins}
       allowed-methods: ${mspost.application.security.corsConfig.allowed-methods}
