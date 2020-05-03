@@ -40,13 +40,13 @@ mspost:
     report:
       max: 1
     aws:
-      bucketName: staging-static-files.fyself.com
+      bucketname: staging-static-files.fyself.com
       url: http://staging-static-files.fyself.com
 
 application:
   aws:
     region: us-east-1
-    bucket: ${mspost.application.aws.bucketName}
+    bucket: ${mspost.application.aws.bucketname}
 
   name: ${mspost.application.name}
   datasource:
