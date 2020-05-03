@@ -46,10 +46,7 @@ public class PostShareBulkNotMeValidator extends MonoBiValidatorFixInterceptor<P
         if (to.getSharedWith().isEmpty())
             return just(true);
         return repository.getById(to.getPost())
-                .flatMap(post -> fromIterable(to.getSharedWith())
-                        .filter(user -> post.getOwner().equals(user))
-                        .collectList())
-                .map(List::isEmpty)
+                .map(post -> to.getSharedWith().stream().noneMatch(s -> post.getOwner().equals(s) ))
                 .switchIfEmpty(just(true));
     }
 }
