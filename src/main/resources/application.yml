@@ -66,7 +66,7 @@ application:
     jwt-token:
       secret: ${mspost.application.security.jwt-token.secret}
     ms:
-      baseurl: https://staging-backend.fyself.com/
+      baseurl: https://backend.fyself.com/
     corsConfig:
       allowed-origins: ${mspost.application.security.corsConfig.allowed-origins}
       allowed-methods: ${mspost.application.security.corsConfig.allowed-methods}
