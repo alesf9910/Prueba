@@ -34,6 +34,7 @@ mspost:
           elastic-post: elastic-post
 
         input:
+          new: new-post
           post: post
     server:
       port: 8080
