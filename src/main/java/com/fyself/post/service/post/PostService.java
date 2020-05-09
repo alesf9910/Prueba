@@ -41,4 +41,6 @@ public interface PostService {
     Mono<Void> stopShareWith(@NotNull PostShareTO to, FySelfContext context);
 
     Mono<PagedList<PostTO>> searchMe(PostTimelineCriteriaTO criteria, FySelfContext context);
+
+    Mono<Void> create(PostTO to);
 }
