@@ -73,14 +73,20 @@ public interface KafkaMessageBinder {
     }
 
     default Map bindPostNotif(String user, String post, String from) {
-        PayloadTO payload = new PayloadTO();
-        payload.setBody(Map.of("post", post));
+
 
         MessageTO message = new MessageTO();
         message.setType("POST");
         message.setTo(user);
         message.setFrom(from);
+
+        PayloadTO payload = new PayloadTO();
+        payload.setBody(Map.of("post", from));
         message.setPayload(payload);
+
+        message.setTodb(true);
+        message.setFix("pu-" + user + "-" + from);
+
 
         return toMap(message);
     }
