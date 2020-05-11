@@ -50,7 +50,9 @@ public class GenericKStreamProcessor {
 
     private Mono<Void> createPost(Map map) {
         try {
-            return postService.create(MAPPER.readValue(MAPPER.writeValueAsString(map), PostTO.class));
+            PostTO post = MAPPER.readValue(MAPPER.writeValueAsString(map), PostTO.class);
+            post.setOwner(map.get("owner").toString());
+            return postService.create(post);
         }catch (Exception e){e.printStackTrace();}
         return empty();
     }

@@ -161,6 +161,7 @@ public class PostServiceImpl implements PostService {
         return repository.save(POST_BINDER.bind(to.withUserId(to.getOwner()).withCreatedAt().withUpdatedAt()))
                 .flatMap(post -> postTimelineRepository.save(POST_TIMELINE_BINDER.bind(post)).thenReturn(post))
                 .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity)).subscribe())
+                .doOnSuccess(entity -> createEvent(entity, to.getOwner()))
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .then();
 
