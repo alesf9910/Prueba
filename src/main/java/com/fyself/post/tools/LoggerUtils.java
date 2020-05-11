@@ -33,7 +33,11 @@ public class LoggerUtils {
     }
 
     public void sendLogs(AgentInfo agentInfo, BusinessInfo bussines) {
-        Logger log = Logger.newInstance().setAgentInfo(agentInfo).setBusinessInfo(bussines);
+        Logger log;
+        if (agentInfo==null)
+            log = Logger.newInstance().setBusinessInfo(bussines);
+        else
+            log = Logger.newInstance().setAgentInfo(agentInfo).setBusinessInfo(bussines);
         logger.info(log.serialize());
     }
 
@@ -45,6 +49,16 @@ public class LoggerUtils {
                 .setUser(context.getAccount().isPresent() ? context.getAccount().get().getId() : "");
         bussines = bussines.setDetails(DETAILS(entity));
         LoggerUtils.getInstance().sendLogs(context.getAgentInfo().get(), bussines);
+    }
+
+    static public void createEvent(DomainEntity entity, String context) {
+        BusinessInfo bussines = BusinessInfo.newInstance().setResourcetype(entity.getClass().getSimpleName().toLowerCase())
+                .setEvent(entity.getClass().getSimpleName().toLowerCase().concat(".").concat("create"))
+                .setResources(Set.of(entity.getId()))
+                .setAction("create")
+                .setUser(context);
+        bussines = bussines.setDetails(DETAILS(entity));
+        LoggerUtils.getInstance().sendLogs(null, bussines);
     }
 
     private static Map<String, Object> DETAILS(DomainEntity entity) {

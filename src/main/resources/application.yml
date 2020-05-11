@@ -34,11 +34,12 @@ mspost:
           elastic-post: elastic-post
 
         input:
+          new: new-post
           post: post
     server:
       port: 8080
     report:
-      max: 1
+      max: 10
     aws:
       bucketname: staging-static-files.fyself.com
       url: http://staging-static-files.fyself.com

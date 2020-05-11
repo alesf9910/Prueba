@@ -6,6 +6,7 @@ import com.fyself.post.service.post.contract.to.PostTimelineTO;
 import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
 import com.fyself.post.service.post.datasource.AnswerSurveyRepository;
 import com.fyself.post.service.post.datasource.PostTimelineRepository;
+import com.fyself.post.service.post.datasource.domain.PostTimeline;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import com.fyself.seedwork.service.repository.mongodb.domain.DomainEntity;
@@ -35,7 +36,9 @@ public class PostTimelineServiceImpl implements PostTimelineService {
 
     @Override
     public Mono<String> create(@NotNull @Valid PostTimelineTO to) {
-        return repository.save(POST_TIMELINE_BINDER.bind(to.withCreatedAt().withUpdatedAt())).map(DomainEntity::getId);
+        return repository
+                .save(POST_TIMELINE_BINDER.bind(to.withCreatedAt().withUpdatedAt()))
+                .map(PostTimeline::getUser);
     }
 
     @Override
