@@ -78,7 +78,7 @@ application:
   kafka:
     servers: ${mspost.application.kafka.servers}
     bootstrapServers: ${mspost.application.kafka.servers}
-    groupId: ${application.name}-group2
+    groupId: ${application.name}-group
     enviromentPrefix: dev
     topicPrefix: com-fyself
 

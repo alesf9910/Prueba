@@ -45,7 +45,7 @@ public class GenericKStreamProcessor {
         this.postService = postService;
 
         reactiveKafkaMessageQueue.createFlow(input_topic_post, this::createPostTimeline);
-        reactiveKafkaMessageQueue.createSink(input_topic_post, this::createPost);
+        reactiveKafkaMessageQueue.createSink(input_topic_new, this::createPost);
     }
 
     private Mono<Void> createPost(Map map) {
