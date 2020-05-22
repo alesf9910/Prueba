@@ -48,7 +48,7 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
     }
 
     private Mono<String> add(FilePart part, String typeElement) {
-        var name = UUID.randomUUID().toString()+normalize(part.filename().trim().replace(" ", "-"));
+        var name = UUID.randomUUID().toString();
         return just(name).flatMap(id -> this.save(id, typeElement, part));
     }
 
