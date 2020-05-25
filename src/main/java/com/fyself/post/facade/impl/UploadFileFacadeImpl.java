@@ -16,6 +16,7 @@ import org.springframework.http.codec.multipart.FilePart;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.fyself.post.service.system.FileUnSupportedException.fileUnSupportedException;
@@ -47,8 +48,15 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
                 .map(Result::successful);
     }
 
+    public Optional<String> getExtensionByStringHandling(String filename) {
+        return Optional.ofNullable(filename)
+                .filter(f -> f.contains("."))
+                .map(f -> f.substring(filename.lastIndexOf(".") + 1));
+    }
+
     private Mono<String> add(FilePart part, String typeElement) {
-        var name = UUID.randomUUID().toString();
+        var ext = getExtensionByStringHandling(part.filename()).orElse("");
+        var name = UUID.randomUUID().toString()+ext;
         return just(name).flatMap(id -> this.save(id, typeElement, part));
     }
 
