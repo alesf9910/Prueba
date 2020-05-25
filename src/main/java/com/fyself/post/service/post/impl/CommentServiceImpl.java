@@ -75,8 +75,7 @@ public class CommentServiceImpl implements CommentService {
     public Mono<PagedList<CommentTO>> search(@NotNull CommentCriteriaTO criteria, String post, FySelfContext context) {
         return repository.findPage(COMMENT_BINDER.bindToCriteria(criteria, post))
                 .flatMap(pageComents -> Flux.fromIterable(pageComents)
-                        .flatMap(comment -> repository.findPage(COMMENT_BINDER.bindToFatherCriteria(comment.getId()))
-                                .map(comments -> COMMENT_BINDER.bindPageOfChildren(comments, comment)))
+                        .flatMap(comment -> repository.findPage(COMMENT_BINDER.bindToFatherCriteria(comment.getId())).map(comments -> COMMENT_BINDER.bindPageOfChildren(comments, comment)), 1)
                         .collectList()
                         .map(commentTOS -> COMMENT_BINDER.bindPage(commentTOS, pageComents)));
     }
