@@ -8,7 +8,11 @@ import com.fyself.seedwork.facade.Result;
 import com.fyself.seedwork.facade.stereotype.Facade;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
+import com.fyself.seedwork.service.repository.mongodb.criteria.SortEntry;
+import com.fyself.seedwork.service.repository.mongodb.criteria.enums.SortOrder;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 import static com.fyself.seedwork.facade.Result.successful;
 
@@ -46,6 +50,12 @@ public class CommentFacadeImpl implements CommentFacade {
 
     @Override
     public Mono<Result<PagedList<CommentTO>>> search(CommentCriteriaTO criteria, String post, FySelfContext context) {
+        if (criteria.getSortCriteria()==null || criteria.getSortCriteria().isEmpty()) {
+            SortEntry entry = new SortEntry();
+            entry.setField("createdAt");
+            entry.setOrder(SortOrder.DESC);
+            criteria.setSortCriteria(List.of(entry));
+        }
         return service.search(criteria, post, context).map(Result::successful);
     }
 }
