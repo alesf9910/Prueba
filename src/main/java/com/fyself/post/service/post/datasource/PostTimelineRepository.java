@@ -15,10 +15,6 @@ import reactor.core.publisher.Mono;
  */
 public interface PostTimelineRepository extends MongoRepository<PostTimeline> {
 
-    @Override
-    default Class<PostTimeline> getEntityClass() {
-        return PostTimeline.class;
-    }
 
     @Query(value = "{ 'deleted' : {$ne : true}, 'user': ?0}", sort = "{ 'createdAt': -1}")
     Flux<PostTimeline> findAllByUser(String userId);
