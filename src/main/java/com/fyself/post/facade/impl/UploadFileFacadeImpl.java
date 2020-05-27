@@ -86,7 +86,7 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
 
                     var ratio = height/width;
 
-                    var criteria = ResourceCriteriaTO.from(typeElement).withName(String.format("%.3f",ratio)+name);
+                    var criteria = ResourceCriteriaTO.from(typeElement).withName(String.format("%.3f",ratio)+"_"+name);
 
                     return uploadFileService.add(ResourceTO.of(criteria, content, getMetadata(part.headers())));
                 });
