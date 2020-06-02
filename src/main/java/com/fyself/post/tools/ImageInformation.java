@@ -39,8 +39,7 @@ public class ImageInformation {
             Metadata metadata = ImageMetadataReader.readMetadata(new ByteArrayInputStream(imageFile));
             Directory directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
             orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION);
-        } catch (MetadataException me) {
-        } catch (IOException | ImageProcessingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         rotate(orientation,img);
