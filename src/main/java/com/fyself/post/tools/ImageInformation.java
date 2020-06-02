@@ -1,15 +1,12 @@
 package com.fyself.post.tools;
 
 import com.drew.imaging.ImageMetadataReader;
-import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
-import com.drew.metadata.MetadataException;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import javaxt.io.Image;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 // Inner class containing image information
 public class ImageInformation {
@@ -18,12 +15,14 @@ public class ImageInformation {
     public  double width;
     public  double height;
     public  Image imageFile;
+    public  boolean png;
 
-    public ImageInformation(int orientation, double width, double height, Image imageFile) {
+    public ImageInformation(int orientation, double width, double height, Image imageFile, boolean b) {
         this.orientation = orientation;
         this.width = width;
         this.height = height;
         this.imageFile = imageFile;
+        this.png = b;
     }
 
     public String toString() {
@@ -34,16 +33,16 @@ public class ImageInformation {
     public static ImageInformation readImageInformation(byte[] imageFile) {
         int orientation = 1;
         Image img = new Image(imageFile);
-
         try {
             Metadata metadata = ImageMetadataReader.readMetadata(new ByteArrayInputStream(imageFile));
             Directory directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
             orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION);
+            rotate(orientation,img);
         } catch (Exception e) {
             e.printStackTrace();
+            return new ImageInformation(orientation, img.getWidth(), img.getHeight(),img, false);
         }
-        rotate(orientation,img);
-        return new ImageInformation(orientation, img.getWidth(), img.getHeight(),img);
+        return new ImageInformation(orientation, img.getWidth(), img.getHeight(),img, true);
     }
 
     public static void rotate(int orientation, Image image) {

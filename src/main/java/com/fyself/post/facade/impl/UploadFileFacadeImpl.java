@@ -78,9 +78,14 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
                 .map(DataBuffer::asByteBuffer)
                 .flatMap(content -> {
                     var a = readImageInformation(content.array());
+
                     var ratio = a.height / a.width;
+
                     var criteria = ResourceCriteriaTO.from(typeElement).withName(String.format("%.3f", ratio) + "_" + name);
-                    return uploadFileService.add(ResourceTO.of(criteria, ByteBuffer.wrap(a.imageFile.getByteArray()), getMetadata(part.headers())));
+
+                    if (!a.png)
+                        return uploadFileService.add(ResourceTO.of(criteria, ByteBuffer.wrap(a.imageFile.getByteArray()), getMetadata(part.headers())));
+                    return uploadFileService.add(ResourceTO.of(criteria, content, getMetadata(part.headers())));
                 });
     }
 
