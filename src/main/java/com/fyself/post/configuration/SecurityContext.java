@@ -52,7 +52,7 @@ public class SecurityContext {
 
 
 
-                .anyExchange().authenticated()
+                .anyExchange().permitAll()
                 .and()
                 .build();
     }

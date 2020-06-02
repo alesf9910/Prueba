@@ -27,4 +27,4 @@ COPY --from=builder /opt/service/build/libs/ms-post* /opt/java-ms/ms-post.jar
 EXPOSE 8080
 
 #TODO for compitalions change name of jar
-CMD java ${JAVA_OPTS} -server -XX:+UseParallelGC -XX:+UseNUMA -Djava.security.egd=file:/dev/./urandom -jar /opt/java-ms/ms-post.jar
+CMD java ${JAVA_OPTS} -server -XX:+UseParallelGC -XX:+UseNUMA -Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom -jar /opt/java-ms/ms-post.jar
