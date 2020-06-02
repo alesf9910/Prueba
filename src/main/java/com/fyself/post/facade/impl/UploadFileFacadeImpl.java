@@ -1,5 +1,6 @@
 package com.fyself.post.facade.impl;
 
+import com.drew.imaging.ImageProcessingException;
 import com.fyself.post.facade.UploadFileFacade;
 import com.fyself.post.service.system.UploadFileService;
 import com.fyself.post.service.system.contract.to.ResourceCriteriaTO;
@@ -19,11 +20,13 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 import static com.fyself.post.service.system.FileUnSupportedException.fileUnSupportedException;
+import static com.fyself.post.tools.ImageInformation.readImageInformation;
 import static com.fyself.post.tools.StringUtils.normalize;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.core.io.buffer.DataBufferUtils.join;
@@ -61,7 +64,7 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
 
     private Mono<String> add(FilePart part, String typeElement) {
         var ext = getExtensionByStringHandling(part.filename()).orElse("");
-        var name = UUID.randomUUID().toString() +"."+ ext;
+        var name = UUID.randomUUID().toString() + "." + ext;
 
 
         return just(name).flatMap(id -> this.save(id, typeElement, part));
@@ -74,21 +77,10 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
                 .switchIfEmpty(error(fileUnSupportedException("fyself.facade.post.upload.file.unsupported")))
                 .map(DataBuffer::asByteBuffer)
                 .flatMap(content -> {
-
-                    BufferedImage image = null;
-                    double width = 1;
-                    double height = 1;
-                    try {
-                        image = ImageIO.read(new ByteArrayInputStream(content.array()));
-                        width = image.getWidth();
-                        height = image.getHeight();
-                    } catch (IOException e) {}
-
-                    var ratio = height/width;
-
-                    var criteria = ResourceCriteriaTO.from(typeElement).withName(String.format("%.3f",ratio)+"_"+name);
-
-                    return uploadFileService.add(ResourceTO.of(criteria, content, getMetadata(part.headers())));
+                    var a = readImageInformation(content.array());
+                    var ratio = a.height / a.width;
+                    var criteria = ResourceCriteriaTO.from(typeElement).withName(String.format("%.3f", ratio) + "_" + name);
+                    return uploadFileService.add(ResourceTO.of(criteria, ByteBuffer.wrap(a.imageFile.getByteArray()), getMetadata(part.headers())));
                 });
     }
 
