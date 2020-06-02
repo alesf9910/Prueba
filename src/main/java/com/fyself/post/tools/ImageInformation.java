@@ -40,9 +40,9 @@ public class ImageInformation {
             rotate(orientation,img);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ImageInformation(orientation, img.getWidth(), img.getHeight(),img, false);
+            return new ImageInformation(orientation, img.getWidth(), img.getHeight(),img, true);
         }
-        return new ImageInformation(orientation, img.getWidth(), img.getHeight(),img, true);
+        return new ImageInformation(orientation, img.getWidth(), img.getHeight(),img, false);
     }
 
     public static void rotate(int orientation, Image image) {

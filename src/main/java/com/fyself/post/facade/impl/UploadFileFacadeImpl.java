@@ -85,6 +85,7 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
 
                     if (!a.png)
                         return uploadFileService.add(ResourceTO.of(criteria, ByteBuffer.wrap(a.imageFile.getByteArray()), getMetadata(part.headers())));
+
                     return uploadFileService.add(ResourceTO.of(criteria, content, getMetadata(part.headers())));
                 });
     }
