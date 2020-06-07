@@ -65,8 +65,6 @@ public class PostReportTO extends DomainAuditTransferObject {
         this.user = user;
     }
 
-    @NotBlank
-    @NotNull
     public String getDescription() {
         return description;
     }

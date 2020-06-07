@@ -1,5 +1,6 @@
 package com.fyself.post.facade.impl;
 
+import com.drew.imaging.ImageProcessingException;
 import com.fyself.post.facade.UploadFileFacade;
 import com.fyself.post.service.system.UploadFileService;
 import com.fyself.post.service.system.contract.to.ResourceCriteriaTO;
@@ -15,10 +16,17 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import reactor.core.publisher.Mono;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.fyself.post.service.system.FileUnSupportedException.fileUnSupportedException;
+import static com.fyself.post.tools.ImageInformation.readImageInformation;
 import static com.fyself.post.tools.StringUtils.normalize;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.core.io.buffer.DataBufferUtils.join;
@@ -33,7 +41,8 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
     private String[] typesSupported;
 
     public UploadFileFacadeImpl(UploadFileService uploadFileService,
-                                @Value("${application.file}") String[] typesSupported) {
+                                @Value("${application.file}") String[] typesSupported
+    ) {
         this.uploadFileService = uploadFileService;
         this.typesSupported = typesSupported;
     }
@@ -47,8 +56,17 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
                 .map(Result::successful);
     }
 
+    public Optional<String> getExtensionByStringHandling(String filename) {
+        return Optional.ofNullable(filename)
+                .filter(f -> f.contains("."))
+                .map(f -> f.substring(filename.lastIndexOf(".") + 1));
+    }
+
     private Mono<String> add(FilePart part, String typeElement) {
-        var name = UUID.randomUUID().toString();
+        var ext = getExtensionByStringHandling(part.filename()).orElse("");
+        var name = UUID.randomUUID().toString() + "." + ext;
+
+
         return just(name).flatMap(id -> this.save(id, typeElement, part));
     }
 
@@ -59,7 +77,15 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
                 .switchIfEmpty(error(fileUnSupportedException("fyself.facade.post.upload.file.unsupported")))
                 .map(DataBuffer::asByteBuffer)
                 .flatMap(content -> {
-                    var criteria = ResourceCriteriaTO.from(typeElement).withName(name);
+                    var a = readImageInformation(content.array());
+
+                    var ratio = a.height / a.width;
+
+                    var criteria = ResourceCriteriaTO.from(typeElement).withName(String.format("%.3f", ratio) + "_" + name);
+
+                    if (!a.png)
+                        return uploadFileService.add(ResourceTO.of(criteria, ByteBuffer.wrap(a.imageFile.getByteArray()), getMetadata(part.headers())));
+
                     return uploadFileService.add(ResourceTO.of(criteria, content, getMetadata(part.headers())));
                 });
     }

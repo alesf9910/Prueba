@@ -11,8 +11,4 @@ import com.fyself.seedwork.service.repository.mongodb.MongoRepository;
  */
 public interface CommentRepository extends MongoRepository<Comment> {
 
-    @Override
-    default Class<Comment> getEntityClass() {
-        return Comment.class;
-    }
 }

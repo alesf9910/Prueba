@@ -11,9 +11,5 @@ import com.fyself.seedwork.service.repository.mongodb.MongoRepository;
  */
 public interface PostRepository extends MongoRepository<Post> {
 
-    @Override
-    default Class<Post> getEntityClass() {
-        return Post.class;
-    }
 
 }
