@@ -39,7 +39,6 @@ public class ImageInformation {
             orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION);
             rotate(orientation,img);
         } catch (Exception e) {
-            e.printStackTrace();
             return new ImageInformation(orientation, img.getWidth(), img.getHeight(),img, true);
         }
         return new ImageInformation(orientation, img.getWidth(), img.getHeight(),img, false);
