@@ -18,7 +18,7 @@ repositories {
 		url 'http://oss.jfrog.org/artifactory/oss-snapshot-local'
 	}
 	maven {
-		url 'http://nexus.tek-task.com/repository/maven-public/'
+		url 'http://nexus.fyself.com/repository/maven-public/'
 	}
 }
 
@@ -26,8 +26,9 @@ ext {
 	set('elasticsearch.version', '7.2.0')
 	seedVersion = '1.0.4'
 	mapstructVersion = '1.3.0.Final'
-	swaggerVersion='3.0.0-SNAPSHOT'
+	swaggerVersion='2.10.5'
 }
+
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
