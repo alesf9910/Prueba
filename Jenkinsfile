@@ -1,5 +1,3 @@
-da305a47-c516-4bf6-a8c9-1f60f35df82a
-
 pipeline {
     agent {label 'master'}
 	stages {
