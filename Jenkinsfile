@@ -1,3 +1,5 @@
+da305a47-c516-4bf6-a8c9-1f60f35df82a
+
 pipeline {
     agent {label 'master'}
 	stages {
@@ -9,7 +11,7 @@ pipeline {
 	            rm Jenkinsfile README.md
 	            sudo docker build -f Dockerfile -t ms-contacts .
 	            sudo $(aws ecr get-login --no-include-email --region us-east-1)
-	            sudo docker tag 045641265786.dkr.ecr.us-east-1.amazonaws.com/fyself-ms-contacts-staging:dev
+	            sudo docker tag ms-contacts:latest 045641265786.dkr.ecr.us-east-1.amazonaws.com/fyself-ms-contacts-staging:dev
 	            sudo docker push 045641265786.dkr.ecr.us-east-1.amazonaws.com/fyself-ms-contacts-staging:dev
                 aws lambda invoke --function-name Restart_Fyself_Services --invocation-type Event --log-type Tail --payload '{"cluster":"Fyself-DEV","service":"ServiceMSPost"}' logsfile.txt
 	            '''
