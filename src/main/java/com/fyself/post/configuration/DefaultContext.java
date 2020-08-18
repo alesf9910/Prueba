@@ -13,7 +13,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
-import software.amazon.awssdk.services.s3.S3AsyncClientBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
+import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger.web.*;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebFlux;
 
@@ -22,12 +25,6 @@ import javax.validation.Validator;
 import static com.fyself.post.Main.TITLE;
 import static com.fyself.post.Main.VERSION;
 import static java.util.Collections.emptyList;
-
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
-import springfox.documentation.spring.web.plugins.Docket;
-
 import static software.amazon.awssdk.regions.Region.of;
 import static software.amazon.awssdk.services.s3.S3AsyncClient.builder;
 import static springfox.documentation.builders.RequestHandlerSelectors.any;

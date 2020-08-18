@@ -4,17 +4,14 @@ import com.fyself.post.service.post.PostReportService;
 import com.fyself.post.service.post.contract.to.PostReportTO;
 import com.fyself.post.service.post.contract.to.criteria.PostReportCriteriaTO;
 import com.fyself.post.service.post.datasource.PostReportRepository;
-import com.fyself.post.service.post.datasource.PostRepository;
 import com.fyself.seedwork.service.EntityNotFoundException;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import com.fyself.seedwork.service.repository.mongodb.domain.DomainEntity;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Mono;
 
-import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
 import static com.fyself.post.service.post.contract.PostReportBinder.POST_REPORT_BINDER;
 import static com.fyself.post.tools.LoggerUtils.*;
 import static reactor.core.publisher.Mono.error;

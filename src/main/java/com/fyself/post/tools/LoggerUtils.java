@@ -3,10 +3,10 @@ package com.fyself.post.tools;
 import com.fyself.post.configuration.LoggingFilter;
 import com.fyself.seedwork.kafka.logback.message.AgentInfo;
 import com.fyself.seedwork.kafka.logback.message.BusinessInfo;
+import com.fyself.seedwork.kafka.logback.message.Logger;
 import com.fyself.seedwork.service.context.FySelfContext;
 import com.fyself.seedwork.service.repository.mongodb.domain.DomainEntity;
 import org.slf4j.LoggerFactory;
-import com.fyself.seedwork.kafka.logback.message.Logger;
 
 import java.util.Map;
 import java.util.Set;

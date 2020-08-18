@@ -9,7 +9,6 @@ import com.fyself.post.service.post.datasource.PostTimelineRepository;
 import com.fyself.post.service.post.datasource.domain.PostTimeline;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
-import com.fyself.seedwork.service.repository.mongodb.domain.DomainEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Mono;

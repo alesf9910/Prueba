@@ -1,6 +1,5 @@
 package com.fyself.post.facade.impl;
 
-import com.drew.imaging.ImageProcessingException;
 import com.fyself.post.facade.UploadFileFacade;
 import com.fyself.post.service.system.UploadFileService;
 import com.fyself.post.service.system.contract.to.ResourceCriteriaTO;
@@ -16,10 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import reactor.core.publisher.Mono;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.Optional;
@@ -27,7 +22,6 @@ import java.util.UUID;
 
 import static com.fyself.post.service.system.FileUnSupportedException.fileUnSupportedException;
 import static com.fyself.post.tools.ImageInformation.readImageInformation;
-import static com.fyself.post.tools.StringUtils.normalize;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.core.io.buffer.DataBufferUtils.join;
 import static reactor.core.publisher.Mono.error;

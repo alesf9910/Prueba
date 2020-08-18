@@ -1,7 +1,6 @@
 package com.fyself.post.service.post.contract.validation;
 
 import com.fyself.post.service.post.datasource.CommentRepository;
-import com.fyself.post.service.post.datasource.PostRepository;
 import com.fyself.post.tools.enums.Access;
 import com.fyself.seedwork.service.context.FySelfContext;
 import com.fyself.seedwork.service.validation.MonoBiValidatorFixInterceptor;

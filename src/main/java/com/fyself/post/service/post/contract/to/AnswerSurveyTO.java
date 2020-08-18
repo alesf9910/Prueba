@@ -4,8 +4,6 @@ import com.fyself.seedwork.service.to.DomainAuditTransferObject;
 import com.fyself.seedwork.service.to.annotation.ReadOnly;
 import org.apache.commons.codec.digest.DigestUtils;
 
-
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 import static java.time.LocalDateTime.now;

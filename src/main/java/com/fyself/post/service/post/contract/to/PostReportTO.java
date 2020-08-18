@@ -3,7 +3,6 @@ package com.fyself.post.service.post.contract.to;
 import com.fyself.post.service.post.datasource.domain.enums.ReportingReason;
 import com.fyself.seedwork.service.to.DomainAuditTransferObject;
 import com.fyself.seedwork.service.to.annotation.ReadOnly;
-import org.springframework.util.DigestUtils;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

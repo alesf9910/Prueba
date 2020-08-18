@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fyself.post.service.post.contract.to.*;
 import com.fyself.post.service.post.contract.to.criteria.AnswerSurveyCriteriaTO;
 import com.fyself.post.service.post.datasource.domain.AnswerSurvey;
-import com.fyself.post.service.post.datasource.domain.Post;
 import com.fyself.post.service.post.datasource.domain.subentities.*;
 import com.fyself.post.service.post.datasource.query.AnswerSurveyCriteria;
 import com.fyself.seedwork.service.PagedList;
