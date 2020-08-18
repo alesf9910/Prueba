@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.fyself.seedwork.service.repository.mongodb.criteria.Criterion.and;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -26,6 +27,16 @@ public class AnswerSurveyCriteria extends DomainCriteria<AnswerSurvey> {
 
     public AnswerSurveyCriteria() {
         super(AnswerSurvey.class);
+    }
+
+    @Override
+    protected Criteria force() {
+        return null;
+    }
+
+    @Override
+    public Set<String> searchField() {
+        return null;
     }
 
     @Override

@@ -1,12 +1,8 @@
 package com.fyself.post.service.post.contract;
 
-import com.fyself.post.service.post.contract.to.*;
-import com.fyself.post.service.post.datasource.domain.AnswerSurvey;
-import com.fyself.post.service.post.datasource.domain.Comment;
-import com.fyself.post.service.post.datasource.domain.Post;
-import com.fyself.post.service.post.datasource.domain.subentities.*;
+import com.fyself.post.service.post.contract.to.AnswerAskTO;
+import com.fyself.post.service.post.datasource.domain.subentities.AnswerAsk;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 

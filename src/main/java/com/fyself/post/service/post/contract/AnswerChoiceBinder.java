@@ -1,13 +1,9 @@
 package com.fyself.post.service.post.contract;
 
-import com.fyself.post.service.post.contract.to.AnswerAskTO;
 import com.fyself.post.service.post.contract.to.AnswerChoiceTO;
-import com.fyself.post.service.post.datasource.domain.subentities.Answer;
-import com.fyself.post.service.post.datasource.domain.subentities.AnswerAsk;
 import com.fyself.post.service.post.datasource.domain.subentities.AnswerChoice;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 

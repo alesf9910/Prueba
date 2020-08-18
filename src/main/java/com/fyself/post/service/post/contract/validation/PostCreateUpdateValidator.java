@@ -31,14 +31,10 @@ public class PostCreateUpdateValidator extends MonoBiValidatorFixInterceptor<Pos
         ContentTO contentTO = value.getContent();
         if(value.getContent().getTypeContent().equals(TypeContent.TEXT)){
             TextContentTO textContentTO = (TextContentTO)contentTO;
-            if(textContentTO.isBackground()){
+            if(textContentTO.getBackgroundColor()!=null){
                 return Mono.just(HexColorValidator.validate(textContentTO.getBackgroundColor()));
-            } else {
-                return Mono.just(false);
             }
-        } else {
-
         }
-        return Mono.just(false);
+        return Mono.just(true);
     }
 }

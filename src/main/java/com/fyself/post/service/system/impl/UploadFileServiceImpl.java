@@ -12,7 +12,6 @@ import reactor.core.publisher.Mono;
 
 import static com.fyself.post.service.system.contract.ResourceBinder.RESOURCE_BINDER;
 import static org.slf4j.LoggerFactory.getLogger;
-import static reactor.core.publisher.Mono.just;
 
 @Service("uploadFileService")
 public class UploadFileServiceImpl implements UploadFileService {

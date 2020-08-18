@@ -2,7 +2,6 @@ package com.fyself.post.service.post.datasource;
 
 import com.fyself.post.service.post.datasource.domain.PostTimeline;
 import com.fyself.seedwork.service.repository.mongodb.MongoRepository;
-import org.reactivestreams.Publisher;
 import org.springframework.data.mongodb.repository.Query;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

@@ -1,6 +1,6 @@
 package com.fyself.post.service.post.contract.to;
 
-import com.fyself.post.service.post.datasource.domain.enums.ReportingReason;
+import com.fyself.post.service.post.datasource.domain.enums.ReactionType;
 import com.fyself.seedwork.service.to.DomainAuditTransferObject;
 import com.fyself.seedwork.service.to.annotation.ReadOnly;
 
@@ -16,11 +16,10 @@ import static java.time.LocalDateTime.now;
  * @author Alejandro
  * @since 0.0.1
  */
-public class PostReportTO extends DomainAuditTransferObject {
+public class ReactionTO extends DomainAuditTransferObject {
+
     private String post;
-    private String user;
-    private String description;
-    private ReportingReason reason;
+    private ReactionType reaction;
 
     @Override
     @ReadOnly
@@ -46,67 +45,44 @@ public class PostReportTO extends DomainAuditTransferObject {
         return super.getId();
     }
 
+    @NotNull
+    @NotBlank
     public String getPost() {
         return post;
     }
-
     public void setPost(String post) {
         this.post = post;
     }
 
-    @NotBlank
     @NotNull
-    public String getUser() {
-        return user;
+    public ReactionType getReaction() {
+        return reaction;
+    }
+    public void setReaction(ReactionType reaction) {
+        this.reaction = reaction;
     }
 
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @NotNull
-    public ReportingReason getReason() {
-        return reason;
-    }
-
-    public void setReason(ReportingReason reason) {
-        this.reason = reason;
-    }
-
-    public PostReportTO withOwner(String owner) {
+    public ReactionTO withOwner(String owner) {
         this.setOwner(owner);
         return this;
     }
 
-    public PostReportTO withPost(String post) {
+    public ReactionTO withPost(String post) {
         this.setPost(post);
         return this;
     }
 
-    public PostReportTO withUser(String user) {
-        this.setUser(user);
-        return this;
-    }
-
-    public PostReportTO withReportId(String reportId) {
+    public ReactionTO withReportId(String reportId) {
         this.setId(reportId);
         return this;
     }
 
-    public PostReportTO withCreateAt() {
+    public ReactionTO withCreateAt() {
         this.setCreatedAt(now());
         return this;
     }
 
-    public PostReportTO withUpdateAt() {
+    public ReactionTO withUpdateAt() {
         this.setUpdatedAt(now());
         return this;
     }
