@@ -48,6 +48,7 @@ public class PostFacadeImpl implements PostFacade {
         return service.load(post, context)
                 .flatMap(postTOResult -> commentService.count(post).map(postTOResult::putCount))
                 .flatMap(postTOResult -> reactionService.meReaction(post,context).map(postTOResult::putReaction).switchIfEmpty(Mono.just(postTOResult)))
+                .flatMap(postTOResult -> reactionService.loadAll(post,context).map(postTOResult::putReactionStats).switchIfEmpty(Mono.just(postTOResult)))
                 .map(Result::successful);
     }
 
@@ -91,6 +92,7 @@ public class PostFacadeImpl implements PostFacade {
         return Flux.fromIterable(page.getElements())
                 .flatMap(postTOResult -> commentService.count(postTOResult.getId()).map(postTOResult::putCount), 1)
                 .flatMap(post -> reactionService.meReaction(post.getId(),context).map(post::putReaction).switchIfEmpty(Mono.just(post)),1)
+                .flatMap(post -> reactionService.loadAll(post.getId(),context).map(post::putReactionStats).switchIfEmpty(Mono.just(post)))
                 .collectList()
                 .map(elements -> {page.setElements(elements); return page;});
     }

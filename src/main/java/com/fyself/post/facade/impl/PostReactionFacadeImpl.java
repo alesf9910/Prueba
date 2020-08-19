@@ -9,6 +9,8 @@ import com.fyself.seedwork.facade.stereotype.Facade;
 import com.fyself.seedwork.service.context.FySelfContext;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+
 @Facade("postReactionFacade")
 public class PostReactionFacadeImpl implements PostReactionFacade {
 
@@ -26,6 +28,16 @@ public class PostReactionFacadeImpl implements PostReactionFacade {
     @Override
     public Mono<Result<Void>> update(ReactionTO to, FySelfContext context) {
         return service.update(to,context).map(Result::successful);
+    }
+
+    @Override
+    public Mono<Result<Void>> delete(String id, FySelfContext context) {
+        return service.delete(id,context).map(Result::successful);
+    }
+
+    @Override
+    public Mono<Result<Map>> load(String id, FySelfContext context) {
+        return service.loadAll(id,context).map(Result::successful);
     }
 
 

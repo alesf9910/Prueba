@@ -3,10 +3,10 @@ package com.fyself.post.service.post.impl;
 import com.fyself.post.service.post.ReactionService;
 import com.fyself.post.service.post.contract.to.PostReportTO;
 import com.fyself.post.service.post.contract.to.ReactionTO;
-import com.fyself.post.service.post.contract.to.criteria.PostReportCriteriaTO;
 import com.fyself.post.service.post.datasource.ReactionRepository;
 import com.fyself.post.service.post.datasource.domain.Reaction;
 import com.fyself.post.service.post.datasource.domain.enums.ReactionType;
+import com.fyself.post.service.post.datasource.query.ReactionAggregateCriteria;
 import com.fyself.seedwork.service.EntityNotFoundException;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
@@ -16,6 +16,9 @@ import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.fyself.post.service.post.contract.ReactionBinder.REACTION_BINDER;
 import static com.fyself.post.tools.LoggerUtils.createEvent;
@@ -36,7 +39,7 @@ public class ReactionServiceImpl implements ReactionService {
         return context.authenticatedId()
                 .flatMap(userId -> repository.save(REACTION_BINDER.bind(to
                         .withOwner(userId)
-                        .withReportId(userId+"-"+to.getPost())
+                        .withReportId(userId + "-" + to.getPost())
                         .withCreateAt()
                         .withUpdateAt())))
                 .doOnSuccess(postReport -> createEvent(postReport, context))
@@ -49,7 +52,7 @@ public class ReactionServiceImpl implements ReactionService {
         return context.authenticatedId()
                 .flatMap(userId -> repository.save(REACTION_BINDER.bind(to
                         .withOwner(userId)
-                        .withReportId(userId+"-"+to.getPost())
+                        .withReportId(userId + "-" + to.getPost())
                         .withCreateAt()
                         .withUpdateAt())))
                 .doOnSuccess(postReport -> createEvent(postReport, context))
@@ -60,20 +63,28 @@ public class ReactionServiceImpl implements ReactionService {
     @Override
     public Mono<Void> delete(String post, FySelfContext context) {
         return context.authenticatedId()
-                .flatMap(userId -> repository.deleteById(userId+"-"+post))
+                .flatMap(userId -> repository.deleteById(userId + "-" + post))
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .then();
     }
 
     @Override
-    public Mono<PagedList<PostReportTO>> loadAll(PostReportCriteriaTO criteria, FySelfContext context) {
-        return null;
+    public Mono<Map> loadAll(String criteria, FySelfContext context) {
+        return repository.aggregate(new ReactionAggregateCriteria(criteria)).map(
+                e -> Map.entry(e.getReaction(), e.getTotal())
+        ).collectList().map(reactionResumeTOS ->
+                {
+                    Map map = new HashMap();
+                    reactionResumeTOS.forEach(reactionTypeLongEntry -> map.put(reactionTypeLongEntry.getKey(), reactionTypeLongEntry.getValue()));
+                    return map;
+                }
+        );
     }
 
     @Override
     public Mono<ReactionType> meReaction(String post, FySelfContext context) {
         return context.authenticatedId()
-                .flatMap(userId -> repository.findById(userId+"-"+post))
+                .flatMap(userId -> repository.findById(userId + "-" + post))
                 .map(Reaction::getReaction);
     }
 }
