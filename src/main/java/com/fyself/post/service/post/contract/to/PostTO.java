@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import static java.time.LocalDateTime.now;
@@ -25,7 +26,13 @@ public class PostTO extends DomainAuditTransferObject {
     private Set<String> sharedWith;
     private Long comments;
     private ReactionType reaction;
-    private Map<ReactionType,Long>  reactionStats = Map.of(ReactionType.LOL,10L);
+    private Map<ReactionType,Long>  reactionStats =
+            Map.of(
+                    ReactionType.LOL, (new Random()).nextInt(50)+15L,
+                    ReactionType.ITS_FUNNY, (new Random()).nextInt(100)+25L,
+                    ReactionType.SURELY_ANGRY, (new Random()).nextInt(2020)+5L,
+                    ReactionType.LIKE_IT, (new Random()).nextInt(230)+55L
+            );
 
     @ReadOnly
     public Long getComments() {

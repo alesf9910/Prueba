@@ -1,6 +1,5 @@
 package com.fyself.post.facade;
 
-import com.fyself.post.service.post.contract.to.PostReportTO;
 import com.fyself.post.service.post.contract.to.ReactionTO;
 import com.fyself.post.service.post.contract.to.criteria.PostReportCriteriaTO;
 import com.fyself.post.service.post.datasource.domain.enums.ReactionType;
@@ -11,6 +10,7 @@ import reactor.core.publisher.Mono;
 public interface PostReactionFacade {
 
     Mono<Result<String>> create(ReactionTO to, FySelfContext context);
+    Mono<Result<Void>> update(ReactionTO withReportId, FySelfContext context);
 
     default Mono<Result<ReactionTO>> load(String id, FySelfContext context) {
         ReactionTO response = new ReactionTO();
@@ -20,9 +20,6 @@ public interface PostReactionFacade {
         return Mono.just(response).map(Result::successful);
     }
 
-    default Mono<Result<Void>> update(PostReportTO withReportId, FySelfContext context) {
-        return Mono.just(Result.successful());
-    }
 
     default Mono<Result<Void>> delete(String id, FySelfContext context) {
         return Mono.just(Result.successful());

@@ -36,19 +36,12 @@ public class PostReactionController extends Controller<PostReactionFacade> {
         return this.create((facade, context) -> facade.create(to, context), exchange);
     }
 
-    @GetMapping("/{id}")
-    @ApiSecuredOperation
-    @ApiOperation(nickname = "post_reaction_load", value = "Load post reaction", response = GetResponse.class)
-    public Mono<ResponseEntity> load(@ApiParam(name = "id", value = "ID of reaction to be load", required = true) @PathVariable String id, @ApiIgnore ServerWebExchange exchange) {
-        return this.get((facade, context) -> facade.load(id, context), exchange);
-    }
 
-    @PutMapping("/{id}")
+    @PutMapping()
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_reaction_update", value = "Update post reaction", response = NoContentResponse.class, code = 204)
-    public Mono<ResponseEntity> update(@ApiParam(name = "id", value = "ID of reaction to be reactioned", required = true) @PathVariable String id,
-                                       @ApiParam(name = "id", value = "Post reaction data to be update", required = true) @RequestBody PostReportTO to, @ApiIgnore ServerWebExchange exchange) {
-        return this.perform((facade, context) -> facade.update(to.withReportId(id), context), exchange);
+    public Mono<ResponseEntity> update(@ApiParam(name = "id", value = "Post reaction data to be update", required = true) @RequestBody ReactionTO to, @ApiIgnore ServerWebExchange exchange) {
+        return this.perform((facade, context) -> facade.update(to, context), exchange);
     }
 
     @DeleteMapping("/{id}")
@@ -58,11 +51,11 @@ public class PostReactionController extends Controller<PostReactionFacade> {
         return this.perform((facade, context) -> facade.delete(id, context), exchange);
     }
 
-    @PostMapping("/search")
+    @GetMapping("/{id}")
     @ApiSecuredOperation
-    @ApiOperation(nickname = "post_reaction_search_get", value = "Search post reaction", response = SearchResponse.class)
-    public Mono<ResponseEntity> searchGet(@ApiParam(name = "to", value = "Data of post reaction to be search", required = true) PostReportCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
-        return this.get((facade, context) -> facade.search(to, context), exchange);
+    @ApiOperation(nickname = "post_reaction_load", value = "Load post reaction", response = GetResponse.class)
+    public Mono<ResponseEntity> load(@ApiParam(name = "id", value = "ID of reaction to be load", required = true) @PathVariable String id, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.load(id, context), exchange);
     }
 
     //<editor-fold desc="Inner classes (Documentation purpose)">

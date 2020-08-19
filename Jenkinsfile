@@ -2,16 +2,16 @@ pipeline {
     agent {label 'master'}
 	stages {
 	    stage('Clean Docker') {
-    	        agent any
-    	        steps {
-                    sh '''
-                        sudo docker image prune -a -f
-                    '''
-                }
+            agent 'master'
+            steps {
+                sh '''
+                    sudo docker image prune -a -f
+                '''
+            }
         }
 	    stage('Deploy Dev') {
 	        when {expression { env.BRANCH_NAME ==~ /^(dev|hotfix|bugfix|feature|stagging|release|deploy)(.*)?/ }}
-			    agent any
+            agent 'master'
 			steps {	            
 	            sh '''
 	            rm Jenkinsfile README.md
@@ -25,7 +25,7 @@ pipeline {
         }
         stage('Deploy Prod') {
 	        when {expression { env.BRANCH_NAME == 'master' }}
-	            agent any
+            agent 'master'
 	        steps {
 	            sh '''
 	            rm Jenkinsfile README.md
