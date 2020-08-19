@@ -1,6 +1,14 @@
 pipeline {
     agent {label 'master'}
 	stages {
+	    stage('Clean Docker') {
+    	        agent any
+    	        steps {
+                    sh '''
+                        sudo docker image prune -a -f
+                    '''
+                }
+        }
 	    stage('Deploy Dev') {
 	        when {expression { env.BRANCH_NAME ==~ /^(dev|hotfix|bugfix|feature|stagging|release|deploy)(.*)?/ }}
 			    agent any
