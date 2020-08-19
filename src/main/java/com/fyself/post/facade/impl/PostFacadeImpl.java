@@ -71,7 +71,7 @@ public class PostFacadeImpl implements PostFacade {
     @Override
     public Mono<Result<PagedList<PostTO>>> search(PostCriteriaTO criteria, FySelfContext context) {
         return service.search(criteria, context)
-                .flatMap(page -> updateComments(page, context))
+                .flatMap(page -> putExtraData(page, context))
                 .map(Result::successful);
     }
 
@@ -79,17 +79,18 @@ public class PostFacadeImpl implements PostFacade {
     public Mono<Result<PagedList<PostTO>>> searchPostTimeline(PostTimelineCriteriaTO criteria, FySelfContext context) {
         if (criteria.getType() == TypeSearch.ALL)
             return postTimelineService.search(criteria, context)
-                    .flatMap(page -> updateComments(page, context))
+                    .flatMap(page -> putExtraData(page, context))
                     .map(Result::successful);
         else
             return service.search(POST_BINDER.bindToCriteriaTO(criteria), context)
-                    .flatMap(page -> updateComments(page, context))
+                    .flatMap(page -> putExtraData(page, context))
                     .map(Result::successful);
     }
 
-    private Mono<PagedList<PostTO>> updateComments(PagedList<PostTO> page, FySelfContext context) {
+    private Mono<PagedList<PostTO>> putExtraData(PagedList<PostTO> page, FySelfContext context) {
         return Flux.fromIterable(page.getElements())
                 .flatMap(postTOResult -> commentService.count(postTOResult.getId()).map(postTOResult::putCount), 1)
+                .flatMap(post -> reactionService.meReaction(post.getId(),context).map(post::putReaction).switchIfEmpty(Mono.just(post)),1)
                 .collectList()
                 .map(elements -> {page.setElements(elements); return page;});
     }
