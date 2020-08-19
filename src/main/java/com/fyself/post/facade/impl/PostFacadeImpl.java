@@ -4,6 +4,7 @@ import com.fyself.post.facade.PostFacade;
 import com.fyself.post.service.post.CommentService;
 import com.fyself.post.service.post.PostService;
 import com.fyself.post.service.post.PostTimelineService;
+import com.fyself.post.service.post.ReactionService;
 import com.fyself.post.service.post.contract.to.PostShareBulkTO;
 import com.fyself.post.service.post.contract.to.PostShareTO;
 import com.fyself.post.service.post.contract.to.PostTO;
@@ -28,11 +29,13 @@ public class PostFacadeImpl implements PostFacade {
     private final PostService service;
     private final PostTimelineService postTimelineService;
     private final CommentService commentService;
+    private final ReactionService reactionService;
 
-    public PostFacadeImpl(PostService service, PostTimelineService postTimelineService, CommentService commentService) {
+    public PostFacadeImpl(PostService service, PostTimelineService postTimelineService, CommentService commentService, ReactionService reactionService) {
         this.service = service;
         this.postTimelineService = postTimelineService;
         this.commentService = commentService;
+        this.reactionService = reactionService;
     }
 
     @Override
@@ -44,6 +47,7 @@ public class PostFacadeImpl implements PostFacade {
     public Mono<Result<PostTO>> load(String post, FySelfContext context) {
         return service.load(post, context)
                 .flatMap(postTOResult -> commentService.count(post).map(postTOResult::putCount))
+                .flatMap(postTOResult -> reactionService.meReaction(post,context).map(postTOResult::putReaction).switchIfEmpty(Mono.just(postTOResult)))
                 .map(Result::successful);
     }
 
