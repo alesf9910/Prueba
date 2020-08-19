@@ -1,6 +1,7 @@
 package com.fyself.post.service.post.contract.to;
 
 
+import com.fyself.post.service.post.datasource.domain.enums.ReactionType;
 import com.fyself.post.tools.enums.Access;
 import com.fyself.seedwork.service.to.DomainAuditTransferObject;
 import com.fyself.seedwork.service.to.annotation.ReadOnly;
@@ -8,6 +9,7 @@ import com.fyself.seedwork.service.to.annotation.ReadOnly;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Set;
 
 import static java.time.LocalDateTime.now;
@@ -22,6 +24,8 @@ public class PostTO extends DomainAuditTransferObject {
     private String urlImage;
     private Set<String> sharedWith;
     private Long comments;
+    private ReactionType reaction;
+    private Map<ReactionType,Long>  reactionStats = Map.of(ReactionType.LOL,10L);
 
     @ReadOnly
     public Long getComments() {
@@ -126,8 +130,28 @@ public class PostTO extends DomainAuditTransferObject {
     public Set<String> getSharedWith() {
         return sharedWith;
     }
-
     public void setSharedWith(Set<String> sharedWith) {
         this.sharedWith = sharedWith;
+    }
+
+    public ReactionType getReaction() {
+        return reaction;
+    }
+
+    public void setReaction(ReactionType reaction) {
+        this.reaction = reaction;
+    }
+
+    public Map<ReactionType, Long> getReactionStats() {
+        return reactionStats;
+    }
+
+    public void setReactionStats(Map<ReactionType, Long> reactionStats) {
+        this.reactionStats = reactionStats;
+    }
+
+    public PostTO putReaction(ReactionType reactionType) {
+        this.setReaction(reactionType);
+        return this;
     }
 }
