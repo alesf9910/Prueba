@@ -46,12 +46,23 @@ public class ReactionServiceImpl implements ReactionService {
 
     @Override
     public Mono<Void> update(@Valid ReactionTO to, FySelfContext context) {
-        return null;
+        return context.authenticatedId()
+                .flatMap(userId -> repository.save(REACTION_BINDER.bind(to
+                        .withOwner(userId)
+                        .withReportId(userId+"-"+to.getPost())
+                        .withCreateAt()
+                        .withUpdateAt())))
+                .doOnSuccess(postReport -> createEvent(postReport, context))
+                .switchIfEmpty(error(EntityNotFoundException::new))
+                .then();
     }
 
     @Override
     public Mono<Void> delete(String post, FySelfContext context) {
-        return null;
+        return context.authenticatedId()
+                .flatMap(userId -> repository.deleteById(userId+"-"+post))
+                .switchIfEmpty(error(EntityNotFoundException::new))
+                .then();
     }
 
     @Override

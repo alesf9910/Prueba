@@ -32,45 +32,4 @@ public interface ReactionBinder {
     @Mapping(target = "post", source = "post.id")
     ReactionTO bind(Reaction source);
 
-
-    @Mapping(target = "user", ignore = true)
-    @Mapping(target = "owner", ignore = true)
-    @Mapping(target = "post", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "id", ignore = true)
-    void bind(@MappingTarget PostReport target, PostReportTO source);
-
-    @Mapping(target = "user", source = "user")
-    @Mapping(target = "owner", source = "owner")
-    @Mapping(target = "post.id", source = "post")
-    PostReportCriteria bind(PostReportCriteriaTO source);
-//
-//
-//    default PostReportCriteria bindToCriteria(PostReportCriteriaTO source) {
-//
-//        if (source.getPost() == null || source.getPost().trim().equals("")) {
-//            return buildPostReportCriteria(source);
-//        }
-//
-//        return this.bind(source);
-//    }
-//
-//    default PostReportCriteria buildPostReportCriteria(PostReportCriteriaTO source) {
-//        PostReportCriteria criteria = new PostReportCriteria();
-//        criteria.setOwner(source.getOwner());
-//        criteria.setUser(source.getUser());
-//        return criteria;
-//    }
-//
-//    default PostReport set(PostReport target, PostReportTO source) {
-//        this.bind(target, source);
-//        return target;
-//    }
-//
-//
-//    default PagedList<PostReportTO> bind(Page<PostReport> source) {
-//        List<PostReportTO> packagesBinder = source.map(this::bind).getContent();
-//        return new PagedList<>(packagesBinder, source.getNumber(), source.getTotalPages(), source.getTotalElements());
-//    }
-
 }
