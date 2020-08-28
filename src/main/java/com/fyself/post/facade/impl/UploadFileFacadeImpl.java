@@ -59,28 +59,29 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
     private Mono<String> add(FilePart part, String typeElement) {
         var ext = getExtensionByStringHandling(part.filename()).orElse("");
         var name = UUID.randomUUID().toString() + "." + ext;
-
-
         return just(name).flatMap(id -> this.save(id, typeElement, part));
     }
 
 
     private Mono<String> save(String name, String typeElement, FilePart part) {
         return join(part.content())
-                .filter(filePart -> supported(part.headers().getContentType()))
-                .switchIfEmpty(error(fileUnSupportedException("fyself.facade.post.upload.file.unsupported")))
                 .map(DataBuffer::asByteBuffer)
                 .flatMap(content -> {
-                    var a = readImageInformation(content.array());
+                    if(isImage((part.headers().getContentType()))){
+                        var a = readImageInformation(content.array());
 
-                    var ratio = a.height / a.width;
+                        var ratio = a.height / a.width;
 
-                    var criteria = ResourceCriteriaTO.from(typeElement).withName(String.format("%.3f", ratio) + "_" + name);
+                        var criteria = ResourceCriteriaTO.from(typeElement).withName(String.format("%.3f", ratio) + "_" + name);
 
-                    if (!a.png)
-                        return uploadFileService.add(ResourceTO.of(criteria, ByteBuffer.wrap(a.imageFile.getByteArray()), getMetadata(part.headers())));
+                        if (!a.png)
+                            return uploadFileService.add(ResourceTO.of(criteria, ByteBuffer.wrap(a.imageFile.getByteArray()), getMetadata(part.headers())));
 
-                    return uploadFileService.add(ResourceTO.of(criteria, content, getMetadata(part.headers())));
+                        return uploadFileService.add(ResourceTO.of(criteria, content, getMetadata(part.headers())));
+                    } else {
+                        var criteria = ResourceCriteriaTO.from(typeElement).withName(String.format(name));
+                        return uploadFileService.add(ResourceTO.of(criteria, content, getMetadata(part.headers())));
+                    }
                 });
     }
 
@@ -89,7 +90,7 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
         return httpHeaders.toSingleValueMap();
     }
 
-    private Boolean supported(MediaType type) {
+    private Boolean isImage(MediaType type) {
         for (String mediaType : typesSupported) {
             if (type.toString().equals(mediaType)) {
                 return true;
