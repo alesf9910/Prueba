@@ -19,7 +19,7 @@ pipeline {
 	            sudo $(aws ecr get-login --no-include-email --region us-east-1)
 	            sudo docker tag ms-post:latest 045641265786.dkr.ecr.us-east-1.amazonaws.com/fyself-ms-post-staging:dev
 	            sudo docker push 045641265786.dkr.ecr.us-east-1.amazonaws.com/fyself-ms-post-staging:dev
-                aws lambda invoke --function-name Restart_Fyself_Services --invocation-type Event --log-type Tail --payload '{"cluster":"Fyself-DEV","service":"ServiceMSPost"}' logsfile.txt
+                aws lambda invoke --function-name Restart_Fyself_Services --invocation-type Event --log-type Tail --payload '{"cluster":"Fyself-DEV","service":"ServiceMSPost"}' logsfile.txt --region us-east-1
 	            '''
 	            }
         }
@@ -33,7 +33,7 @@ pipeline {
 	            sudo $(aws ecr get-login --no-include-email --region us-east-1 --profile fyself)
 	            sudo docker tag ms-post:latest 045641265786.dkr.ecr.us-east-1.amazonaws.com/fyself-ms-post:master
 	            sudo docker push 045641265786.dkr.ecr.us-east-1.amazonaws.com/fyself-ms-post:master
-                aws lambda invoke --function-name Restart_Fyself_Services --invocation-type Event --log-type Tail --payload '{"cluster":"Fyself-PROD","service":"ServiceMSPost"}' logsfile.txt --profile fyself
+                aws lambda invoke --function-name Restart_Fyself_Services --invocation-type Event --log-type Tail --payload '{"cluster":"Fyself-PROD","service":"ServiceMSPost"}' logsfile.txt --region us-east-1
 	            '''
 	            }
            }
