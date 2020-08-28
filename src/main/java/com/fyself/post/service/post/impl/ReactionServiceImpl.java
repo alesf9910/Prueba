@@ -63,8 +63,8 @@ public class ReactionServiceImpl implements ReactionService {
     @Override
     public Mono<Void> delete(String post, FySelfContext context) {
         return context.authenticatedId()
-                .flatMap(userId -> repository.deleteById(userId + "-" + post))
                 .switchIfEmpty(error(EntityNotFoundException::new))
+                .flatMap(userId -> repository.deleteById(userId + "-" + post))
                 .then();
     }
 
