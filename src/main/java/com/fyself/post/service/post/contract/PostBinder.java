@@ -79,6 +79,12 @@ public interface PostBinder {
     Post bindToPost(Post source);
 
 
+    default Post bindSharedPostContent (Post source,Post target){
+        target.setContent(source.getContent());
+        return target;
+    }
+
+
     default Post bindSharedPost(Post source, String owner) {
         SharedPost postShared = new SharedPost();
         postShared.setPost(source.getId());
@@ -105,8 +111,6 @@ public interface PostBinder {
             return this.bind((TextContent) source);
         if (source instanceof SurveyContent)
             return this.bind((SurveyContent) source);
-        if (source instanceof SharedPost)
-            return this.bind((SharedPost) source);
         return null;
     }
 
@@ -115,8 +119,6 @@ public interface PostBinder {
     ProfileContentTO bind(ProfileContent source);
 
     TextContentTO bind(TextContent source);
-
-    SharedPostTO bind(SharedPost source);
 
     default SurveyContent bind(SurveyContentTO source) {
         if (source instanceof ChoiceSurveyTO)
@@ -285,11 +287,6 @@ public interface PostBinder {
         criteria.setPage(source.getPage());
         criteria.setSize(source.getSize());
         return criteria;
-    }
-
-    default PagedList<PostTO> bindPage(Page<Post> source) {
-        List<PostTO> postTOS = source.stream().map(this::bind).collect(toList());
-        return new PagedList<>(postTOS, source.getNumber(), source.getTotalPages(), source.getTotalElements());
     }
 
     PostTimelineCriteria bindToTimelineCriteria(PostTimelineCriteriaTO source);
