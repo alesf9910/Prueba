@@ -17,7 +17,8 @@ import java.io.Serializable;
         @JsonSubTypes.Type(value = SurveyContentTO.class, name = "SURVEY_ASK"),
         @JsonSubTypes.Type(value = ChoiceSurveyTO.class, name = "SURVEY_CHOICE"),
         @JsonSubTypes.Type(value = HierarchySurveyTO.class, name = "SURVEY_HIERARCHY"),
-        @JsonSubTypes.Type(value = RateSurveyTO.class, name = "SURVEY_RATE")
+        @JsonSubTypes.Type(value = RateSurveyTO.class, name = "SURVEY_RATE"),
+        @JsonSubTypes.Type(value = SharedPostTO.class, name = "SHARED_POST")
 })
 public abstract class ContentTO implements Serializable {
 

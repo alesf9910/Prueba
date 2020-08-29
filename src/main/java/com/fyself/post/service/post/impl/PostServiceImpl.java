@@ -9,7 +9,9 @@ import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
 import com.fyself.post.service.post.datasource.AnswerSurveyRepository;
 import com.fyself.post.service.post.datasource.PostRepository;
 import com.fyself.post.service.post.datasource.PostTimelineRepository;
+import com.fyself.post.service.post.datasource.domain.Post;
 import com.fyself.post.service.stream.StreamService;
+import com.fyself.post.tools.enums.Access;
 import com.fyself.seedwork.service.EntityNotFoundException;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
@@ -48,14 +50,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Mono<String> create(@NotNull @Valid PostTO to, FySelfContext context) {
         return context.authenticatedId()
-                .flatMap(userId -> repository.save(POST_BINDER.bind(to.withUserId(userId).withCreatedAt().withUpdatedAt())))
-
-                .flatMap(post -> postTimelineRepository.save(POST_TIMELINE_BINDER.bind(post)).thenReturn(post))
-
-                .doOnSuccess(entity -> createEvent(entity, context))
-
-                .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity)).subscribe())
-
+                .flatMap(userId -> createPost(POST_BINDER.bind(to.withUserId(userId).withCreatedAt().withUpdatedAt()),context))
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .map(DomainEntity::getId);
     }
@@ -132,14 +127,29 @@ public class PostServiceImpl implements PostService {
                 .then();
     }
 
-    @Override
-    public Mono<Void> shareBulk(@NotNull PostShareBulkTO to, FySelfContext context) {
-        return repository.findById(to.getPost())
-                .flatMap(post -> repository.save(POST_BINDER.bindShareBulk(post, to)))
+    private Mono<Void> shareBulk(@NotNull Post to, FySelfContext context) {
+        return repository.save(to)
                 .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity)).subscribe())
+                .then();
+    }
+
+    private Mono<Post> createPost(@NotNull Post to, FySelfContext context){
+        return repository.save(to)
+                .flatMap(post -> postTimelineRepository.save(POST_TIMELINE_BINDER.bind(post)).thenReturn(post))
+                .doOnSuccess(entity -> createEvent(entity, context))
+                .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity)).subscribe());
+    }
+
+    @Override
+    public Mono<Void> sharePost(@NotNull PostShareBulkTO to, FySelfContext context) {
+        return repository.findById(to.getPost())
+                .flatMap(post -> !post.getOwner().equals(context.getAccount().get().getId())&&post.getAccess().equals(Access.PRIVATE)
+                        ?createPost(POST_BINDER.bindSharedPost(post,context.getAccount().get().getId()),context)
+                        :shareBulk(POST_BINDER.bindShareBulk(post, to), context))
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .then();
     }
+
 
     @Override
     public Mono<Void> stopShareWith(@NotNull PostShareTO to, FySelfContext context) {

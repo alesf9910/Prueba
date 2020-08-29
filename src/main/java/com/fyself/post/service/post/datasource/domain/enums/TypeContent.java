@@ -7,5 +7,6 @@ public enum TypeContent {
     SURVEY_ASK,
     SURVEY_HIERARCHY,
     SURVEY_CHOICE,
-    SURVEY_RATE
+    SURVEY_RATE,
+    SHARED_POST
 }
