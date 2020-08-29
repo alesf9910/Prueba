@@ -27,6 +27,7 @@ import static com.fyself.seedwork.util.JsonUtil.MAPPER;
 import static com.fyself.seedwork.util.JsonUtil.write;
 import static java.util.stream.Collectors.toList;
 
+import static java.time.LocalDateTime.now;
 /**
  * Binder
  *
@@ -69,6 +70,26 @@ public interface PostBinder {
         return null;
     }
 
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "owner", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "sharedWith", ignore = true)
+    Post bindToPost(Post source);
+
+
+    default Post bindSharedPost(Post source, String owner) {
+        SharedPost postShared = new SharedPost();
+        postShared.setPost(source.getId());
+        Post target = bindToPost(source);
+        target.setContent(postShared);
+        target.setOwner(owner);
+        target.setCreatedAt(now());
+        target.setUpdatedAt(now());
+        return target;
+    }
+
     AwardContent bind(AwardContentTO source);
 
     ProfileContent bind(ProfileContentTO source);
@@ -84,6 +105,8 @@ public interface PostBinder {
             return this.bind((TextContent) source);
         if (source instanceof SurveyContent)
             return this.bind((SurveyContent) source);
+        if (source instanceof SharedPost)
+            return this.bind((SharedPost) source);
         return null;
     }
 
@@ -92,6 +115,8 @@ public interface PostBinder {
     ProfileContentTO bind(ProfileContent source);
 
     TextContentTO bind(TextContent source);
+
+    SharedPostTO bind(SharedPost source);
 
     default SurveyContent bind(SurveyContentTO source) {
         if (source instanceof ChoiceSurveyTO)

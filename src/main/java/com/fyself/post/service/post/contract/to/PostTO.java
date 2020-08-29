@@ -1,7 +1,6 @@
 package com.fyself.post.service.post.contract.to;
 
 
-import com.fyself.post.service.post.datasource.domain.Post;
 import com.fyself.post.service.post.datasource.domain.enums.ReactionType;
 import com.fyself.post.tools.enums.Access;
 import com.fyself.seedwork.service.to.DomainAuditTransferObject;

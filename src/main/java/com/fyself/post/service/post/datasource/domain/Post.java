@@ -19,7 +19,6 @@ public class Post extends DomainAuditEntity {
     private String urlImage;
     private Set<String> sharedWith;
 
-
     public Content getContent() {
         return content;
     }
