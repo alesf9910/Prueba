@@ -6,6 +6,7 @@ import com.fyself.post.tools.enums.Access;
 import com.fyself.seedwork.service.repository.mongodb.domain.DomainAuditEntity;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Document(collection = "post")
@@ -78,6 +79,7 @@ public class Post extends DomainAuditEntity {
 
     public Post shareBulk(Set<String> users) {
         this.setSharedWith(users);
+        this.setUpdatedAt(LocalDateTime.now());
         return this;
     }
 

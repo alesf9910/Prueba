@@ -149,11 +149,11 @@ public class PostServiceImpl implements PostService {
     public Mono<Void> sharePost(@NotNull PostShareBulkTO to, FySelfContext context) {
         return repository.findById(to.getPost())
                 .flatMap(post -> {
-                    if(post.getOwner().equals(context.getAccount().get().getId())){
+                    if(post.getOwner().equals(context.getAccount().get().getId())) {
                         return shareBulk(POST_BINDER.bindShareBulk(post, to), context);
                     } else {
                         if(post.getAccess().equals(Access.PUBLIC)){
-                            return createPost(POST_BINDER.bindSharedPost(post,context.getAccount().get().getId()),context);
+                            return createPost(POST_BINDER.bindSharedPost(post,context.getAccount().get().getId()),context).then(just(true));
                         } else {
                             return error(ValidationException::new);
                         }
@@ -189,10 +189,10 @@ public class PostServiceImpl implements PostService {
     }
 
 
-    private Mono<Void> shareBulk(@NotNull Post to, FySelfContext context) {
-        return repository.save(to)
-                .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity)).subscribe())
-                .then();
+    private Mono<Boolean> shareBulk(@NotNull Post to, FySelfContext context) {
+            return repository.save(to)
+                    .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity)).subscribe())
+                    .then(just(true));
     }
 
     private Mono<Post> createPost(@NotNull Post to, FySelfContext context){
