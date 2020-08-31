@@ -21,7 +21,6 @@ import com.fyself.seedwork.service.repository.mongodb.domain.DomainEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.client.HttpClientErrorException;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
@@ -45,6 +44,7 @@ public class PostServiceImpl implements PostService {
     final PostTimelineRepository postTimelineRepository;
     final AnswerSurveyRepository answerSurveyRepository;
     final StreamService streamService;
+    Post postAux;
 
     public PostServiceImpl(PostRepository repository, PostTimelineRepository postTimelineRepository, AnswerSurveyRepository answerSurveyRepository, StreamService streamService) {
         this.repository = repository;
@@ -106,8 +106,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Mono<PagedList<PostTO>> search(@NotNull PostCriteriaTO criteria, FySelfContext context) {
-        return
-                repository.findPage(POST_BINDER.bindToCriteria(criteria.withOwner(context.getAccount().get().getId())))
+        return repository.findPage(POST_BINDER.bindToCriteria(criteria.withOwner(context.getAccount().get().getId())))
                 .map(this::bindPage)
                 .flatMap(postTOPagedList -> fromIterable(postTOPagedList.getElements())
                         .flatMap(
@@ -188,6 +187,18 @@ public class PostServiceImpl implements PostService {
                 .then();
     }
 
+    @Override
+    public PostTO bindPostTO(Post post){
+        if(post.getContent() instanceof SharedPost){
+            repository.getById(((SharedPost) post.getContent()).getPost())
+                    .map(fatherPost -> POST_BINDER.bindSharedPostContent(fatherPost,post))
+                    .subscribe(finalPost -> this.postAux=finalPost);
+            return POST_BINDER.bind(this.postAux);
+        } else {
+            return POST_BINDER.bind(post);
+        }
+    }
+
 
     private Mono<Boolean> shareBulk(@NotNull Post to, FySelfContext context) {
             return repository.save(to)
@@ -203,12 +214,7 @@ public class PostServiceImpl implements PostService {
     }
 
     private PagedList<PostTO> bindPage(Page<Post> source) {
-        List<PostTO> postTOS = source.stream().map(post -> (post.getContent() instanceof SharedPost)
-                ?POST_BINDER.bind(repository.getById(((SharedPost) post.getContent()).getPost()).map(fatherPost -> POST_BINDER.bindSharedPostContent(fatherPost,post)).block())
-                :POST_BINDER.bind(post)).collect(toList());
+        List<PostTO> postTOS = source.stream().map(post -> bindPostTO(post)).collect(toList());
         return new PagedList<>(postTOS, source.getNumber(), source.getTotalPages(), source.getTotalElements());
     }
-
-
-
 }

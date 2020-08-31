@@ -1,14 +1,18 @@
 package com.fyself.post.service.post.impl;
 
+import com.fyself.post.service.post.PostService;
 import com.fyself.post.service.post.PostTimelineService;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.PostTimelineTO;
 import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
 import com.fyself.post.service.post.datasource.AnswerSurveyRepository;
 import com.fyself.post.service.post.datasource.PostTimelineRepository;
+import com.fyself.post.service.post.datasource.domain.Post;
 import com.fyself.post.service.post.datasource.domain.PostTimeline;
+import com.fyself.post.service.post.datasource.domain.subentities.SharedPost;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Mono;
@@ -16,9 +20,12 @@ import reactor.core.publisher.Mono;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import java.util.List;
+
 import static com.fyself.post.service.post.contract.AnswerSurveyBinder.ANSWER_SURVEY_BINDER;
 import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
 import static com.fyself.post.service.post.contract.PostTimelineBinder.POST_TIMELINE_BINDER;
+import static java.util.stream.Collectors.toList;
 import static reactor.core.publisher.Flux.fromIterable;
 import static reactor.core.publisher.Mono.just;
 
@@ -26,11 +33,14 @@ import static reactor.core.publisher.Mono.just;
 @Validated
 public class PostTimelineServiceImpl implements PostTimelineService {
     private final PostTimelineRepository repository;
+    final PostService postService;
     final AnswerSurveyRepository answerSurveyRepository;
 
-    public PostTimelineServiceImpl(PostTimelineRepository repository, AnswerSurveyRepository answerSurveyRepository) {
+
+    public PostTimelineServiceImpl(PostTimelineRepository repository, AnswerSurveyRepository answerSurveyRepository,PostService postService) {
         this.repository = repository;
         this.answerSurveyRepository = answerSurveyRepository;
+        this.postService = postService;
     }
 
     @Override
@@ -43,7 +53,7 @@ public class PostTimelineServiceImpl implements PostTimelineService {
     @Override
     public Mono<PagedList<PostTO>> search(PostTimelineCriteriaTO criteria, FySelfContext context) {
         return repository.findPage(POST_BINDER.bindToTimelineCriteria(criteria.withUser(context.getAccount().get().getId())))
-                .map(postTimelines -> POST_BINDER.bindPageTimeline(postTimelines, context.getAccount().get().getId()))
+                .map(postTimelines -> this.bindPageTimeline(postTimelines, context.getAccount().get().getId()))
                 .flatMap(postTOPagedList -> fromIterable(postTOPagedList.getElements())
                         .flatMap(postTO -> answerSurveyRepository.findByPostAndUser(postTO.getId(), context.getAccount().get().getId())
                                 .map(ANSWER_SURVEY_BINDER::bindFromSurvey)
@@ -51,5 +61,13 @@ public class PostTimelineServiceImpl implements PostTimelineService {
                                 .switchIfEmpty(just(postTO)), 1)
                         .collectList()
                         .map(postTOS -> POST_BINDER.bind(postTOPagedList, postTOS)));
+    }
+
+    private PagedList<PostTO> bindPageTimeline(Page<PostTimeline> source, String userId) {
+        List<PostTO> postTOS = source.stream()
+                .map(PostTimeline::getPostModified)
+                .map(POST_BINDER::emptyContent)
+                .map(post -> postService.bindPostTO(post)).collect(toList());
+        return new PagedList<>(postTOS, source.getNumber(), source.getTotalPages(), source.getTotalElements());
     }
 }

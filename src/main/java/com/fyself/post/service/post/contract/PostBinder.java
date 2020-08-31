@@ -291,15 +291,6 @@ public interface PostBinder {
 
     PostTimelineCriteria bindToTimelineCriteria(PostTimelineCriteriaTO source);
 
-    default PagedList<PostTO> bindPageTimeline(Page<PostTimeline> source, String userId) {
-        List<PostTO> postTOS = source.stream()
-                .map(PostTimeline::getPostModified)
-                .map(this::emptyContent)
-                .map(this::bind)
-                .collect(toList());
-        return new PagedList<>(postTOS, source.getNumber(), source.getTotalPages(), source.getTotalElements());
-    }
-
     default Post bindBlocked(Post post) {
         post.setBlocked(true);
         return post;
@@ -317,7 +308,7 @@ public interface PostBinder {
         return post.stopShareUser(to.getSharedWith());
     }
 
-    private Post emptyContent(Post post) {
+    default Post emptyContent(Post post) {
         if (post.isBlocked() || post.getDeleted())
             return post.withContent(null);
         return post;
@@ -342,7 +333,6 @@ public interface PostBinder {
             content = ((SurveyContent) source.getContent()).getAsk();
         } else
             content = "";
-
 
         return Map.of(
                 "id", Optional.ofNullable(source.getId()).orElse(""),
