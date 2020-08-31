@@ -4,13 +4,13 @@ import com.fyself.post.service.post.PostService;
 import com.fyself.post.service.post.contract.to.PostShareBulkTO;
 import com.fyself.post.service.post.contract.to.PostShareTO;
 import com.fyself.post.service.post.contract.to.PostTO;
+import com.fyself.post.service.post.contract.to.SharedPostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
 import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
 import com.fyself.post.service.post.datasource.AnswerSurveyRepository;
 import com.fyself.post.service.post.datasource.PostRepository;
 import com.fyself.post.service.post.datasource.PostTimelineRepository;
 import com.fyself.post.service.post.datasource.domain.Post;
-import com.fyself.post.service.post.datasource.domain.subentities.SharedPost;
 import com.fyself.post.service.stream.StreamService;
 import com.fyself.post.tools.enums.Access;
 import com.fyself.seedwork.service.EntityNotFoundException;
@@ -18,16 +18,12 @@ import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.ValidationException;
 import com.fyself.seedwork.service.context.FySelfContext;
 import com.fyself.seedwork.service.repository.mongodb.domain.DomainEntity;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Mono;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
-import java.util.List;
-
 import static com.fyself.post.service.post.contract.AnswerSurveyBinder.ANSWER_SURVEY_BINDER;
 import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
 import static com.fyself.post.service.post.contract.PostTimelineBinder.POST_TIMELINE_BINDER;
@@ -44,7 +40,7 @@ public class PostServiceImpl implements PostService {
     final PostTimelineRepository postTimelineRepository;
     final AnswerSurveyRepository answerSurveyRepository;
     final StreamService streamService;
-    Post postAux;
+    PostTO postTOAux;
 
     public PostServiceImpl(PostRepository repository, PostTimelineRepository postTimelineRepository, AnswerSurveyRepository answerSurveyRepository, StreamService streamService) {
         this.repository = repository;
@@ -76,11 +72,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Mono<PostTO> load(@NotNull String id, FySelfContext context) {
         return repository.getById(id)
-                            .flatMap(post -> (post.getContent() instanceof SharedPost)
-                                    ?repository.getById(((SharedPost) post.getContent()).getPost())
-                                                .map(fatherPost -> POST_BINDER.bindSharedPostContent(fatherPost,post))
-                                                .flatMap(sharedPost -> loadPost(sharedPost,context))
-                                    :loadPost(post,context))
+                            .flatMap(post -> loadPost(post,context))
                             .switchIfEmpty(error(EntityNotFoundException::new));
     }
 
@@ -107,7 +99,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Mono<PagedList<PostTO>> search(@NotNull PostCriteriaTO criteria, FySelfContext context) {
         return repository.findPage(POST_BINDER.bindToCriteria(criteria.withOwner(context.getAccount().get().getId())))
-                .map(this::bindPage)
+                .map(POST_BINDER::bindPage)
                 .flatMap(postTOPagedList -> fromIterable(postTOPagedList.getElements())
                         .flatMap(
                                 postTO ->
@@ -124,6 +116,12 @@ public class PostServiceImpl implements PostService {
                 .map(ANSWER_SURVEY_BINDER::bindFromSurvey)
                 .map(answerSurveyTO -> POST_BINDER.bindPostWithAnswer(to, answerSurveyTO))
                 .switchIfEmpty(just(POST_BINDER.bind(to)));
+    }
+
+    @Override
+    public Mono<PostTO> addSharedPostContent(PostTO postTO){
+        return repository.getById(((SharedPostTO)postTO.getContent()).getPostTo().getId())
+                .map(post -> postTO.withSharedContent(POST_BINDER.bind(post)));
     }
 
     @Override
@@ -174,8 +172,8 @@ public class PostServiceImpl implements PostService {
     @Override
     public Mono<PagedList<PostTO>> searchMe(PostTimelineCriteriaTO criteria, FySelfContext context) {
         return repository.findPage(POST_BINDER.bindToCriteria(criteria.withUser(context.getAccount().get().getId())))
-                .map(this::bindPage);
-    }
+                .map(POST_BINDER::bindPage);
+    } 
 
     @Override
     public Mono<Void> create(PostTO to) {
@@ -186,19 +184,6 @@ public class PostServiceImpl implements PostService {
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .then();
     }
-
-    @Override
-    public PostTO bindPostTO(Post post){
-        if(post.getContent() instanceof SharedPost){
-            repository.getById(((SharedPost) post.getContent()).getPost())
-                    .map(fatherPost -> POST_BINDER.bindSharedPostContent(fatherPost,post))
-                    .subscribe(finalPost -> this.postAux=finalPost);
-            return POST_BINDER.bind(this.postAux);
-        } else {
-            return POST_BINDER.bind(post);
-        }
-    }
-
 
     private Mono<Boolean> shareBulk(@NotNull Post to, FySelfContext context) {
             return repository.save(to)
@@ -211,10 +196,5 @@ public class PostServiceImpl implements PostService {
                 .flatMap(post -> postTimelineRepository.save(POST_TIMELINE_BINDER.bind(post)).thenReturn(post))
                 .doOnSuccess(entity -> createEvent(entity, context))
                 .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity)).subscribe());
-    }
-
-    private PagedList<PostTO> bindPage(Page<Post> source) {
-        List<PostTO> postTOS = source.stream().map(post -> bindPostTO(post)).collect(toList());
-        return new PagedList<>(postTOS, source.getNumber(), source.getTotalPages(), source.getTotalElements());
     }
 }

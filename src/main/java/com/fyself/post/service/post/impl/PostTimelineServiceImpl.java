@@ -53,7 +53,7 @@ public class PostTimelineServiceImpl implements PostTimelineService {
     @Override
     public Mono<PagedList<PostTO>> search(PostTimelineCriteriaTO criteria, FySelfContext context) {
         return repository.findPage(POST_BINDER.bindToTimelineCriteria(criteria.withUser(context.getAccount().get().getId())))
-                .map(postTimelines -> this.bindPageTimeline(postTimelines, context.getAccount().get().getId()))
+                .map(postTimelines -> POST_BINDER.bindPageTimeline(postTimelines, context.getAccount().get().getId()))
                 .flatMap(postTOPagedList -> fromIterable(postTOPagedList.getElements())
                         .flatMap(postTO -> answerSurveyRepository.findByPostAndUser(postTO.getId(), context.getAccount().get().getId())
                                 .map(ANSWER_SURVEY_BINDER::bindFromSurvey)
@@ -61,13 +61,5 @@ public class PostTimelineServiceImpl implements PostTimelineService {
                                 .switchIfEmpty(just(postTO)), 1)
                         .collectList()
                         .map(postTOS -> POST_BINDER.bind(postTOPagedList, postTOS)));
-    }
-
-    private PagedList<PostTO> bindPageTimeline(Page<PostTimeline> source, String userId) {
-        List<PostTO> postTOS = source.stream()
-                .map(PostTimeline::getPostModified)
-                .map(POST_BINDER::emptyContent)
-                .map(post -> postService.bindPostTO(post)).collect(toList());
-        return new PagedList<>(postTOS, source.getNumber(), source.getTotalPages(), source.getTotalElements());
     }
 }

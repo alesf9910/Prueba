@@ -8,6 +8,7 @@ import com.fyself.post.service.post.ReactionService;
 import com.fyself.post.service.post.contract.to.PostShareBulkTO;
 import com.fyself.post.service.post.contract.to.PostShareTO;
 import com.fyself.post.service.post.contract.to.PostTO;
+import com.fyself.post.service.post.contract.to.SharedPostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
 import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
 import com.fyself.post.service.post.contract.to.criteria.enums.TypeSearch;
@@ -96,6 +97,14 @@ public class PostFacadeImpl implements PostFacade {
                 .flatMap(postTOResult -> commentService.count(postTOResult.getId()).map(postTOResult::putCount), 1)
                 .flatMap(post -> reactionService.meReaction(post.getId(),context).map(post::putReaction).switchIfEmpty(Mono.just(post)),1)
                 .flatMap(post -> reactionService.loadAll(post.getId(),context).map(post::putReactionStats).switchIfEmpty(Mono.just(post)))
+                .flatMap(postTO -> {
+                    if(postTO.getContent() instanceof SharedPostTO){
+                        return service.addSharedPostContent(postTO);
+                    } else
+                    {
+                        return Mono.just(postTO);
+                    }
+                })
                 .collectList()
                 .map(elements -> {page.setElements(elements); return page;});
     }

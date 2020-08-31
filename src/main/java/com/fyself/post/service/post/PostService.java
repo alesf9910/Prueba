@@ -45,5 +45,7 @@ public interface PostService {
 
     Mono<Void> create(PostTO to);
 
-    PostTO bindPostTO(Post post);
+    /*PostTO bindPostTO(Post post);*/
+
+    Mono<PostTO> addSharedPostContent(PostTO postTO);
 }

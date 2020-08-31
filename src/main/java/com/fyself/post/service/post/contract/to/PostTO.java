@@ -166,4 +166,9 @@ public class PostTO extends DomainAuditTransferObject {
         this.setReactionStats(map);
         return this;
     }
+
+    public PostTO withSharedContent(PostTO father){
+        ((SharedPostTO)this.getContent()).setPostTo(father);
+        return this;
+    }
 }
