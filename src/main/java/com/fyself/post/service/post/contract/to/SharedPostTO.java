@@ -2,17 +2,17 @@ package com.fyself.post.service.post.contract.to;
 
 public class SharedPostTO extends ContentTO{
     private static final long serialVersionUID = -1073487522607459128L;
-    private String post;
+    private PostTO postTo;
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
 
-    public String getPost() {
-        return post;
+    public PostTO getPostTo() {
+        return postTo;
     }
 
-    public void setPost(String post) {
-        this.post = post;
+    public void setPostTo(PostTO postTo) {
+        this.postTo = postTo;
     }
 }

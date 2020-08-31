@@ -7,6 +7,7 @@ import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
 import com.fyself.post.service.post.contract.to.criteria.enums.TypeSearch;
 import com.fyself.post.service.post.datasource.domain.Post;
 import com.fyself.post.service.post.datasource.domain.PostTimeline;
+import com.fyself.post.service.post.datasource.domain.enums.TypeContent;
 import com.fyself.post.service.post.datasource.domain.subentities.*;
 import com.fyself.post.service.post.datasource.query.PostCriteria;
 import com.fyself.post.service.post.datasource.query.PostTimelineCriteria;
@@ -70,6 +71,10 @@ public interface PostBinder {
         return null;
     }
 
+    default PostTO addFatherContent(PostTO post,ContentTO source){
+        post.setContent(source);
+        return post;
+    }
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "owner", ignore = true)
@@ -77,12 +82,6 @@ public interface PostBinder {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "sharedWith", ignore = true)
     Post bindToPost(Post source);
-
-
-    default Post bindSharedPostContent (Post source,Post target){
-        target.setContent(source.getContent());
-        return target;
-    }
 
 
     default Post bindSharedPost(Post source, String owner) {
@@ -111,6 +110,14 @@ public interface PostBinder {
             return this.bind((TextContent) source);
         if (source instanceof SurveyContent)
             return this.bind((SurveyContent) source);
+        if (source instanceof SharedPost){
+            PostTO postTO = new PostTO();
+            postTO.setId(((SharedPost) source).getPost());
+            SharedPostTO sharedPostTO = new SharedPostTO();
+            sharedPostTO.setPostTo(postTO);
+            sharedPostTO.setTypeContent(TypeContent.SHARED_POST);
+            return sharedPostTO;
+        }
         return null;
     }
 
@@ -347,6 +354,19 @@ public interface PostBinder {
                 "raw", Optional.ofNullable(write(source.getContent())).orElse("")
 
         );
+    }
+
+    default PagedList<PostTO> bindPage(Page<Post> source) {
+        List<PostTO> postTOS = source.stream().map(post -> POST_BINDER.bind(post)).collect(toList());
+        return new PagedList<>(postTOS, source.getNumber(), source.getTotalPages(), source.getTotalElements());
+    }
+
+    default PagedList<PostTO> bindPageTimeline(Page<PostTimeline> source, String userId) {
+        List<PostTO> postTOS = source.stream()
+                .map(PostTimeline::getPostModified)
+                .map(POST_BINDER::emptyContent)
+                .map(post -> POST_BINDER.bind(post)).collect(toList());
+        return new PagedList<>(postTOS, source.getNumber(), source.getTotalPages(), source.getTotalElements());
     }
 
 }
