@@ -50,6 +50,14 @@ public class PostFacadeImpl implements PostFacade {
     @Override
     public Mono<Result<PostTO>> load(String post, FySelfContext context) {
         return service.load(post, context)
+                .flatMap(postTO -> {
+                    if(postTO.getContent() instanceof SharedPostTO){
+                        return service.addSharedPostContent(postTO);
+                    } else
+                    {
+                        return Mono.just(postTO);
+                    }
+                })
                 .flatMap(postTOResult -> commentService.count(post).map(postTOResult::putCount))
                 .flatMap(postTOResult -> reactionService.meReaction(post,context).map(postTOResult::putReaction).switchIfEmpty(Mono.just(postTOResult)))
                 .flatMap(postTOResult -> reactionService.loadAll(post,context).map(postTOResult::putReactionStats).switchIfEmpty(Mono.just(postTOResult)))
