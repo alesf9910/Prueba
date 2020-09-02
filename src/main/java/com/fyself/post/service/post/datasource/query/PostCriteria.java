@@ -28,22 +28,23 @@ public class PostCriteria extends DomainCriteria<Post> {
     }
 
     @Override
-    protected Criteria force() {return null;}
+    protected Criteria force() {
+        if(type==null){
+            return and(matchAccess(), matchActive(), matchBlocked(), matchOwner());
+        } else {
+            switch (type) {
+                case SHARED:
+                    return and(matchAccess(), matchActive(), matchBlocked(), matchShared());
+                case ME:
+                case ALL:
+                default:
+                    return and(matchAccess(), matchActive(), matchBlocked(), matchOwner());
+            }
+        }
+    }
 
     @Override
     public Set<String> searchField() {return null;}
-
-    @Override
-    public CriteriaDefinition getPredicate() {
-        switch (type) {
-            case SHARED:
-                return and(matchAccess(), matchActive(), matchBlocked(), matchShared());
-            case ME:
-            case ALL:
-            default:
-                return and(matchAccess(), matchActive(), matchBlocked(), matchOwner());
-        }
-    }
 
     private Criteria matchShared() {
         return this.owner != null ? where("sharedWith").all(this.getOwner()) : null;

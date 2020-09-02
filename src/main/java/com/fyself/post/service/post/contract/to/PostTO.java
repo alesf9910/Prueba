@@ -24,6 +24,7 @@ public class PostTO extends DomainAuditTransferObject {
     private boolean blocked;
     private String urlImage;
     private Set<String> sharedWith;
+    private boolean pinned;
     private Long comments;
     private ReactionType reaction;
     private Map<ReactionType,Long>  reactionStats =
@@ -170,5 +171,13 @@ public class PostTO extends DomainAuditTransferObject {
     public PostTO withSharedContent(PostTO father){
         ((SharedPostTO)this.getContent()).setPostTo(father);
         return this;
+    }
+
+    public boolean isPinned() {
+        return pinned;
+    }
+
+    public void setPinned(boolean pinned) {
+        this.pinned = pinned;
     }
 }
