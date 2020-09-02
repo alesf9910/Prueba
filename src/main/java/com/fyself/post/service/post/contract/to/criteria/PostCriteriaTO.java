@@ -12,6 +12,7 @@ public class PostCriteriaTO extends CriteriaTO {
     private String owner;
     private boolean active;
     private boolean blocked;
+    private boolean pinned;
     private TypeSearch type;
 
     public Access getAccess() {
@@ -53,5 +54,13 @@ public class PostCriteriaTO extends CriteriaTO {
     public PostCriteriaTO withOwner(String owner) {
         this.setOwner(owner);
         return this;
+    }
+
+    public boolean isPinned() {
+        return pinned;
+    }
+
+    public void setPinned(boolean pinned) {
+        this.pinned = pinned;
     }
 }

@@ -19,6 +19,7 @@ public class Post extends DomainAuditEntity {
     private boolean blocked;
     private String urlImage;
     private Set<String> sharedWith;
+    private boolean pinned;
 
     public Content getContent() {
         return content;
@@ -93,5 +94,13 @@ public class Post extends DomainAuditEntity {
     public Post withContent(Content content) {
         this.setContent(content);
         return this;
+    }
+
+    public boolean isPinned() {
+        return pinned;
+    }
+
+    public void setPinned(boolean pinned) {
+        this.pinned = pinned;
     }
 }
