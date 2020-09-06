@@ -185,6 +185,11 @@ public class PostServiceImpl implements PostService {
                 .then();
     }
 
+    @Override
+    public Mono<Void> unpinnedPost(String userId){
+        return repository.findAllByOwnerPinned(userId).flatMap(post -> repository.save(POST_BINDER.setUnpinned(post))).then();
+    }
+
     private Mono<Boolean> shareBulk(@NotNull Post to, FySelfContext context) {
             return repository.save(to)
                     .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity)).subscribe())

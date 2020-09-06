@@ -36,6 +36,7 @@ mspost:
         input:
           new: new-post
           post: post
+          unpinned-post: unpinned-post
     server:
       port: 8080
     report:

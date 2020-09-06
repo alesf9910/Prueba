@@ -11,6 +11,7 @@ import com.fyself.seedwork.service.context.FySelfContext;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Facade interface for <i>Post</i> operations.
@@ -38,4 +39,6 @@ public interface PostFacade {
     Mono<Result<Void>> shareBulk(PostShareBulkTO to, FySelfContext context);
 
     Mono<Result<Void>> stopShareWith(PostShareTO to, FySelfContext context);
+
+    Mono<Void> unpinnedPost(Map map);
 }
