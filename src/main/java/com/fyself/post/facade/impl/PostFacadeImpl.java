@@ -22,6 +22,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
 import static com.fyself.seedwork.facade.Result.successful;
@@ -130,5 +131,10 @@ public class PostFacadeImpl implements PostFacade {
     @Override
     public Mono<Result<Void>> stopShareWith(PostShareTO to, FySelfContext context) {
         return service.stopShareWith(to, context).thenReturn(successful());
+    }
+
+    @Override
+    public Mono<Void> unpinnedPost(Map map){
+        return service.unpinnedPost(map.get("userId").toString());
     }
 }

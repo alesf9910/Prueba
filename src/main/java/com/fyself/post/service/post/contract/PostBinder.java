@@ -261,6 +261,11 @@ public interface PostBinder {
         return target;
     }
 
+    default Post setUnpinned(Post target) {
+        target.setPinned(false);
+        return target;
+    }
+
     default PostTO pacth(Post post, HashMap to) {
         try {
             var c = MAPPER.updateValue(this.bind(post), to);
