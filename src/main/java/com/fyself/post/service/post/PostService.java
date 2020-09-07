@@ -48,4 +48,6 @@ public interface PostService {
     /*PostTO bindPostTO(Post post);*/
 
     Mono<PostTO> addSharedPostContent(PostTO postTO);
+
+    Mono<Void> unpinnedPost(String userId);
 }

@@ -1,5 +1,6 @@
 package com.fyself.post.dist.stream;
 
+import com.fyself.post.facade.PostFacade;
 import com.fyself.post.service.post.PostService;
 import com.fyself.post.service.post.PostTimelineService;
 import com.fyself.post.service.post.contract.to.PostTO;
@@ -16,6 +17,7 @@ import java.util.Map;
 import static com.fyself.post.service.post.contract.to.PostTimelineTO.from;
 import static com.fyself.post.service.stream.contract.KafkaMessageBinder.KAFKA_MESSAGE_BINDER;
 import static com.fyself.seedwork.util.JsonUtil.MAPPER;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.empty;
 import static reactor.core.publisher.Mono.just;
 
@@ -32,20 +34,24 @@ public class GenericKStreamProcessor {
     private final PostTimelineService postTimelineService;
     private final String output_topic_notification;
     private final PostService postService;
+    private final PostFacade postFacade;
 
 
     public GenericKStreamProcessor(
             @Value("${mspost.application.kafka.topics.input.post}") String input_topic_post,
             @Value("${mspost.application.kafka.topics.input.new}") String input_topic_new,
+            @Value("${mspost.application.kafka.topics.input.unpinned-post}") String input_unpinned_post,
             @Value("${mspost.application.kafka.topics.output.notification-socket}") String output_topic_notification,
-            ReactiveKafkaMessageQueue reactiveKafkaMessageQueue, PostTimelineService postTimelineService, PostService postService) throws Exception {
+            ReactiveKafkaMessageQueue reactiveKafkaMessageQueue, PostTimelineService postTimelineService, PostService postService, PostFacade postFacade) throws Exception {
         this.input_topic_new = input_topic_new;
         this.postTimelineService = postTimelineService;
         this.output_topic_notification = output_topic_notification;
         this.postService = postService;
+        this.postFacade = postFacade;
 
         reactiveKafkaMessageQueue.createFlow(input_topic_post, this::createPostTimeline);
         reactiveKafkaMessageQueue.createSink(input_topic_new, this::createPost);
+        reactiveKafkaMessageQueue.createSink(input_unpinned_post, this::unpinnedPost);
     }
 
     private Mono<Void> createPost(Map map) {
@@ -70,6 +76,10 @@ public class GenericKStreamProcessor {
                 )
                 .flux()
                 .onErrorResume(throwable -> empty());
+    }
+
+    public Mono<Void> unpinnedPost(Map map){
+        return postFacade.unpinnedPost(map);
     }
 }
 
