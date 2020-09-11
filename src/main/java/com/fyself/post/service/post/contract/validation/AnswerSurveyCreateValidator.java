@@ -50,6 +50,7 @@ public class AnswerSurveyCreateValidator extends MonoBiValidatorFixInterceptor<A
         if (value.getPost() == null) {
             return just(false);
         }
-        return new AnswerSurveyValidator(repository, postService, value, context).isValidAnswer();
+        return new AnswerSurveyValidator(repository, postService, value, context,
+            repositoryTimeline).isValidAnswer();
     }
 }

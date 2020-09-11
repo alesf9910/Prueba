@@ -51,6 +51,7 @@ public class AnswerSurveyUpdateAccessValidator extends MonoBiValidatorFixInterce
             return just(false);
         }
 
-        return new AnswerSurveyValidator(repository, postService, value, context).isValidAnswer();
+        return new AnswerSurveyValidator(repository, postService, value, context,
+            repositoryTimeline).isValidAnswer();
     }
 }
