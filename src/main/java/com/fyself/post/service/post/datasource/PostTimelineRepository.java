@@ -19,4 +19,6 @@ public interface PostTimelineRepository extends MongoRepository<PostTimeline> {
     Flux<PostTimeline> findAllByUser(String userId);
 
     Mono<Void> deleteAllByPost_IdAndUser(String post_id, String user);
+
+    Mono<Boolean> existsByPost_IdAndOwner(String post_id, String owner);
 }
