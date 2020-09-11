@@ -76,7 +76,7 @@ public class AnswerSurveyValidator {
     return postService.load(idPost, context)
         .switchIfEmpty(error(EntityNotFoundException::new))
         .map(post -> post.getAccess().equals(Access.PUBLIC) || (post.getAccess().equals(Access.PRIVATE) && post.getOwner().equals(context.getAccount().get().getId())))
-        .zipWith(repositoryTimeline.existsByPost_IdAndOwner(idPost,context.getAccount().get().getId()))
+        .zipWith(repositoryTimeline.existsByPost_IdAndUser(idPost,context.getAccount().get().getId()))
         .map(t -> t.getT2() || t.getT1());
 
   }

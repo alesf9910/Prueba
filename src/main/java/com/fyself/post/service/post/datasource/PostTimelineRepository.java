@@ -20,5 +20,5 @@ public interface PostTimelineRepository extends MongoRepository<PostTimeline> {
 
     Mono<Void> deleteAllByPost_IdAndUser(String post_id, String user);
 
-    Mono<Boolean> existsByPost_IdAndOwner(String post_id, String owner);
+    Mono<Boolean> existsByPost_IdAndUser(String post_id, String owner);
 }
