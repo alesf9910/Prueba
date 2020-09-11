@@ -3,6 +3,7 @@ package com.fyself.post.service.post.contract.validation;
 import com.fyself.post.service.post.PostService;
 import com.fyself.post.service.post.contract.to.AnswerSurveyTO;
 import com.fyself.post.service.post.datasource.AnswerSurveyRepository;
+import com.fyself.post.service.post.datasource.PostTimelineRepository;
 import com.fyself.seedwork.service.context.FySelfContext;
 import com.fyself.seedwork.service.validation.MonoBiValidatorFixInterceptor;
 import com.fyself.seedwork.service.validation.stereotype.ValidatorInterceptor;
@@ -27,10 +28,14 @@ public class AnswerSurveyUpdateAccessValidator extends MonoBiValidatorFixInterce
 
     final AnswerSurveyRepository repository;
     final PostService postService;
+    final PostTimelineRepository repositoryTimeline;
 
-    public AnswerSurveyUpdateAccessValidator(AnswerSurveyRepository repository, PostService postService) {
+    public AnswerSurveyUpdateAccessValidator(AnswerSurveyRepository repository,
+        PostService postService,
+        PostTimelineRepository repositoryTimeline) {
         this.repository = repository;
         this.postService = postService;
+        this.repositoryTimeline = repositoryTimeline;
         this.setCode(FORBIDDEN_ACCESS);
     }
 
