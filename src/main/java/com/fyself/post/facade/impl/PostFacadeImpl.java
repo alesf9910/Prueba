@@ -12,10 +12,8 @@ import com.fyself.post.service.post.contract.to.SharedPostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
 import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
 import com.fyself.post.service.post.contract.to.criteria.enums.TypeSearch;
-import com.fyself.post.tools.enums.Access;
 import com.fyself.seedwork.facade.Result;
 import com.fyself.seedwork.facade.stereotype.Facade;
-import com.fyself.seedwork.service.EntityNotFoundException;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import reactor.core.publisher.Flux;
@@ -124,8 +122,8 @@ public class PostFacadeImpl implements PostFacade {
     }
 
     @Override
-    public Mono<Result<Void>> shareBulk(PostShareBulkTO to, FySelfContext context) {
-        return service.sharePost(to, context).thenReturn(successful());
+    public Mono<Result<String>> shareBulk(PostShareBulkTO to, FySelfContext context) {
+        return service.sharePost(to, context).map(Result::successful);
     }
 
     @Override

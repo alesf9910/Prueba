@@ -36,7 +36,7 @@ public interface PostFacade {
 
     Mono<Result<Void>> shareWith(PostShareTO to, FySelfContext context);
 
-    Mono<Result<Void>> shareBulk(PostShareBulkTO to, FySelfContext context);
+    Mono<Result<String>> shareBulk(PostShareBulkTO to, FySelfContext context);
 
     Mono<Result<Void>> stopShareWith(PostShareTO to, FySelfContext context);
 
