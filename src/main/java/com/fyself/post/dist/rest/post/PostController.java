@@ -317,7 +317,7 @@ public class PostController extends Controller<PostFacade> {
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_share_with", value = "Share post with user", response = NoContentResponse.class, code = 204)
     public Mono<ResponseEntity> shareBulk(@PathVariable String id, @RequestBody PostShareBulkTO to, @ApiIgnore ServerWebExchange exchange) {
-        return this.perform((facade, context) -> facade.shareBulk(to.withId(id), context), exchange);
+        return this.create((facade, context) -> facade.shareBulk(to.withId(id), context), exchange);
     }
 
     //<editor-fold desc="Inner classes (Documentation purpose)">

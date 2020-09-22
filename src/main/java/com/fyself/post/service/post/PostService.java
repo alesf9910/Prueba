@@ -5,7 +5,6 @@ import com.fyself.post.service.post.contract.to.PostShareTO;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
 import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
-import com.fyself.post.service.post.datasource.domain.Post;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import reactor.core.publisher.Mono;
@@ -38,7 +37,7 @@ public interface PostService {
     Mono<Void> block(String post);
 
     Mono<Void> shareWith(@NotNull PostShareTO to, FySelfContext context);
-    Mono<Void> sharePost(@NotNull PostShareBulkTO to, FySelfContext context);
+    Mono<String> sharePost(@NotNull PostShareBulkTO to, FySelfContext context);
     Mono<Void> stopShareWith(@NotNull PostShareTO to, FySelfContext context);
 
     Mono<PagedList<PostTO>> searchMe(PostTimelineCriteriaTO criteria, FySelfContext context);
