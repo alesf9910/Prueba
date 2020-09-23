@@ -40,10 +40,13 @@ public class PostUpdateNoTypeValidator extends MonoBiValidatorFixInterceptor<Pos
     protected Mono<Boolean> validate(PostTO value, FySelfContext context) {
         if (value == null)
             return just(true);
+
         if (value.getContent().getTypeContent().toString().isBlank())
             return just(true);
+
         return repository.getById(value.getId())
                 .map(post -> post.getContent().getTypeContent().equals(value.getContent().getTypeContent()))
+                .onErrorResume(throwable -> just(true))
                 .switchIfEmpty(just(true));
     }
 }
