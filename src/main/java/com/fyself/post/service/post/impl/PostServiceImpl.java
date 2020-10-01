@@ -98,10 +98,19 @@ public class PostServiceImpl implements PostService {
   }
 
   @Override
-  public Mono<PostTO> patch(@NotNull String id, HashMap to, FySelfContext context) {
+  public Mono<Post> patch(@NotNull String id, HashMap to, FySelfContext context) {
+    if (!to.containsKey("pinned"))
+      return error(EntityNotFoundException::new);
+
+    boolean v = false;
+    try {
+       v = (Boolean) to.get("pinned");
+    }catch (Exception  e) {}
+
+    boolean finalV = v;
     return repository.getById(id)
         .switchIfEmpty(error(EntityNotFoundException::new))
-        .map(post -> POST_BINDER.pacth(post, to));
+        .flatMap(post -> repository.save(post.putPinned(finalV)));
   }
 
   @Override

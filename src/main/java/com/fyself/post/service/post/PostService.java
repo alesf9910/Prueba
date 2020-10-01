@@ -5,6 +5,7 @@ import com.fyself.post.service.post.contract.to.PostShareTO;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
 import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
+import com.fyself.post.service.post.datasource.domain.Post;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import reactor.core.publisher.Mono;
@@ -30,7 +31,7 @@ public interface PostService {
 
     Mono<Void> delete(@NotNull String id, FySelfContext context);
 
-    Mono<PostTO> patch(@NotNull String id, HashMap to, FySelfContext context);
+    Mono<Post> patch(@NotNull String id, HashMap to, FySelfContext context);
 
     Mono<PagedList<PostTO>> search(@NotNull PostCriteriaTO criteria, FySelfContext context);
 

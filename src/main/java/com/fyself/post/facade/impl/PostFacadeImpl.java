@@ -76,7 +76,6 @@ public class PostFacadeImpl implements PostFacade {
     @Override
     public Mono<Result<Void>> patch(String id, HashMap to, FySelfContext context) {
         return service.patch(id, to, context)
-                .flatMap(postTO -> service.update(postTO, context))
                 .thenReturn(successful());
     }
 

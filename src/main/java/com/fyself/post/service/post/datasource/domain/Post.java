@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import reactor.core.publisher.Mono;
 
 @Document(collection = "post")
 public class Post extends DomainAuditEntity {
@@ -102,5 +103,10 @@ public class Post extends DomainAuditEntity {
 
     public void setPinned(boolean pinned) {
         this.pinned = pinned;
+    }
+
+    public Post putPinned(Boolean v) {
+        setPinned(v);
+        return this;
     }
 }

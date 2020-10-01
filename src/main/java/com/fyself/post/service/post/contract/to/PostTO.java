@@ -6,6 +6,7 @@ import com.fyself.post.tools.enums.Access;
 import com.fyself.seedwork.service.to.DomainAuditTransferObject;
 import com.fyself.seedwork.service.to.annotation.ReadOnly;
 
+import java.util.HashMap;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -27,13 +28,7 @@ public class PostTO extends DomainAuditTransferObject {
     private boolean pinned;
     private Long comments;
     private ReactionType reaction;
-    private Map<ReactionType,Long>  reactionStats =
-            Map.of(
-                    ReactionType.LOL, (new Random()).nextInt(50)+15L,
-                    ReactionType.ITS_FUNNY, (new Random()).nextInt(100)+25L,
-                    ReactionType.SURELY_ANGRY, (new Random()).nextInt(2020)+5L,
-                    ReactionType.LIKE_IT, (new Random()).nextInt(230)+55L
-            );
+    private Map<ReactionType,Long>  reactionStats= new HashMap<>();
 
     @ReadOnly
     public Long getComments() {
