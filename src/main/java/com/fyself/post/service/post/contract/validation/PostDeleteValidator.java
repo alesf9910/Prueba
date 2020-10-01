@@ -31,7 +31,8 @@ public class PostDeleteValidator  extends MonoBiValidatorFixInterceptor<String, 
         this.setCode(FORBIDDEN_ACCESS);
     }
 
-    @Around("execution(public * com.fyself.post.service.post.PostService+.delete(..))")
+    @Around("execution(public * com.fyself.post.service.post.PostService+.delete(..)) || "
+        + "execution(public * com.fyself.post.service.post.PostService+.patch(..))")
     public Object intercept(ProceedingJoinPoint procedure) {
         return this.proceed(procedure, 0, LAST, "fyself.service.not_deleted");
     }
