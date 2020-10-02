@@ -11,6 +11,8 @@ import com.fyself.post.service.post.datasource.AnswerSurveyRepository;
 import com.fyself.post.service.post.datasource.PostRepository;
 import com.fyself.post.service.post.datasource.PostTimelineRepository;
 import com.fyself.post.service.post.datasource.domain.Post;
+import com.fyself.post.service.post.datasource.domain.enums.TypeContent;
+import com.fyself.post.service.post.datasource.domain.subentities.SharedPost;
 import com.fyself.post.service.stream.StreamService;
 import com.fyself.post.tools.enums.Access;
 import com.fyself.seedwork.service.EntityNotFoundException;
@@ -99,13 +101,15 @@ public class PostServiceImpl implements PostService {
 
   @Override
   public Mono<Post> patch(@NotNull String id, HashMap to, FySelfContext context) {
-    if (!to.containsKey("pinned"))
+    if (!to.containsKey("pinned")) {
       return error(EntityNotFoundException::new);
+    }
 
     boolean v = false;
     try {
-       v = (Boolean) to.get("pinned");
-    }catch (Exception  e) {}
+      v = (Boolean) to.get("pinned");
+    } catch (Exception e) {
+    }
 
     boolean finalV = v;
     return repository.getById(id)
@@ -122,7 +126,16 @@ public class PostServiceImpl implements PostService {
             .flatMap(
                 postTO ->
                     answerSurveyRepository
-                        .findByPostAndUser(postTO.getId(), context.getAccount().get().getId())
+                        .findByPostAndUser(
+                            postTO.getContent() != null ?
+                                postTO.getContent().getTypeContent() != null ?
+                                    postTO.getContent().getTypeContent() == TypeContent.SHARED_POST?
+                                        ((SharedPostTO) postTO.getContent()).getPostTo().getId() :
+                                        postTO.getId()
+                                    : postTO.getId()
+                                : postTO.getId()
+                            , context.getAccount().get().getId()
+                        )
                         .map(ANSWER_SURVEY_BINDER::bindFromSurvey)
                         .map(answerSurveyTO -> POST_BINDER
                             .bindPostTOWithAnswer(postTO, answerSurveyTO))
@@ -131,11 +144,25 @@ public class PostServiceImpl implements PostService {
             .map(postTOS -> POST_BINDER.bind(postTOPagedList, postTOS)));
   }
 
-  private Mono<PostTO> loadPost(Post to, FySelfContext context) {
-    return answerSurveyRepository.findByPostAndUser(to.getId(), context.getAccount().get().getId())
+  private Mono<PostTO> loadPost(Post postTO, FySelfContext context) {
+    return answerSurveyRepository.findByPostAndUser(
+
+
+        postTO.getContent() != null ?
+            postTO.getContent().getTypeContent() != null ?
+                postTO.getContent().getTypeContent() == TypeContent.SHARED_POST?
+                    ((SharedPost) postTO.getContent()).getPost() :
+                    postTO.getId()
+                : postTO.getId()
+            : postTO.getId()
+        ,
+
+        context.getAccount().get().getId()
+
+    )
         .map(ANSWER_SURVEY_BINDER::bindFromSurvey)
-        .map(answerSurveyTO -> POST_BINDER.bindPostWithAnswer(to, answerSurveyTO))
-        .switchIfEmpty(just(POST_BINDER.bind(to)));
+        .map(answerSurveyTO -> POST_BINDER.bindPostWithAnswer(postTO, answerSurveyTO))
+        .switchIfEmpty(just(POST_BINDER.bind(postTO)));
   }
 
   @Override
@@ -173,7 +200,8 @@ public class PostServiceImpl implements PostService {
                 .filter(Boolean::booleanValue).map(ing -> to.getPost());
           } else {
             if (post.getAccess().equals(Access.PUBLIC)) {
-              return createPost(POST_BINDER.bindSharedPost(post, context.getAccount().get().getId()), context)
+              return createPost(
+                  POST_BINDER.bindSharedPost(post, context.getAccount().get().getId()), context)
                   .map(DomainEntity::getId);
             } else {
               return error(ValidationException::new);
