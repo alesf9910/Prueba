@@ -1,6 +1,6 @@
 package com.fyself.post.service.post.contract.to;
 
-public class SharedPostTO extends ContentTO{
+public class SharedPostTO extends SurveyContentTO{
     private static final long serialVersionUID = -1073487522607459128L;
     private PostTO postTo;
 
