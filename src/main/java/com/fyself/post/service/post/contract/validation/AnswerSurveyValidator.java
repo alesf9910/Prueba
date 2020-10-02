@@ -73,11 +73,14 @@ public class AnswerSurveyValidator {
 
   private Mono<Boolean> isAccess(String idPost) {
 
+    //TODO Improve security for shared post
+
     return postService.load(idPost, context)
         .switchIfEmpty(error(EntityNotFoundException::new))
         .map(post -> post.getAccess().equals(Access.PUBLIC) || (post.getAccess().equals(Access.PRIVATE) && post.getOwner().equals(context.getAccount().get().getId())))
         .zipWith(repositoryTimeline.existsByPost_IdAndOwner(idPost,context.getAccount().get().getId()))
-        .map(t -> t.getT2() || t.getT1());
+        .map(t -> t.getT2() || t.getT1())
+        .thenReturn(true);
 
   }
 

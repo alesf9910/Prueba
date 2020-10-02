@@ -42,10 +42,11 @@ public class PostDeleteValidator  extends MonoBiValidatorFixInterceptor<String, 
         if (context.getAccount().isEmpty())
             return just(false);
         if (value == null) {
-            return just(true);
+            return just(false);
         }
         if (value.isBlank())
-            return just(true);
+            return just(false);
+
         return repository.getById(value)
                 .map(post -> post.getOwner().equals(context.getAccount().get().getId()) || context.getAccount().get().getRoles().contains(POST_ADMIN))
                 .switchIfEmpty(just(false));
