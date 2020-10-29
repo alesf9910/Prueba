@@ -40,21 +40,21 @@ pipeline {
 	    }	    
 	    
 	    
-	post
+		post
 	    {
             success {
                 sh '''
-                    curl -X POST -H "Content-Type: application/json"  https://api.telegram.org/bot905252129:AAFuPgw9SkDY355FzFP8tFbxaMNGRiu5Fgk/sendMessage  -d '{"chat_id": "-1001202201666", "text": "The ms-post job execution was successfully", "disable_notification": true}'
+                    curl -X POST -H "Content-Type: application/json"  https://api.telegram.org/bot1285826100:AAHHfIvTg2GKf1pvTds_j5Bd6IsEcHg-Q3Y/sendMessage  -d '{"chat_id": "-1001404537016", "text": "The ms-post (dev) job execution was successfully", "disable_notification": true}'
                 '''
                 }
             failure {
                 sh '''
-                    curl -X POST -H "Content-Type: application/json"  https://api.telegram.org/bot905252129:AAFuPgw9SkDY355FzFP8tFbxaMNGRiu5Fgk/sendMessage  -d '{"chat_id": "-1001202201666", "text": "The ms-post job execution was failed", "disable_notification": true}'
+                    curl -X POST -H "Content-Type: application/json"  https://api.telegram.org/bot1285826100:AAHHfIvTg2GKf1pvTds_j5Bd6IsEcHg-Q3Y/sendMessage  -d '{"chat_id": "-1001404537016", "text": "The ms-post (dev) job execution was failed", "disable_notification": true}'
                 '''
                 }
             aborted{
                 sh '''
-                    curl -X POST -H "Content-Type: application/json"  https://api.telegram.org/bot905252129:AAFuPgw9SkDY355FzFP8tFbxaMNGRiu5Fgk/sendMessage  -d '{"chat_id": "-1001202201666", "text": "The ms-post job execution was aborted", "disable_notification": true}'
+                    curl -X POST -H "Content-Type: application/json"  https://api.telegram.org/bot1285826100:AAHHfIvTg2GKf1pvTds_j5Bd6IsEcHg-Q3Y/sendMessage  -d '{"chat_id": "-1001404537016", "text": "The ms-post (dev) job execution was aborted", "disable_notification": true}'
                 '''
                 }
         }
