@@ -1,14 +1,15 @@
 package com.fyself.post.service.post.impl;
 
+import com.fyself.post.service.post.PostCommentTimelineService;
 import com.fyself.post.service.post.PostService;
-import com.fyself.post.service.post.PostTimelineService;
+import com.fyself.post.service.post.contract.to.PostCommentTimelineTO;
 import com.fyself.post.service.post.contract.to.PostTO;
 import com.fyself.post.service.post.contract.to.PostTimelineTO;
 import com.fyself.post.service.post.contract.to.SharedPostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
 import com.fyself.post.service.post.datasource.AnswerSurveyRepository;
-import com.fyself.post.service.post.datasource.PostTimelineRepository;
-import com.fyself.post.service.post.datasource.domain.PostTimeline;
+import com.fyself.post.service.post.datasource.PostCommentTimelineRepository;
+import com.fyself.post.service.post.datasource.domain.PostCommentTimeline;
 import com.fyself.post.service.post.datasource.domain.enums.TypeContent;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
@@ -21,32 +22,32 @@ import javax.validation.constraints.NotNull;
 
 import static com.fyself.post.service.post.contract.AnswerSurveyBinder.ANSWER_SURVEY_BINDER;
 import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
-import static com.fyself.post.service.post.contract.PostTimelineBinder.POST_TIMELINE_BINDER;
+import static com.fyself.post.service.post.contract.PostCommentTimelineBinder.POST_COMMENT_TIMELINE_BINDER;
 import static reactor.core.publisher.Flux.fromIterable;
 import static reactor.core.publisher.Mono.just;
 
-@Service("postTimelineService")
+@Service("postCommentTimelineService")
 @Validated
-public class PostTimelineServiceImpl implements PostTimelineService {
-    private final PostTimelineRepository repository;
+public class PostCommentTimelineServiceImpl implements PostCommentTimelineService {
+    private final PostCommentTimelineRepository repository;
     final PostService postService;
     final AnswerSurveyRepository answerSurveyRepository;
 
 
-    public PostTimelineServiceImpl(PostTimelineRepository repository, AnswerSurveyRepository answerSurveyRepository,PostService postService) {
+    public PostCommentTimelineServiceImpl(PostCommentTimelineRepository repository, AnswerSurveyRepository answerSurveyRepository,PostService postService) {
         this.repository = repository;
         this.answerSurveyRepository = answerSurveyRepository;
         this.postService = postService;
     }
 
     @Override
-    public Mono<String> create(@NotNull @Valid PostTimelineTO to) {
+    public Mono<String> create(@NotNull @Valid PostCommentTimelineTO to) {
         return repository
-                .save(POST_TIMELINE_BINDER.bind(to.withCreatedAt().withUpdatedAt()))
-                .map(PostTimeline::getUser);
+                .save(POST_COMMENT_TIMELINE_BINDER.bind(to.withCreatedAt().withUpdatedAt()))
+                .map(PostCommentTimeline::getUser);
     }
 
-    @Override
+    /*@Override
     public Mono<PagedList<PostTO>> search(PostTimelineCriteriaTO criteria, FySelfContext context) {
         return repository.findPage(POST_BINDER.bindToTimelineCriteria(criteria.withUser(context.getAccount().get().getId())))
                 .map(postTimelines -> POST_BINDER.bindPageTimeline(postTimelines, context.getAccount().get().getId()))
@@ -69,5 +70,5 @@ public class PostTimelineServiceImpl implements PostTimelineService {
                         .collectList()
 
                         .map(postTOS -> POST_BINDER.bind(postTOPagedList, postTOS)));
-    }
+    }*/
 }
