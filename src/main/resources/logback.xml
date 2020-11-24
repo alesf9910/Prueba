@@ -6,7 +6,7 @@
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
 
     <springProperty scope="context" name="kafkahost" source="application.kafka.servers"/>
-    <springProperty scope="context" name="topic" source="application.kafka.topics.output.logs1"/>
+    <springProperty scope="context" name="topic" source="application.kafka.topics.output.logs"/>
 
     <!--Loggers...-->
 
