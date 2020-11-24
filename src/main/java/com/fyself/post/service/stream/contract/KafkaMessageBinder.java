@@ -81,8 +81,7 @@ public interface KafkaMessageBinder {
         message.setFrom(from);
 
         PayloadTO payload = new PayloadTO();
-        //payload.setBody(Map.of("post", from));
-        payload.setBody(Map.of("post", post));
+        payload.setBody(Map.of("post", from));
         message.setPayload(payload);
 
         message.setTodb(true);
