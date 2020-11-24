@@ -202,8 +202,7 @@ public interface PostBinder {
                             else
                                 return map;
                         })
-                        //.collect(Collectors.toSet()));
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toSet()));
             } else {
                 choice.put("id", UUID.randomUUID().toString());
                 target.getChoices().add(choice);
@@ -218,8 +217,7 @@ public interface PostBinder {
                         deleted.set(false);
                         return map;
                     })
-                    //.collect(Collectors.toSet());
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toSet());
             if (deleted.get())
                 it.remove();
         }
