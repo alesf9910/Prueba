@@ -55,7 +55,6 @@ public class PostServiceImpl implements PostService {
 
   @Override
   public Mono<String> create(@NotNull @Valid PostTO to, FySelfContext context) {
-    int a = 0;
     return context.authenticatedId()
         .flatMap(userId -> createPost(
             POST_BINDER.bind(to.withUserId(userId).withCreatedAt().withUpdatedAt()), context))
