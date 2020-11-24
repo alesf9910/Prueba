@@ -90,4 +90,25 @@ public interface KafkaMessageBinder {
 
         return toMap(message);
     }
+
+    default Map bindPostCommentNotif(String user, String post,String comment, String from) {
+
+
+        MessageTO message = new MessageTO();
+        message.setType("COMMENT");
+        message.setTo(user);
+        message.setFrom(from);
+
+        PayloadTO payload = new PayloadTO();
+        //payload.setBody(Map.of("post", from));
+        payload.setBody(Map.of("post", post, "comment", comment));
+        message.setPayload(payload);
+
+        message.setTodb(true);
+        message.setFix("pu-" + user + "-" + from);
+
+
+        return toMap(message);
+    }
+
 }
