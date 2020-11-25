@@ -37,6 +37,7 @@ mspost:
           new: new-post
           post: post
           post-comment: post-comment
+          post-reaction: post-reaction
           unpinned-post: unpinned-post
     server:
       port: 8080

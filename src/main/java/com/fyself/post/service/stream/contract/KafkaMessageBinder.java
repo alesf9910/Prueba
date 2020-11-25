@@ -111,4 +111,24 @@ public interface KafkaMessageBinder {
         return toMap(message);
     }
 
+    default Map bindPostReactionNotif(String user, String post,String reaction, String from) {
+
+
+        MessageTO message = new MessageTO();
+        message.setType("REACTION");
+        message.setTo(user);
+        message.setFrom(from);
+
+        PayloadTO payload = new PayloadTO();
+        //payload.setBody(Map.of("post", from));
+        payload.setBody(Map.of("post", post, "reaction", reaction));
+        message.setPayload(payload);
+
+        message.setTodb(true);
+        message.setFix("pu-" + user + "-" + from);
+
+
+        return toMap(message);
+    }
+
 }

@@ -40,6 +40,7 @@ public class GenericKStreamProcessor {
     public GenericKStreamProcessor(
             @Value("${mspost.application.kafka.topics.input.post}") String input_topic_post,
             @Value("${mspost.application.kafka.topics.input.post-comment}") String input_topic_post_comment,
+            @Value("${mspost.application.kafka.topics.input.post-reaction}") String input_topic_post_reaction,
             @Value("${mspost.application.kafka.topics.input.new}") String input_topic_new,
             @Value("${mspost.application.kafka.topics.input.unpinned-post}") String input_unpinned_post,
             @Value("${mspost.application.kafka.topics.output.notification-socket}") String output_topic_notification,
@@ -52,6 +53,7 @@ public class GenericKStreamProcessor {
 
         reactiveKafkaMessageQueue.createFlow(input_topic_post, this::createPostTimeline);
         reactiveKafkaMessageQueue.createFlow(input_topic_post_comment, this::createPostCommentTimeline);
+        reactiveKafkaMessageQueue.createFlow(input_topic_post_reaction, this::createPostReactionTimeline);
         reactiveKafkaMessageQueue.createSink(input_topic_new, this::createPost);
         reactiveKafkaMessageQueue.createSink(input_unpinned_post, this::unpinnedPost);
     }
@@ -76,6 +78,22 @@ public class GenericKStreamProcessor {
                 .map(contact -> source.get("contact").toString())
                 //.flatMap(contact -> postCommentTimelineService.create( from(contact, source.get("post").toString(), source.get("comment").toString(), source.get("user").toString())))
                 .map(user -> Tuples.of( this.output_topic_notification, KAFKA_MESSAGE_BINDER.bindPostCommentNotif(user, source.get("post").toString(), source.get("comment").toString(), source.get("user").toString()))
+                )
+                .flux()
+                .onErrorResume(throwable -> empty());
+    }
+
+    private Flux<Tuple2<String, Map>> createPostReactionTimeline(Map source) {
+        return just(source)
+                .filter(map ->
+                        source.containsKey("user") &&
+                                source.containsKey("post") &&
+                                source.containsKey("contact") &&
+                                source.containsKey("reaction")
+                )
+                .map(contact -> source.get("contact").toString())
+                //.flatMap(contact -> postCommentTimelineService.create( from(contact, source.get("post").toString(), source.get("comment").toString(), source.get("user").toString())))
+                .map(user -> Tuples.of( this.output_topic_notification, KAFKA_MESSAGE_BINDER.bindPostReactionNotif(user, source.get("post").toString(), source.get("reaction").toString(), source.get("user").toString()))
                 )
                 .flux()
                 .onErrorResume(throwable -> empty());
