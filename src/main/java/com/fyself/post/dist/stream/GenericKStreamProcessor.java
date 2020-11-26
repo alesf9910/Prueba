@@ -89,11 +89,12 @@ public class GenericKStreamProcessor {
                         source.containsKey("user") &&
                                 source.containsKey("post") &&
                                 source.containsKey("contact") &&
-                                source.containsKey("reaction")
+                                source.containsKey("reaction") &&
+                                source.containsKey("type_reaction")
                 )
                 .map(contact -> source.get("contact").toString())
                 //.flatMap(contact -> postCommentTimelineService.create( from(contact, source.get("post").toString(), source.get("comment").toString(), source.get("user").toString())))
-                .map(user -> Tuples.of( this.output_topic_notification, KAFKA_MESSAGE_BINDER.bindPostReactionNotif(user, source.get("post").toString(), source.get("reaction").toString(), source.get("user").toString()))
+                .map(user -> Tuples.of( this.output_topic_notification, KAFKA_MESSAGE_BINDER.bindPostReactionNotif(user, source.get("post").toString(), source.get("reaction").toString(),  source.get("type_reaction").toString(), source.get("user").toString()))
                 )
                 .flux()
                 .onErrorResume(throwable -> empty());
