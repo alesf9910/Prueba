@@ -12,6 +12,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,6 +56,15 @@ public interface CommentBinder {
         Post post = new Post();
         post.setId(postId);
         criteria.setPost(post);
+        return criteria;
+    }
+
+    default CommentCriteria bindToCriteria(CommentCriteriaTO source, String postId, LocalDateTime createAt) {
+        CommentCriteria criteria = this.bind(source);
+        Post post = new Post();
+        post.setId(postId);
+        criteria.setPost(post);
+        criteria.setCreateAt(createAt);
         return criteria;
     }
 

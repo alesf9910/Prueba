@@ -19,4 +19,5 @@ public interface CommentFacade {
     Mono<Result<Void>> update(CommentTO to, FySelfContext context);
     Mono<Result<Void>> delete(String id, String post, FySelfContext context);
     Mono<Result<PagedList<CommentTO>>> search(CommentCriteriaTO criteria, String post, FySelfContext context);
+    Mono<Result<PagedList<CommentTO>>> searchAfter(CommentCriteriaTO criteria, String post, String id, FySelfContext context);
 }

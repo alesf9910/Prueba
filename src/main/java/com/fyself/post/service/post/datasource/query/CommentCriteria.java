@@ -6,6 +6,7 @@ import com.fyself.seedwork.service.repository.mongodb.criteria.DomainCriteria;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import static com.fyself.seedwork.service.repository.mongodb.criteria.Criterion.and;
@@ -17,6 +18,7 @@ public class CommentCriteria extends DomainCriteria<Comment> {
 
     private Post post;
     private Comment father;
+    private LocalDateTime createAt;
 
     public CommentCriteria() {
         super(Comment.class);
@@ -34,7 +36,7 @@ public class CommentCriteria extends DomainCriteria<Comment> {
 
     @Override
     public CriteriaDefinition getPredicate() {
-        return and(matchPost(), matchFather());
+        return and(matchPost(), matchFather(), matchCreateAt());
     }
 
     private Criteria matchPost() {
@@ -43,6 +45,10 @@ public class CommentCriteria extends DomainCriteria<Comment> {
 
     private Criteria matchFather() {
        return where("father").is(this.getFather());
+    }
+
+    private Criteria matchCreateAt() {
+        return this.createAt != null ? where("createdAt").gte(this.getCreateAt()) : null;
     }
 
     public Post getPost() {
@@ -60,4 +66,8 @@ public class CommentCriteria extends DomainCriteria<Comment> {
     public void setFather(Comment father) {
         this.father = father;
     }
+
+    public LocalDateTime getCreateAt() { return createAt; }
+
+    public void setCreateAt(LocalDateTime createAt) {this.createAt = createAt;}
 }
