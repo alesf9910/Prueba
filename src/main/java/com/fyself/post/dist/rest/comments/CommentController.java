@@ -62,6 +62,13 @@ public class CommentController extends Controller<CommentFacade> {
         return this.get((facade, context) -> facade.search(to, post, context), exchange);
     }
 
+    @PostMapping("/search/after/{id}")
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "comment_search_after", value = "Search comments after", response = SearchResponse.class)
+    public Mono<ResponseEntity> searchAfter(@PathVariable String post,@PathVariable String id, @RequestBody CommentCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.searchAfter(to, post, id, context), exchange);
+    }
+
 
     //<editor-fold desc="Inner classes (Documentation purpose)">
     private static class SearchResponse extends PagedList<CommentTO> {

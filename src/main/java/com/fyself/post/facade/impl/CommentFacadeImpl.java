@@ -58,4 +58,15 @@ public class CommentFacadeImpl implements CommentFacade {
         }
         return service.search(criteria, post, context).map(Result::successful);
     }
+
+    @Override
+    public Mono<Result<PagedList<CommentTO>>> searchAfter(CommentCriteriaTO criteria, String post, String id, FySelfContext context) {
+        if (criteria.getSortCriteria()==null || criteria.getSortCriteria().isEmpty()) {
+            SortEntry entry = new SortEntry();
+            entry.setField("createdAt");
+            entry.setOrder(SortOrder.DESC);
+            criteria.setSortCriteria(List.of(entry));
+        }
+        return service.searchAfter(criteria, post, id, context).map(Result::successful);
+    }
 }

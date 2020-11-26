@@ -18,6 +18,9 @@ import reactor.core.publisher.Mono;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 import static com.fyself.post.service.post.contract.CommentBinder.COMMENT_BINDER;
 import static com.fyself.post.tools.LoggerUtils.*;
 import static com.fyself.seedwork.security.SecurityContextHolder.authenticatedId;
@@ -74,6 +77,19 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Mono<PagedList<CommentTO>> search(@NotNull CommentCriteriaTO criteria, String post, FySelfContext context) {
         return repository.findPage(COMMENT_BINDER.bindToCriteria(criteria, post))
+                .flatMap(pageComents -> Flux.fromIterable(pageComents)
+                        .flatMap(comment -> repository.findPage(COMMENT_BINDER.bindToFatherCriteria(comment.getId())).map(comments -> COMMENT_BINDER.bindPageOfChildren(comments, comment)), 1)
+                        .collectList()
+                        .map(commentTOS -> COMMENT_BINDER.bindPage(commentTOS, pageComents)));
+    }
+
+    @Override
+    public Mono<PagedList<CommentTO>> searchAfter(@NotNull CommentCriteriaTO criteria, String post, String id, FySelfContext context) {
+        return repository.findById(id).flatMap(comment -> allComentAfter(criteria,post,id,comment.getCreatedAt(),context));
+    }
+
+    public Mono<PagedList<CommentTO>> allComentAfter(@NotNull CommentCriteriaTO criteria, String post, String id, LocalDateTime createAt, FySelfContext context) {
+        return repository.findPage(COMMENT_BINDER.bindToCriteria(criteria, post, createAt))
                 .flatMap(pageComents -> Flux.fromIterable(pageComents)
                         .flatMap(comment -> repository.findPage(COMMENT_BINDER.bindToFatherCriteria(comment.getId())).map(comments -> COMMENT_BINDER.bindPageOfChildren(comments, comment)), 1)
                         .collectList()
