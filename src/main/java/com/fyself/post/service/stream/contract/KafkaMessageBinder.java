@@ -85,7 +85,7 @@ public interface KafkaMessageBinder {
         message.setPayload(payload);
 
         message.setTodb(true);
-        message.setFix("pu-" + user + "-" + from);
+        message.setFix("pu-" + user + "-" + from + "-" + post);
 
 
         return toMap(message);
@@ -105,7 +105,7 @@ public interface KafkaMessageBinder {
         message.setPayload(payload);
 
         message.setTodb(true);
-        message.setFix("co-" + user + "-" + from);
+        message.setFix("co-" + user + "-" + from + "-" + post + "-" + comment);
 
 
         return toMap(message);
@@ -125,7 +125,7 @@ public interface KafkaMessageBinder {
         message.setPayload(payload);
 
         message.setTodb(true);
-        message.setFix("re-" + user + "-" + from);
+        message.setFix("re-" + user + "-" + from + "-" + post + "-" + reaction);
 
 
         return toMap(message);
