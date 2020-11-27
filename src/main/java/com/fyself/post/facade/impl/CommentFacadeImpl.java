@@ -60,13 +60,13 @@ public class CommentFacadeImpl implements CommentFacade {
     }
 
     @Override
-    public Mono<Result<PagedList<CommentTO>>> searchAfter(CommentCriteriaTO criteria, String post, String id, FySelfContext context) {
+    public Mono<Result<PagedList<CommentTO>>> searchBefore(CommentCriteriaTO criteria, String post, String id, FySelfContext context) {
         if (criteria.getSortCriteria()==null || criteria.getSortCriteria().isEmpty()) {
             SortEntry entry = new SortEntry();
             entry.setField("createdAt");
             entry.setOrder(SortOrder.DESC);
             criteria.setSortCriteria(List.of(entry));
         }
-        return service.searchAfter(criteria, post, id, context).map(Result::successful);
+        return service.searchBefore(criteria, post, id, context).map(Result::successful);
     }
 }

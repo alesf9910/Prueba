@@ -62,11 +62,11 @@ public class CommentController extends Controller<CommentFacade> {
         return this.get((facade, context) -> facade.search(to, post, context), exchange);
     }
 
-    @PostMapping("/search/after/{id}")
+    @PostMapping("/search/before/{id}")
     @ApiSecuredOperation
-    @ApiOperation(nickname = "comment_search_after", value = "Search comments after", response = SearchResponse.class)
-    public Mono<ResponseEntity> searchAfter(@PathVariable String post,@PathVariable String id, @RequestBody CommentCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
-        return this.get((facade, context) -> facade.searchAfter(to, post, id, context), exchange);
+    @ApiOperation(nickname = "comment_search_before", value = "Search comments before", response = SearchResponse.class)
+    public Mono<ResponseEntity> searchBefore(@PathVariable String post,@PathVariable String id, @RequestBody CommentCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.searchBefore(to, post, id, context), exchange);
     }
 
 
