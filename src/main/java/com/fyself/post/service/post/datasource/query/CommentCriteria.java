@@ -48,7 +48,7 @@ public class CommentCriteria extends DomainCriteria<Comment> {
     }
 
     private Criteria matchCreateAt() {
-        return this.createAt != null ? where("createdAt").gte(this.getCreateAt()) : null;
+        return this.createAt != null ? where("createdAt").lte(this.getCreateAt()) : null;
     }
 
     public Post getPost() {

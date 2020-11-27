@@ -84,11 +84,11 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Mono<PagedList<CommentTO>> searchAfter(@NotNull CommentCriteriaTO criteria, String post, String id, FySelfContext context) {
-        return repository.findById(id).flatMap(comment -> allComentAfter(criteria,post,id,comment.getCreatedAt(),context));
+    public Mono<PagedList<CommentTO>> searchBefore(@NotNull CommentCriteriaTO criteria, String post, String id, FySelfContext context) {
+        return repository.findById(id).flatMap(comment -> allComentBefore(criteria,post,id,comment.getCreatedAt(),context));
     }
 
-    public Mono<PagedList<CommentTO>> allComentAfter(@NotNull CommentCriteriaTO criteria, String post, String id, LocalDateTime createAt, FySelfContext context) {
+    public Mono<PagedList<CommentTO>> allComentBefore(@NotNull CommentCriteriaTO criteria, String post, String id, LocalDateTime createAt, FySelfContext context) {
         return repository.findPage(COMMENT_BINDER.bindToCriteria(criteria, post, createAt))
                 .flatMap(pageComents -> Flux.fromIterable(pageComents)
                         .flatMap(comment -> repository.findPage(COMMENT_BINDER.bindToFatherCriteria(comment.getId())).map(comments -> COMMENT_BINDER.bindPageOfChildren(comments, comment)), 1)
