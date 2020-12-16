@@ -6,18 +6,8 @@ pipeline {
     }
 
 	stages {
-	    //stage('Clean Docker') {
-        //    agent {label 'master'}
-        //    steps {
-        //        sh '''
-         //           sudo docker image prune -a -f
-         //       '''
-         //   }
-        //}
 	    stage('Deploy Dev') {
-	        //when {expression { env.BRANCH_NAME ==~ /^(dev|hotfix|bugfix|feature|stagging|release|deploy)(.*)?/ }}
-            //agent {label 'master'}
-            when {expression { env.BRANCH_NAME ==~ /^(hotfix|bugfix|feature|stagging|release)(.*)?/ }}
+	        when {expression { env.BRANCH_NAME ==~ /^(dev|hotfix|bugfix|feature|stagging|release|deploy)(.*)?/ }}
 			steps {	            
 	            sh '''
 	            rm Jenkinsfile README.md
@@ -30,18 +20,8 @@ pipeline {
 	            }
         }
         stage('Deploy Prod') {
-	        //when {expression { env.BRANCH_NAME == 'master' }}
-            //agent {label 'master'}
-            when {expression { env.BRANCH_NAME == 'devops' }}
+	        when {expression { env.BRANCH_NAME == 'master' }}
 	        steps {
-	            /*sh '''
-	            rm Jenkinsfile README.md
-	            sudo docker build -f Dockerfile -t ms-post .
-	            sudo $(aws ecr get-login --no-include-email --region us-east-1 --profile fyself)
-	            sudo docker tag ms-post:latest 045641265786.dkr.ecr.us-east-1.amazonaws.com/fyself-ms-post:master
-	            sudo docker push 045641265786.dkr.ecr.us-east-1.amazonaws.com/fyself-ms-post:master
-                aws lambda invoke --function-name Restart_Fyself_Services --invocation-type Event --log-type Tail --payload '{"cluster":"Fyself-PROD","service":"ServiceMSPost"}' logsfile.txt --region us-east-1
-	            '''*/
                 sh '''
                           cat <<EOF >>env.aws
 AWS_ACCESS_KEY_PROD_ACCOUNT=$AWS_ACCESS_KEY_PROD_ACCOUNT
