@@ -13,5 +13,6 @@ public enum ReportingReason {
     VIOLENCE,
     HARRASMENT,
     FAKE_NEWS,
-    SPAM
+    SPAM,
+    OTHER
 }
