@@ -50,7 +50,7 @@ public class PostController extends Controller<PostFacade> {
 
     @DeleteMapping("/{id}")
     @ApiSecuredOperation
-    @ApiOperation(nickname = "post_load", value = "Update post", response = NoContentResponse.class)
+    @ApiOperation(nickname = "post_load", value = "Update post", response = NoContentResponse.class, code = 204)
     public Mono<ResponseEntity> delete(@PathVariable String id, @ApiIgnore ServerWebExchange exchange) {
         return this.perform((facade, context) -> facade.delete(id, context), exchange);
     }
