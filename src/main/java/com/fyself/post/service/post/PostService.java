@@ -25,6 +25,8 @@ public interface PostService {
 
     Mono<String> create(@NotNull @Valid PostTO to, FySelfContext context);
 
+    Mono<String> createPostWorkspace(@NotNull @Valid PostTO to, FySelfContext context);
+
     Mono<Void> update(@NotNull @Valid PostTO to, FySelfContext context);
 
     Mono<PostTO> load(@NotNull String id, FySelfContext context);

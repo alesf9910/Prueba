@@ -63,6 +63,15 @@ public class PostServiceImpl implements PostService {
   }
 
   @Override
+  public Mono<String> createPostWorkspace(@NotNull @Valid PostTO to, FySelfContext context) {
+    return context.authenticatedId()
+            .flatMap(userId -> createPostWS(
+                    POST_BINDER.bind(to.withUserId(userId).withCreatedAt().withUpdatedAt()), context))
+            .switchIfEmpty(error(EntityNotFoundException::new))
+            .map(DomainEntity::getId);
+  }
+
+  @Override
   public Mono<Void> update(@NotNull @Valid PostTO to, FySelfContext context) {
     return repository.getById(to.getId())
         .map(post -> POST_BINDER.set(post, to.withUpdatedAt()))
@@ -261,5 +270,14 @@ public class PostServiceImpl implements PostService {
         .doOnSuccess(entity -> createEvent(entity, context))
         .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity))
             .subscribe());
+  }
+
+  private Mono<Post> createPostWS(@NotNull Post to, FySelfContext context) {
+    return repository.save(to)
+            .flatMap(
+                    post -> postTimelineRepository.save(POST_TIMELINE_BINDER.bind(post)).thenReturn(post))
+            //.doOnSuccess(entity -> createEvent(entity, context))
+            .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity))
+                    .subscribe());
   }
 }
