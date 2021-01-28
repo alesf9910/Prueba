@@ -276,7 +276,7 @@ public class PostServiceImpl implements PostService {
     return repository.save(to)
             .flatMap(
                     post -> postTimelineRepository.save(POST_TIMELINE_BINDER.bind(post)).thenReturn(post))
-            //.doOnSuccess(entity -> createEvent(entity, context))
+            .doOnSuccess(entity -> createEventPostWS(entity, context, to))
             .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity))
                     .subscribe());
   }

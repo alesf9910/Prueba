@@ -21,7 +21,7 @@ public class Post extends DomainAuditEntity {
     private String urlImage;
     private Set<String> sharedWith;
     private boolean pinned;
-    private boolean isWorkspace;
+    private boolean workspace;
     private String enterprise;
 
     public Content getContent() {
@@ -112,12 +112,12 @@ public class Post extends DomainAuditEntity {
         return this;
     }
 
-    public boolean isWorkspace() {
-        return isWorkspace;
+    public boolean getWorkspace() {
+        return workspace;
     }
 
     public void setWorkspace(boolean workspace) {
-        isWorkspace = workspace;
+        this.workspace = workspace;
     }
 
     public String getEnterprise() {

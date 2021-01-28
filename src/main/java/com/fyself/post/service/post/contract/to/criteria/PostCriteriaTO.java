@@ -14,6 +14,8 @@ public class PostCriteriaTO extends CriteriaTO {
     private boolean blocked;
     private boolean pinned;
     private TypeSearch type;
+    private String enterprise;
+    private boolean workspace;
 
     public Access getAccess() {
         return access;
@@ -62,5 +64,21 @@ public class PostCriteriaTO extends CriteriaTO {
 
     public void setPinned(boolean pinned) {
         this.pinned = pinned;
+    }
+
+    public String getEnterprise() {
+        return enterprise;
+    }
+
+    public void setEnterprise(String enterprise) {
+        this.enterprise = enterprise;
+    }
+
+    public boolean isWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(boolean workspace) {
+        this.workspace = workspace;
     }
 }

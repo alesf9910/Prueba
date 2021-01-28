@@ -14,6 +14,8 @@ public class PostTimelineTO extends DomainAuditTransferObject {
 
     private String post;
     private String user;
+    private boolean workspace;
+    private String enterprise;
 
     public String getPost() {
         return post;
@@ -74,6 +76,18 @@ public class PostTimelineTO extends DomainAuditTransferObject {
         return to;
     }
 
+    public static PostTimelineTO fromWS(String userId, String post, String owner, String enterprise) {
+        var to = new PostTimelineTO();
+        to.setOwner(owner);
+        to.setCreatedAt(now());
+        to.setUpdatedAt(now());
+        to.setPost(post);
+        to.setUser(userId);
+        to.setEnterprise(enterprise);
+        to.setWorkspace(true);
+        return to;
+    }
+
     public PostTimelineTO withCreatedAt() {
         this.setCreatedAt(now());
         return this;
@@ -82,5 +96,21 @@ public class PostTimelineTO extends DomainAuditTransferObject {
     public PostTimelineTO withUpdatedAt() {
         this.setUpdatedAt(now());
         return this;
+    }
+
+    public boolean isWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(boolean workspace) {
+        this.workspace = workspace;
+    }
+
+    public String getEnterprise() {
+        return enterprise;
+    }
+
+    public void setEnterprise(String enterprise) {
+        this.enterprise = enterprise;
     }
 }
