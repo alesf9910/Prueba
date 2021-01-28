@@ -14,6 +14,8 @@ public class PostTimeline extends DomainAuditEntity {
     @CascadeReference
     private Post post;
     private String user;
+    private boolean workspace;
+    private String enterprise;
 
     public Post getPost() {
         return post;
@@ -36,5 +38,21 @@ public class PostTimeline extends DomainAuditEntity {
         p.setCreatedAt(postTimeline.getCreatedAt());
         return p;
 
+    }
+
+    public boolean isWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(boolean workspace) {
+        this.workspace = workspace;
+    }
+
+    public String getEnterprise() {
+        return enterprise;
+    }
+
+    public void setEnterprise(String enterprise) {
+        this.enterprise = enterprise;
     }
 }

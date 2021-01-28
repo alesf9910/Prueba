@@ -36,6 +36,7 @@ mspost:
         input:
           new: new-post
           post: post
+          workspace-post: workspace-post-contact
           post-comment: post-comment
           post-reaction: post-reaction
           unpinned-post: unpinned-post

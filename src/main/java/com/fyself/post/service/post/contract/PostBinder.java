@@ -285,6 +285,8 @@ public interface PostBinder {
         criteria.setPage(source.getPage());
         criteria.setSize(source.getSize());
         criteria.setType(source.getType());
+        criteria.setEnterprise(source.getEnterprise());
+        criteria.setWorkspace(source.isWorkspace());
         return criteria;
     }
 
@@ -348,7 +350,7 @@ public interface PostBinder {
         } else
             content = "";
 
-        return Map.of(
+        /*return Map.of(
                 "id", Optional.ofNullable(source.getId()).orElse(""),
                 "owner", Optional.ofNullable(source.getOwner()).orElse(""),
                 "access", Optional.ofNullable(source.getAccess().toString()).orElse(Access.PRIVATE.toString()),
@@ -360,6 +362,20 @@ public interface PostBinder {
                 "content", Optional.ofNullable(content).orElse(""),
                 "raw", Optional.ofNullable(write(source.getContent())).orElse("")
 
+        );*/
+        return Map.ofEntries(
+                Map.entry("id", Optional.ofNullable(source.getId()).orElse("")),
+                Map.entry("owner", Optional.ofNullable(source.getOwner()).orElse("")),
+                Map.entry("access", Optional.ofNullable(source.getAccess().toString()).orElse(Access.PRIVATE.toString())),
+                Map.entry("shared", Optional.ofNullable(source.getSharedWith()).orElse(Set.of())),
+                Map.entry("createAt", Optional.ofNullable(source.getCreatedAt()).orElse(LocalDateTime.now())),
+                Map.entry("block", Optional.ofNullable(source.isBlocked()).orElse(false)),
+                Map.entry("active", Optional.ofNullable(source.isActive()).orElse(false)),
+                Map.entry("deleted", Optional.ofNullable(source.isDeleted()).orElse(false)),
+                Map.entry("content", Optional.ofNullable(content).orElse("")),
+                Map.entry("raw", Optional.ofNullable(write(source.getContent())).orElse("")),
+                Map.entry("workspace", Optional.ofNullable(source.getWorkspace()).orElse(false)),
+                Map.entry("enterprise", Optional.ofNullable(source.getEnterprise()).orElse(""))
         );
     }
 
