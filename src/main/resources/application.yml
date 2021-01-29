@@ -39,6 +39,8 @@ mspost:
           workspace-post: workspace-post-contact
           post-comment: post-comment
           post-reaction: post-reaction
+          workspace-post-comment: workspace-post-comment
+          workspace-post-reaction: workspace-post-reaction
           unpinned-post: unpinned-post
     server:
       port: 8080

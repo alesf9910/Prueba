@@ -91,6 +91,25 @@ public interface KafkaMessageBinder {
         return toMap(message);
     }
 
+    default Map bindPostWSNotif(String user, String post, String from, String enterprise) {
+
+
+        MessageTO message = new MessageTO();
+        message.setType("POST");
+        message.setTo(user);
+        message.setFrom(from);
+
+        PayloadTO payload = new PayloadTO();
+        payload.setBody(Map.of("post", post, "workspace", true ,"enterprise" ,enterprise));
+        message.setPayload(payload);
+
+        message.setTodb(true);
+        message.setFix("pu-" + user + "-" + from + "-" + post);
+
+
+        return toMap(message);
+    }
+
     default Map bindPostCommentNotif(String user, String post,String comment, String from) {
 
 
@@ -122,6 +141,46 @@ public interface KafkaMessageBinder {
         PayloadTO payload = new PayloadTO();
         //payload.setBody(Map.of("post", from));
         payload.setBody(Map.of("post", post, "reaction", reaction, "type_reaction", type_reaction));
+        message.setPayload(payload);
+
+        message.setTodb(true);
+        message.setFix("re-" + user + "-" + from + "-" + post + "-" + reaction);
+
+
+        return toMap(message);
+    }
+
+    default Map bindPostWSCommentNotif(String user, String post,String comment, String from, String enterprise) {
+
+
+        MessageTO message = new MessageTO();
+        message.setType("COMMENT");
+        message.setTo(user);
+        message.setFrom(from);
+
+        PayloadTO payload = new PayloadTO();
+        //payload.setBody(Map.of("post", from));
+        payload.setBody(Map.of("post", post, "comment", comment, "workspace", true, "enterprise", enterprise));
+        message.setPayload(payload);
+
+        message.setTodb(true);
+        message.setFix("co-" + user + "-" + from + "-" + post + "-" + comment);
+
+
+        return toMap(message);
+    }
+
+    default Map bindPostWSReactionNotif(String user, String post,String reaction, String type_reaction, String from, String enterprise) {
+
+
+        MessageTO message = new MessageTO();
+        message.setType("REACTION");
+        message.setTo(user);
+        message.setFrom(from);
+
+        PayloadTO payload = new PayloadTO();
+        //payload.setBody(Map.of("post", from));
+        payload.setBody(Map.of("post", post, "reaction", reaction, "type_reaction", type_reaction, "workspace", true, "enterprise", enterprise));
         message.setPayload(payload);
 
         message.setTodb(true);
