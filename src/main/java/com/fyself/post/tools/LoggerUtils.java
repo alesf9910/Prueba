@@ -53,14 +53,14 @@ public class LoggerUtils {
         LoggerUtils.getInstance().sendLogs(context.getAgentInfo().get(), bussines);
     }
 
-    static public void createEventPostWS(DomainEntity entity, FySelfContext context, Post post) {
+    static public void createEventWS(DomainEntity entity, FySelfContext context, String enterprise) {
         BusinessInfo bussines = BusinessInfo.newInstance().setResourcetype(entity.getClass().getSimpleName().toLowerCase())
                 .setEvent(entity.getClass().getSimpleName().toLowerCase().concat(".").concat("workspace_create"))
                 .setResources(Set.of(entity.getId()))
                 //.setDetails(Map.of("enterprise",post.getEnterprise()))
                 .setAction("create")
                 .setUser(context.getAccount().isPresent() ? context.getAccount().get().getId() : "");
-        bussines = bussines.setDetails(detailsWS(entity, post.getEnterprise()));
+        bussines = bussines.setDetails(detailsWS(entity, enterprise));
         LoggerUtils.getInstance().sendLogs(context.getAgentInfo().get(), bussines);
     }
 
