@@ -19,6 +19,7 @@ import javax.validation.constraints.NotNull;
 public interface CommentService {
 
     Mono<String> add(@NotNull @Valid CommentTO to, FySelfContext context);
+    Mono<String> addWS(@NotNull @Valid CommentTO to, FySelfContext context);
 
     Mono<CommentTO> load(@NotNull String id, String post, FySelfContext context);
 

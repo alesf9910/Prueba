@@ -19,6 +19,7 @@ import java.util.Map;
  */
 public interface ReactionService {
     Mono<String> add(@Valid ReactionTO to, FySelfContext context);
+    Mono<String> addWS(@Valid ReactionTO to, FySelfContext context);
     Mono<Void> update(@Valid ReactionTO to, FySelfContext context);
     Mono<Void> delete(String post, FySelfContext context);
     Mono<Map> loadAll(String criteria, FySelfContext context);
