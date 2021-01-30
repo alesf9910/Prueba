@@ -171,7 +171,7 @@ public interface KafkaMessageBinder {
     }
 
     default Map bindPostWSReactionNotif(String user, String post,String reaction, String type_reaction, String from, String enterprise) {
-
+        System.out.println("Post workspace Post Reaction"+" "+post+" "+"Reaction"+" "+reaction+" "+"Contact"+" "+user);
 
         MessageTO message = new MessageTO();
         message.setType("REACTION");
