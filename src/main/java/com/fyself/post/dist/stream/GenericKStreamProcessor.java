@@ -60,7 +60,7 @@ public class GenericKStreamProcessor {
         reactiveKafkaMessageQueue.createFlow(input_topic_post_comment, this::createPostCommentTimeline);
         reactiveKafkaMessageQueue.createFlow(input_topic_post_reaction, this::createPostReactionTimeline);
         reactiveKafkaMessageQueue.createFlow(input_topic_workspace_post_comment, this::createPostCommentTimeline);
-        reactiveKafkaMessageQueue.createFlow(input_topic_workspace_post_reaction, this::createPostWSCommentTimeline);
+        reactiveKafkaMessageQueue.createFlow(input_topic_workspace_post_reaction, this::createPostReactionTimeline);
         reactiveKafkaMessageQueue.createSink(input_topic_new, this::createPost);
         reactiveKafkaMessageQueue.createSink(input_unpinned_post, this::unpinnedPost);
     }
