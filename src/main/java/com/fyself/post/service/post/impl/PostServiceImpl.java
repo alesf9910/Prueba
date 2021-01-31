@@ -9,6 +9,7 @@ import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
 import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
 import com.fyself.post.service.post.datasource.AnswerSurveyRepository;
 import com.fyself.post.service.post.datasource.PostRepository;
+import com.fyself.post.service.system.datasource.UserRepository;
 import com.fyself.post.service.post.datasource.PostTimelineRepository;
 import com.fyself.post.service.post.datasource.domain.Post;
 import com.fyself.post.service.post.datasource.domain.enums.TypeContent;
@@ -22,6 +23,7 @@ import com.fyself.seedwork.service.context.FySelfContext;
 import com.fyself.seedwork.service.repository.mongodb.domain.DomainEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -40,17 +42,19 @@ import static reactor.core.publisher.Mono.just;
 public class PostServiceImpl implements PostService {
 
   final PostRepository repository;
+  final UserRepository userRepository;
   final PostTimelineRepository postTimelineRepository;
   final AnswerSurveyRepository answerSurveyRepository;
   final StreamService streamService;
   PostTO postTOAux;
 
-  public PostServiceImpl(PostRepository repository, PostTimelineRepository postTimelineRepository,
+  public PostServiceImpl(PostRepository repository, UserRepository userRepository, PostTimelineRepository postTimelineRepository,
       AnswerSurveyRepository answerSurveyRepository, StreamService streamService) {
     this.repository = repository;
     this.postTimelineRepository = postTimelineRepository;
     this.answerSurveyRepository = answerSurveyRepository;
     this.streamService = streamService;
+    this.userRepository = userRepository;
   }
 
   @Override
@@ -204,18 +208,40 @@ public class PostServiceImpl implements PostService {
   public Mono<String> sharePost(@NotNull PostShareBulkTO to, FySelfContext context) {
     return repository.findById(to.getPost())
         .flatMap(post -> {
-          if (post.getOwner().equals(context.getAccount().get().getId())) {
-            return shareBulk(POST_BINDER.bindShareBulk(post, to), context)
-                .filter(Boolean::booleanValue).map(ing -> to.getPost());
-          } else {
-            if (post.getAccess().equals(Access.PUBLIC)) {
-              return createPost(
-                  POST_BINDER.bindSharedPost(post, context.getAccount().get().getId()), context)
-                  .map(DomainEntity::getId);
+          if(post.getWorkspace())
+          {
+             if(to.getSharedWith().isEmpty())
+             {
+               return userRepository.loadUsersWorkspace(post.getEnterprise(),context)
+                       .flatMap(users ->
+                               shareBulk(POST_BINDER.bindShareBulk(post, to.putSharedWith(users)), context)
+                                       .filter(Boolean::booleanValue).map(ing -> to.getPost())
+                       );
+             }
+             else
+             {
+               return shareBulk(POST_BINDER.bindShareBulk(post, to), context)
+                      .filter(Boolean::booleanValue).map(ing -> to.getPost());
+             }
+
+          }
+          else
+          {
+            if (post.getOwner().equals(context.getAccount().get().getId())) {
+              return shareBulk(POST_BINDER.bindShareBulk(post, to), context)
+                      .filter(Boolean::booleanValue).map(ing -> to.getPost());
             } else {
-              return error(ValidationException::new);
+              if (post.getAccess().equals(Access.PUBLIC)) {
+                return createPost(
+                        POST_BINDER.bindSharedPost(post, context.getAccount().get().getId()), context)
+                        .map(DomainEntity::getId);
+              } else {
+                return error(ValidationException::new);
+              }
             }
           }
+
+
         })
         .switchIfEmpty(error(EntityNotFoundException::new));
   }

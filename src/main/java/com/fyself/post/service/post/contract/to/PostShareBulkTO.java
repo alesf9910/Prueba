@@ -29,6 +29,11 @@ public class PostShareBulkTO extends TransferObject {
         this.sharedWith = sharedWith;
     }
 
+    public PostShareBulkTO putSharedWith(Set<String> sharedWith) {
+        this.sharedWith = sharedWith;
+        return this;
+    }
+
     public PostShareBulkTO withId(String id) {
         this.post = id;
         return this;

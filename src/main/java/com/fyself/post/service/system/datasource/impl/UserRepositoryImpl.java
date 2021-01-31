@@ -10,10 +10,14 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.MultiValueMap;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import static reactor.core.publisher.Mono.empty;
 import static reactor.core.publisher.Mono.just;
 
 /**
@@ -30,6 +34,7 @@ public class UserRepositoryImpl implements UserRepository {
     private final String baseUrl;
     private static final String USER_PATH = "/msauth/api/user/";
     private static final String CONTACT_PATH = "/ms-contacts/contacts/enrich-contact/";
+    private static final String USERS_WORKSPACE_PATH = "/ms-business/users/users-workspace/";
 
 
     public UserRepositoryImpl(
@@ -59,6 +64,16 @@ public class UserRepositoryImpl implements UserRepository {
                 .map(map -> map)
                 .switchIfEmpty(just(new UserTO()))
                 .onErrorResume(throwable -> just(new UserTO()));
+    }
+
+    @Override
+    public Mono<Set<String>> loadUsersWorkspace(String enterprise, FySelfContext context) {
+        return this.client
+                .doGet(buildRequestUrl(USERS_WORKSPACE_PATH, enterprise), Map.of(), buildRequestHeader(context), new ParameterizedTypeReference<Set<String>>() {
+                })
+                .map(listt -> listt)
+                .switchIfEmpty(Mono.empty())
+                .onErrorResume(throwable -> Mono.empty());
     }
 
     @Override
