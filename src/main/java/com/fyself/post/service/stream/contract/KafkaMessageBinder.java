@@ -92,7 +92,7 @@ public interface KafkaMessageBinder {
     }
 
     default Map bindPostWSNotif(String user, String post, String from, String enterprise) {
-
+        System.out.println("Post workspace Post"+" "+post+" "+"Contact"+" "+user);
 
         MessageTO message = new MessageTO();
         message.setType("POST");
