@@ -135,4 +135,9 @@ public class CommentTO extends DomainAuditTransferObject {
         this.enterprise = enterprise;
         return this;
     }
+
+    public CommentTO putWorkspace(boolean workspace) {
+        this.workspace = workspace;
+        return this;
+    }
 }
