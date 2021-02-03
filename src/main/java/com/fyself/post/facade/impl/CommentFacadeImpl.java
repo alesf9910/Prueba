@@ -38,7 +38,7 @@ public class CommentFacadeImpl implements CommentFacade {
                     if(!post.getWorkspace())
                         return service.add(to,context).map(Result::successful);
                     else
-                        return service.addWS(to.putEnterprise(post.getEnterprise()),context).map(Result::successful);
+                        return service.addWS(to.putEnterprise(post.getEnterprise()).putWorkspace(true),context).map(Result::successful);
 
                 })
                 .switchIfEmpty(error(EntityNotFoundException::new))
