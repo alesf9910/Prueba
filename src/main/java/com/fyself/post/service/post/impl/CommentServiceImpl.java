@@ -47,6 +47,15 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public Mono<String> addWS(@NotNull @Valid CommentTO to, FySelfContext context) {
+        return authenticatedId()
+                .flatMap(userId -> repository.save(COMMENT_BINDER.bind(to.withUserId(userId).withCreatedAt().withUpdatedAt())))
+                .doOnSuccess(entity -> createEventWS(entity, context, to.getEnterprise()))
+                .switchIfEmpty(error(EntityNotFoundException::new))
+                .map(DomainEntity::getId);
+    }
+
+    @Override
     public Mono<CommentTO> load(@NotNull String id, String post, FySelfContext context) {
         return repository.getById(id)
                 .filter(comment -> comment.getPost().getId().equals(post))

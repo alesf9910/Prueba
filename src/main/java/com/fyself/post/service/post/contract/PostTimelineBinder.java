@@ -26,6 +26,8 @@ public interface PostTimelineBinder {
         postTimeline.setUser(post.getOwner());
         postTimeline.setCreatedAt(post.getCreatedAt());
         postTimeline.setCreatedAt(post.getUpdatedAt());
+        postTimeline.setEnterprise(post.getEnterprise());
+        postTimeline.setWorkspace(post.getWorkspace());
         return postTimeline;
     }
 }

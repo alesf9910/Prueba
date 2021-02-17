@@ -10,7 +10,9 @@ public class PostTimelineCriteriaTO extends CriteriaTO {
     private static final long serialVersionUID = -3722987217715369547L;
 
     private String user;
+    private String enterprise;
     private TypeSearch type;
+    private boolean workspace;
 
     @ReadOnly
     public String getUser() {
@@ -31,5 +33,21 @@ public class PostTimelineCriteriaTO extends CriteriaTO {
     public PostTimelineCriteriaTO withUser(String user) {
         this.setUser(user);
         return this;
+    }
+
+    public String getEnterprise() {
+        return enterprise;
+    }
+
+    public void setEnterprise(String enterprise) {
+        this.enterprise = enterprise;
+    }
+
+    public boolean isWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(boolean workspace) {
+        this.workspace = workspace;
     }
 }

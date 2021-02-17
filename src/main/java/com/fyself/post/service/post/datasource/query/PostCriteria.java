@@ -22,6 +22,8 @@ public class PostCriteria extends DomainCriteria<Post> {
     private boolean active;
     private boolean blocked;
     private TypeSearch type;
+    private String enterprise;
+    private boolean workspace;
 
     public PostCriteria() {
         super(Post.class);
@@ -30,15 +32,15 @@ public class PostCriteria extends DomainCriteria<Post> {
     @Override
     protected Criteria force() {
         if(type==null){
-            return and(matchAccess(), matchActive(), matchBlocked(), matchOwner());
+            return and(matchAccess(), matchActive(), matchBlocked(), matchOwner(), matchEnterprise());
         } else {
             switch (type) {
                 case SHARED:
-                    return and(matchAccess(), matchActive(), matchBlocked(), matchShared());
+                    return and(matchAccess(), matchActive(), matchBlocked(), matchShared(), matchEnterprise());
                 case ME:
                 case ALL:
                 default:
-                    return and(matchAccess(), matchActive(), matchBlocked(), matchOwner());
+                    return and(matchAccess(), matchActive(), matchBlocked(), matchOwner(), matchEnterprise());
             }
         }
     }
@@ -60,6 +62,14 @@ public class PostCriteria extends DomainCriteria<Post> {
     }
     private Criteria matchOwner() {
         return this.owner != null ? where("owner").is(this.getOwner()) : null;
+    }
+    private Criteria matchEnterprise() {
+        if(this.workspace==true)
+        {
+            return and(where("workspace").is(this.workspace),this.enterprise != null ? where("enterprise").is(this.getEnterprise()) : null);
+        }
+        else
+            return null;
     }
 
     public Access getAccess() {
@@ -95,6 +105,22 @@ public class PostCriteria extends DomainCriteria<Post> {
     }
     public void setType(TypeSearch type) {
         this.type = type;
+    }
+
+    public String getEnterprise() {
+        return enterprise;
+    }
+
+    public void setEnterprise(String enterprise) {
+        this.enterprise = enterprise;
+    }
+
+    public boolean isWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(boolean workspace) {
+        this.workspace = workspace;
     }
 
     @Override

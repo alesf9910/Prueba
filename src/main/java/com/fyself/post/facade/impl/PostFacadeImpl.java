@@ -43,7 +43,10 @@ public class PostFacadeImpl implements PostFacade {
 
     @Override
     public Mono<Result<String>> create(PostTO to, FySelfContext context) {
-        return service.create(to, context).map(Result::successful);
+        if(!to.getWorkspace())
+            return service.create(to, context).map(Result::successful);
+        else
+            return service.createPostWorkspace(to, context).map(Result::successful);
     }
 
     @Override

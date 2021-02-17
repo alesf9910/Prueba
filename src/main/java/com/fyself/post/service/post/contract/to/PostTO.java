@@ -29,6 +29,8 @@ public class PostTO extends DomainAuditTransferObject {
     private Long comments;
     private ReactionType reaction;
     private Map<ReactionType,Long>  reactionStats= new HashMap<>();
+    private boolean workspace;
+    private String enterprise;
 
     @ReadOnly
     public Long getComments() {
@@ -174,5 +176,21 @@ public class PostTO extends DomainAuditTransferObject {
 
     public void setPinned(boolean pinned) {
         this.pinned = pinned;
+    }
+
+    public boolean getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(boolean workspace) {
+        this.workspace = workspace;
+    }
+
+    public String getEnterprise() {
+        return enterprise;
+    }
+
+    public void setEnterprise(String enterprise) {
+        this.enterprise = enterprise;
     }
 }

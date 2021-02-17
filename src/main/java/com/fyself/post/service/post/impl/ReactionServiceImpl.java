@@ -22,6 +22,7 @@ import java.util.Map;
 
 import static com.fyself.post.service.post.contract.ReactionBinder.REACTION_BINDER;
 import static com.fyself.post.tools.LoggerUtils.createEvent;
+import static com.fyself.post.tools.LoggerUtils.createEventWS;
 import static reactor.core.publisher.Mono.error;
 
 @Service("reactionService")
@@ -43,6 +44,19 @@ public class ReactionServiceImpl implements ReactionService {
                         .withCreateAt()
                         .withUpdateAt())))
                 .doOnSuccess(postReport -> createEvent(postReport, context))
+                .switchIfEmpty(error(EntityNotFoundException::new))
+                .map(DomainEntity::getId);
+    }
+
+    @Override
+    public Mono<String> addWS(@Valid ReactionTO to, FySelfContext context) {
+        return context.authenticatedId()
+                .flatMap(userId -> repository.save(REACTION_BINDER.bind(to
+                        .withOwner(userId)
+                        .withReportId(userId + "-" + to.getPost())
+                        .withCreateAt()
+                        .withUpdateAt())))
+                .doOnSuccess(postReport -> createEventWS(postReport, context, to.getEnterprise()))
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .map(DomainEntity::getId);
     }

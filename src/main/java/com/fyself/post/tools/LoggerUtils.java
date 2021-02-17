@@ -1,6 +1,7 @@
 package com.fyself.post.tools;
 
 import com.fyself.post.configuration.LoggingFilter;
+import com.fyself.post.service.post.datasource.domain.Post;
 import com.fyself.seedwork.kafka.logback.message.AgentInfo;
 import com.fyself.seedwork.kafka.logback.message.BusinessInfo;
 import com.fyself.seedwork.kafka.logback.message.Logger;
@@ -8,6 +9,7 @@ import com.fyself.seedwork.service.context.FySelfContext;
 import com.fyself.seedwork.service.repository.mongodb.domain.DomainEntity;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -51,6 +53,17 @@ public class LoggerUtils {
         LoggerUtils.getInstance().sendLogs(context.getAgentInfo().get(), bussines);
     }
 
+    static public void createEventWS(DomainEntity entity, FySelfContext context, String enterprise) {
+        BusinessInfo bussines = BusinessInfo.newInstance().setResourcetype(entity.getClass().getSimpleName().toLowerCase())
+                .setEvent(entity.getClass().getSimpleName().toLowerCase().concat(".").concat("workspace_create"))
+                .setResources(Set.of(entity.getId()))
+                //.setDetails(Map.of("enterprise",post.getEnterprise()))
+                .setAction("create")
+                .setUser(context.getAccount().isPresent() ? context.getAccount().get().getId() : "");
+        bussines = bussines.setDetails(detailsWS(entity, enterprise));
+        LoggerUtils.getInstance().sendLogs(context.getAgentInfo().get(), bussines);
+    }
+
     static public void createEvent(DomainEntity entity, String context) {
         BusinessInfo bussines = BusinessInfo.newInstance().setResourcetype(entity.getClass().getSimpleName().toLowerCase())
                 .setEvent(entity.getClass().getSimpleName().toLowerCase().concat(".").concat("create"))
@@ -67,6 +80,17 @@ public class LoggerUtils {
                 return Map.of(
                         "entity", entity.getClass().getSimpleName().toLowerCase(),
                         "value", write(entity)
+                );
+        }
+    }
+
+    private static Map<String, Object> detailsWS(DomainEntity entity, String enterprise) {
+        switch (entity.getClass().getSimpleName().toLowerCase()) {
+            default:
+                return Map.of(
+                        "entity", entity.getClass().getSimpleName().toLowerCase(),
+                        "value", write(entity),
+                        "enterprise", enterprise
                 );
         }
     }

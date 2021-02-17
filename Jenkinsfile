@@ -40,17 +40,17 @@ EOF
 	    {
             success {
                 sh '''
-                    curl -X POST -H "Content-Type: application/json"  https://api.telegram.org/bot1285826100:AAHHfIvTg2GKf1pvTds_j5Bd6IsEcHg-Q3Y/sendMessage  -d '{"chat_id": "-1001404537016", "text": "The ms-post (master) job execution was successfully", "disable_notification": true}'
+                    curl -X POST -H "Content-Type: application/json"  https://api.telegram.org/bot1285826100:AAHHfIvTg2GKf1pvTds_j5Bd6IsEcHg-Q3Y/sendMessage  -d '{"chat_id": "-1001404537016", "text": "The ms-post ( '$BRANCH_NAME' ) job execution was successfully", "disable_notification": true}'
                 '''
                 }
             failure {
                 sh '''
-                    curl -X POST -H "Content-Type: application/json"  https://api.telegram.org/bot1285826100:AAHHfIvTg2GKf1pvTds_j5Bd6IsEcHg-Q3Y/sendMessage  -d '{"chat_id": "-1001404537016", "text": "The ms-post (master) job execution was failed", "disable_notification": true}'
+                    curl -X POST -H "Content-Type: application/json"  https://api.telegram.org/bot1285826100:AAHHfIvTg2GKf1pvTds_j5Bd6IsEcHg-Q3Y/sendMessage  -d '{"chat_id": "-1001404537016", "text": "The ms-post ( '$BRANCH_NAME' ) job execution was failed", "disable_notification": true}'
                 '''
                 }
             aborted{
                 sh '''
-                    curl -X POST -H "Content-Type: application/json"  https://api.telegram.org/bot1285826100:AAHHfIvTg2GKf1pvTds_j5Bd6IsEcHg-Q3Y/sendMessage  -d '{"chat_id": "-1001404537016", "text": "The ms-post (master) job execution was aborted", "disable_notification": true}'
+                    curl -X POST -H "Content-Type: application/json"  https://api.telegram.org/bot1285826100:AAHHfIvTg2GKf1pvTds_j5Bd6IsEcHg-Q3Y/sendMessage  -d '{"chat_id": "-1001404537016", "text": "The ms-post ( '$BRANCH_NAME' ) job execution was aborted", "disable_notification": true}'
                 '''
                 }
         }
