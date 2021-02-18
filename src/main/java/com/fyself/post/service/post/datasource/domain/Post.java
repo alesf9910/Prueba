@@ -21,6 +21,8 @@ public class Post extends DomainAuditEntity {
     private String urlImage;
     private Set<String> sharedWith;
     private boolean pinned;
+    private boolean workspace;
+    private String enterprise;
 
     public Content getContent() {
         return content;
@@ -70,6 +72,11 @@ public class Post extends DomainAuditEntity {
         this.sharedWith = sharedWith;
     }
 
+    public Post putSharedWith(Set<String> sharedWith) {
+        this.sharedWith = sharedWith;
+        return this;
+    }
+
     public Post shareUser(String user) {
         if (this.sharedWith == null) {
             this.sharedWith = Set.of(user);
@@ -108,5 +115,21 @@ public class Post extends DomainAuditEntity {
     public Post putPinned(Boolean v) {
         setPinned(v);
         return this;
+    }
+
+    public boolean getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(boolean workspace) {
+        this.workspace = workspace;
+    }
+
+    public String getEnterprise() {
+        return enterprise;
+    }
+
+    public void setEnterprise(String enterprise) {
+        this.enterprise = enterprise;
     }
 }

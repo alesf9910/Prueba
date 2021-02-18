@@ -6,29 +6,43 @@ import com.fyself.post.service.post.contract.to.CommentTO;
 import com.fyself.post.service.post.contract.to.criteria.CommentCriteriaTO;
 import com.fyself.seedwork.facade.Result;
 import com.fyself.seedwork.facade.stereotype.Facade;
+import com.fyself.seedwork.service.EntityNotFoundException;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import com.fyself.seedwork.service.repository.mongodb.criteria.SortEntry;
 import com.fyself.seedwork.service.repository.mongodb.criteria.enums.SortOrder;
 import reactor.core.publisher.Mono;
+import com.fyself.post.service.post.datasource.PostRepository;
 
 import java.util.List;
 
 import static com.fyself.seedwork.facade.Result.successful;
+import static reactor.core.publisher.Mono.error;
 
 @Facade("commentFacade")
 public class CommentFacadeImpl implements CommentFacade {
 
     private final CommentService service;
+    private final PostRepository postRepository;
 
-    public CommentFacadeImpl(CommentService service) {
+    public CommentFacadeImpl(CommentService service, PostRepository postRepository) {
         this.service = service;
+        this.postRepository = postRepository;
     }
 
 
     @Override
     public Mono<Result<String>> create(CommentTO to, FySelfContext context) {
-        return service.add(to, context).map(Result::successful);
+        return postRepository.findById(to.getPost())
+                .flatMap(post -> {
+                    if(!post.getWorkspace())
+                        return service.add(to,context).map(Result::successful);
+                    else
+                        return service.addWS(to.putEnterprise(post.getEnterprise()).putWorkspace(true),context).map(Result::successful);
+
+                })
+                .switchIfEmpty(error(EntityNotFoundException::new))
+                .onErrorResume(throwable -> error(EntityNotFoundException::new));
     }
 
     @Override

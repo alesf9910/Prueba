@@ -11,7 +11,7 @@ public class Main {
 	public static String TITLE = Main.class.getPackage().getImplementationTitle();
 
 	public static void main(String[] args) {
-		System.out.println("Search Microservice");
+		System.out.println("Search Microservice v3");
 		SpringApplication application = new SpringApplication(Main.class);
 		setInitializers(application);
 		application.run(args);

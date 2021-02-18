@@ -20,6 +20,8 @@ public class ReactionTO extends DomainAuditTransferObject {
 
     private String post;
     private ReactionType reaction;
+    private boolean workspace;
+    private String enterprise;
 
     @Override
     @ReadOnly
@@ -84,6 +86,27 @@ public class ReactionTO extends DomainAuditTransferObject {
 
     public ReactionTO withUpdateAt() {
         this.setUpdatedAt(now());
+        return this;
+    }
+
+    public boolean isWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(boolean workspace) {
+        this.workspace = workspace;
+    }
+
+    public String getEnterprise() {
+        return enterprise;
+    }
+
+    public void setEnterprise(String enterprise) {
+        this.enterprise = enterprise;
+    }
+
+    public ReactionTO putEnterprise(String enterprise) {
+        this.enterprise = enterprise;
         return this;
     }
 }

@@ -19,6 +19,8 @@ public class CommentTO extends DomainAuditTransferObject {
     private String url;
     private String father;
     private PagedList<CommentTO> childrens;
+    private boolean workspace;
+    private String enterprise;
 
     @NotBlank
     public String getContent() {
@@ -110,6 +112,32 @@ public class CommentTO extends DomainAuditTransferObject {
 
     public CommentTO withUpdatedAt() {
         this.setUpdatedAt(now());
+        return this;
+    }
+
+    public boolean isWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(boolean workspace) {
+        this.workspace = workspace;
+    }
+
+    public String getEnterprise() {
+        return enterprise;
+    }
+
+    public void setEnterprise(String enterprise) {
+        this.enterprise = enterprise;
+    }
+
+    public CommentTO putEnterprise(String enterprise) {
+        this.enterprise = enterprise;
+        return this;
+    }
+
+    public CommentTO putWorkspace(boolean workspace) {
+        this.workspace = workspace;
         return this;
     }
 }
