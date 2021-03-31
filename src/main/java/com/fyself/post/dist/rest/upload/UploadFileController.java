@@ -36,7 +36,7 @@ public class UploadFileController extends Controller<UploadFileFacade> {
         return this.get((facade, context) -> facade.uploadImage(part, type, context), exchange);
     }
 
-    @PostMapping("/get-file")
+    @PostMapping(value="/get-file", produces = MediaType.APPLICATION_PDF_VALUE)
     @ApiSecuredOperation
     @ApiOperation(nickname = "get_file", value = "Search comments", response = String.class)
     public Mono<ResponseEntity> search(@RequestBody FileTO file, @ApiIgnore ServerWebExchange exchange) {
