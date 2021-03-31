@@ -9,6 +9,7 @@ import com.fyself.seedwork.web.Controller;
 import com.fyself.seedwork.web.documentation.annotations.ApiSecuredOperation;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import javaxt.http.Response;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
@@ -36,7 +37,7 @@ public class UploadFileController extends Controller<UploadFileFacade> {
         return this.get((facade, context) -> facade.uploadImage(part, type, context), exchange);
     }
 
-    @PostMapping(value="/get-file", produces = MediaType.APPLICATION_PDF_VALUE)
+    @PostMapping(value="/get-file", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ApiSecuredOperation
     @ApiOperation(nickname = "get_file", value = "Search comments", response = String.class)
     public Mono<ResponseEntity> search(@RequestBody FileTO file, @ApiIgnore ServerWebExchange exchange) {
