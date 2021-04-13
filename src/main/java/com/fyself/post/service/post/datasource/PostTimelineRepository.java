@@ -18,6 +18,8 @@ public interface PostTimelineRepository extends MongoRepository<PostTimeline> {
     @Query(value = "{ 'deleted' : {$ne : true}, 'user': ?0}", sort = "{ 'createdAt': -1}")
     Flux<PostTimeline> findAllByUser(String userId);
 
+    Mono<Void> deleteAllByPost_IdAndOwner(String post_id, String owner);
+
     Mono<Void> deleteAllByPost_IdAndUser(String post_id, String user);
 
     Mono<Boolean> existsByPost_IdAndOwner(String post_id, String owner);

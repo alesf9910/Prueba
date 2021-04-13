@@ -107,6 +107,8 @@ public class PostServiceImpl implements PostService {
                 entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity))
                     .subscribe())
             .doOnSuccess(entity -> postTimelineRepository
+                .deleteAllByPost_IdAndOwner(entity.getId(), entity.getOwner()).subscribe())
+            .doOnSuccess(entity -> postTimelineRepository
                 .deleteAllByPost_IdAndUser(entity.getId(), entity.getOwner()).subscribe())
         )
         .then();
