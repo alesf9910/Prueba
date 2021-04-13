@@ -1,5 +1,5 @@
 #Stage 1
-FROM gradle:jdk11 as builder
+FROM gradle:6.8.3-jdk11 as builder
 
 RUN mkdir /opt/service
 RUN mkdir /opt/service/build
