@@ -1,6 +1,8 @@
 package com.fyself.post.facade.impl;
 
 import com.fyself.post.facade.UploadFileFacade;
+import com.fyself.post.service.post.FileService;
+import com.fyself.post.service.post.contract.to.FileTO;
 import com.fyself.post.service.system.UploadFileService;
 import com.fyself.post.service.system.contract.to.ResourceCriteriaTO;
 import com.fyself.post.service.system.contract.to.ResourceTO;
@@ -33,12 +35,15 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
     private static final Logger logger = getLogger(UploadFileFacade.class);
     private UploadFileService uploadFileService;
     private String[] typesSupported;
+    private FileService fileService;
 
     public UploadFileFacadeImpl(UploadFileService uploadFileService,
-                                @Value("${application.file}") String[] typesSupported
+                                @Value("${application.file}") String[] typesSupported,
+                                FileService fileService
     ) {
         this.uploadFileService = uploadFileService;
         this.typesSupported = typesSupported;
+        this.fileService = fileService;
     }
 
 
@@ -48,6 +53,12 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
         return part.ofType(FilePart.class)
                 .flatMap(filePart -> this.add(filePart, typeElement))
                 .map(Result::successful);
+    }
+
+    @Override
+    public Mono<Result<byte[]>> getFile(FileTO pdf, FySelfContext context)
+    {
+        return fileService.getFile(pdf,context).map(Result::successful);
     }
 
     public Optional<String> getExtensionByStringHandling(String filename) {

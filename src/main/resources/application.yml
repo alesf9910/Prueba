@@ -24,6 +24,7 @@ mspost:
         max-age: 1800
       ms:
         baseurl: https://staging-backend.fyself.com
+        cloudfront-baseurl: https://staging-statics-dev.fyself.com
     kafka:
       servers: 3.223.152.25:9092
       topics:
