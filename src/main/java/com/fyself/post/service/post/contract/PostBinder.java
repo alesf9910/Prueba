@@ -350,19 +350,6 @@ public interface PostBinder {
         } else
             content = "";
 
-        /*return Map.of(
-                "id", Optional.ofNullable(source.getId()).orElse(""),
-                "owner", Optional.ofNullable(source.getOwner()).orElse(""),
-                "access", Optional.ofNullable(source.getAccess().toString()).orElse(Access.PRIVATE.toString()),
-                "shared", Optional.ofNullable(source.getSharedWith()).orElse(Set.of()),
-                "createAt", Optional.ofNullable(source.getCreatedAt()).orElse(LocalDateTime.now()),
-                "block", Optional.ofNullable(source.isBlocked()).orElse(false),
-                "active", Optional.ofNullable(source.isActive()).orElse(false),
-                "deleted", Optional.ofNullable(source.isDeleted()).orElse(false),
-                "content", Optional.ofNullable(content).orElse(""),
-                "raw", Optional.ofNullable(write(source.getContent())).orElse("")
-
-        );*/
         return Map.ofEntries(
                 Map.entry("id", Optional.ofNullable(source.getId()).orElse("")),
                 Map.entry("owner", Optional.ofNullable(source.getOwner()).orElse("")),

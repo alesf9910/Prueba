@@ -26,15 +26,20 @@ public class StreamServiceImpl implements StreamService {
     private final ReactiveKafkaMessageQueue queueManager;
     private final String topic_logstash_post;
     private final String topic_logstash_answer;
+    /**
+     * Send message ms-post to ms-chat
+     */
+    private final String topic_post_chat;
 
 
     public StreamServiceImpl(ReactiveKafkaMessageQueue queueManager,
                              @Value("${mspost.application.kafka.topics.output.elastic-post}") String topic_logstash_post ,
-                             @Value("${mspost.application.kafka.topics.output.elastic-answer}") String topic_logstash_answer) {
+                             @Value("${mspost.application.kafka.topics.output.elastic-answer}") String topic_logstash_answer,
+                             @Value("${mspost.application.kafka.topics.output.post-chat}") String topic_post_chat) {
         this.queueManager = queueManager;
         this.topic_logstash_post = topic_logstash_post;
         this.topic_logstash_answer = topic_logstash_answer;
-
+        this.topic_post_chat = topic_post_chat;
     }
 
     @Override
@@ -45,6 +50,16 @@ public class StreamServiceImpl implements StreamService {
     @Override
     public Mono<Void> putInPipelinePostElastic(Map message) {
         return this.send(message, topic_logstash_post);
+    }
+
+    /**
+     * This method send message to kafka with post id to delete notification
+     *
+     * @param  message  Map of message with type of message and post id
+     */
+    @Override
+    public Mono<Void> putInPipelineDeletePostNotification(Map message) {
+        return this.send(message, topic_post_chat);
     }
 
     //<editor-fold desc="Encapsulation">
