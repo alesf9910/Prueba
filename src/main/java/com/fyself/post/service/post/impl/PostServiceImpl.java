@@ -28,6 +28,7 @@ import reactor.core.publisher.Mono;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.fyself.post.service.post.contract.AnswerSurveyBinder.ANSWER_SURVEY_BINDER;
 import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
@@ -96,7 +97,12 @@ public class PostServiceImpl implements PostService {
         .switchIfEmpty(error(EntityNotFoundException::new));
   }
 
-
+  /**
+   * This method delete user post, contact user posttimeline and user, contact post notification
+   *
+   * @param  id  id of post
+   * @param  context context of FySelf with user information, tokend security ...
+   */
   @Override
   public Mono<Void> delete(@NotNull String id, FySelfContext context) {
     return repository.getById(id)
@@ -107,9 +113,10 @@ public class PostServiceImpl implements PostService {
                 entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity))
                     .subscribe())
             .doOnSuccess(entity -> postTimelineRepository
-                .deleteAllByPost_IdAndOwner(entity.getId(), entity.getOwner()).subscribe())
-            .doOnSuccess(entity -> postTimelineRepository
-                .deleteAllByPost_IdAndUser(entity.getId(), entity.getOwner()).subscribe())
+                .deleteAllByPost_IdAndUserOrOwner(entity.getId(), entity.getOwner(), entity.getOwner()).subscribe())
+            .doOnSuccess(
+                        entity -> streamService.putInPipelineDeletePostNotification(Map.of("type","DELETE-POST-NOT","post",entity.getId()))
+                                .subscribe())
         )
         .then();
   }
