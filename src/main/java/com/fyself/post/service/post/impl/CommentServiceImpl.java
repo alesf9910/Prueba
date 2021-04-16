@@ -38,10 +38,10 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    public Mono<String> add(@NotNull @Valid CommentTO to, FySelfContext context) {
+    public Mono<String> add(@NotNull @Valid CommentTO to, String postOwner,FySelfContext context) {
         return authenticatedId()
                 .flatMap(userId -> repository.save(COMMENT_BINDER.bind(to.withUserId(userId).withCreatedAt().withUpdatedAt())))
-                .doOnSuccess(entity -> createEvent(entity, context))
+                .doOnSuccess(entity -> createEvent(entity, postOwner, context))
                 .switchIfEmpty(error(EntityNotFoundException::new))
                 .map(DomainEntity::getId);
     }
