@@ -53,6 +53,16 @@ public class LoggerUtils {
         LoggerUtils.getInstance().sendLogs(context.getAgentInfo().get(), bussines);
     }
 
+    static public void createEvent(DomainEntity entity, String postOwner, FySelfContext context) {
+        BusinessInfo bussines = BusinessInfo.newInstance().setResourcetype(entity.getClass().getSimpleName().toLowerCase())
+                .setEvent(entity.getClass().getSimpleName().toLowerCase().concat(".").concat("create"))
+                .setResources(Set.of(entity.getId()))
+                .setAction("create")
+                .setUser(context.getAccount().isPresent() ? context.getAccount().get().getId() : "");
+        bussines = bussines.setDetails(detailsComment(entity, postOwner));
+        LoggerUtils.getInstance().sendLogs(context.getAgentInfo().get(), bussines);
+    }
+
     static public void createEventWS(DomainEntity entity, FySelfContext context, String enterprise) {
         BusinessInfo bussines = BusinessInfo.newInstance().setResourcetype(entity.getClass().getSimpleName().toLowerCase())
                 .setEvent(entity.getClass().getSimpleName().toLowerCase().concat(".").concat("workspace_create"))
@@ -91,6 +101,17 @@ public class LoggerUtils {
                         "entity", entity.getClass().getSimpleName().toLowerCase(),
                         "value", write(entity),
                         "enterprise", enterprise
+                );
+        }
+    }
+
+    private static Map<String, Object> detailsComment(DomainEntity entity, String postOwner) {
+        switch (entity.getClass().getSimpleName().toLowerCase()) {
+            default:
+                return Map.of(
+                        "entity", entity.getClass().getSimpleName().toLowerCase(),
+                        "value", write(entity),
+                        "postowner", postOwner
                 );
         }
     }

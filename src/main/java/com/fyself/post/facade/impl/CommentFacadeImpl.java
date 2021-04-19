@@ -36,7 +36,8 @@ public class CommentFacadeImpl implements CommentFacade {
         return postRepository.findById(to.getPost())
                 .flatMap(post -> {
                     if(!post.getWorkspace())
-                        return service.add(to,context).map(Result::successful);
+                        //Add comment and post owner to send notification only to contacts of post owner
+                        return service.add(to,post.getOwner(),context).map(Result::successful);
                     else
                         return service.addWS(to.putEnterprise(post.getEnterprise()).putWorkspace(true),context).map(Result::successful);
 
