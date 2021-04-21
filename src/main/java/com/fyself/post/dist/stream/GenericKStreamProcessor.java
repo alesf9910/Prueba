@@ -4,6 +4,13 @@ import com.fyself.post.facade.PostFacade;
 import com.fyself.post.service.post.PostService;
 import com.fyself.post.service.post.PostTimelineService;
 import com.fyself.post.service.post.contract.to.PostTO;
+import com.fyself.post.service.post.contract.to.PostTimelineTO;
+import com.fyself.post.service.post.datasource.PostRepository;
+import com.fyself.post.service.post.datasource.PostTimelineRepository;
+import com.fyself.post.service.post.datasource.domain.Post;
+import com.fyself.post.service.post.datasource.domain.PostTimeline;
+import com.fyself.post.service.stream.StreamService;
+import com.fyself.post.service.system.datasource.domain.enums.BusinessPostType;
 import com.fyself.seedwork.kafka.reactive.ReactiveKafkaMessageQueue;
 import com.fyself.seedwork.kafka.stereotype.Stream;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +21,7 @@ import reactor.util.function.Tuples;
 
 import java.util.Map;
 
+import static com.fyself.post.service.post.contract.PostTimelineBinder.POST_TIMELINE_BINDER;
 import static com.fyself.post.service.post.contract.to.PostTimelineTO.from;
 import static com.fyself.post.service.post.contract.to.PostTimelineTO.fromWS;
 import static com.fyself.post.service.stream.contract.KafkaMessageBinder.KAFKA_MESSAGE_BINDER;
@@ -36,9 +44,16 @@ public class GenericKStreamProcessor {
     private final String output_topic_notification;
     private final PostService postService;
     private final PostFacade postFacade;
+    private final String businessPost;
+    private final PostRepository postRepository;
+    private final PostTimelineRepository postTimelineRepository;
+    private final StreamService streamService;
 
 
     public GenericKStreamProcessor(
+            StreamService streamService,
+            PostRepository postRepository,
+            PostTimelineRepository postTimelineRepository,
             @Value("${mspost.application.kafka.topics.input.post}") String input_topic_post,
             @Value("${mspost.application.kafka.topics.input.workspace-post}") String input_topic_post_workspace,
             @Value("${mspost.application.kafka.topics.input.post-comment}") String input_topic_post_comment,
@@ -47,6 +62,7 @@ public class GenericKStreamProcessor {
             @Value("${mspost.application.kafka.topics.input.workspace-post-reaction}") String input_topic_workspace_post_reaction,
             @Value("${mspost.application.kafka.topics.input.new}") String input_topic_new,
             @Value("${mspost.application.kafka.topics.input.unpinned-post}") String input_unpinned_post,
+            @Value("${mspost.application.kafka.topics.input.business-post}") String businessPost,
             @Value("${mspost.application.kafka.topics.output.notification-socket}") String output_topic_notification,
             ReactiveKafkaMessageQueue reactiveKafkaMessageQueue, PostTimelineService postTimelineService, PostService postService, PostFacade postFacade) throws Exception {
         this.input_topic_new = input_topic_new;
@@ -54,6 +70,10 @@ public class GenericKStreamProcessor {
         this.output_topic_notification = output_topic_notification;
         this.postService = postService;
         this.postFacade = postFacade;
+        this.businessPost = businessPost;
+        this.postRepository = postRepository;
+        this.postTimelineRepository = postTimelineRepository;
+        this.streamService = streamService;
 
         reactiveKafkaMessageQueue.createFlow(input_topic_post, this::createPostTimeline);
         reactiveKafkaMessageQueue.createFlow(input_topic_post_workspace, this::createPostWSTimeline);
@@ -63,6 +83,7 @@ public class GenericKStreamProcessor {
         reactiveKafkaMessageQueue.createFlow(input_topic_workspace_post_reaction, this::createPostReactionTimeline);
         reactiveKafkaMessageQueue.createSink(input_topic_new, this::createPost);
         reactiveKafkaMessageQueue.createSink(input_unpinned_post, this::unpinnedPost);
+        reactiveKafkaMessageQueue.createSink(businessPost, this::businessPost);
     }
 
     private Mono<Void> createPost(Map map) {
@@ -72,6 +93,45 @@ public class GenericKStreamProcessor {
             return postService.create(post);
         }catch (Exception e){e.printStackTrace();}
         return empty();
+    }
+
+    private Mono<Void> businessPost(Map map) {
+        try {
+            if(map.containsKey("type") && map.containsKey("enterprise") && map.containsKey("user"))
+            {
+                if (map.get("type").toString().equals(BusinessPostType.SUBSCRIBE_LAST_POST.toString()))
+                {
+                    return postRepository.findAllByEnterprise(map.get("enterprise").toString())
+                            .collectList()
+                            .map(posts -> {
+                                if (posts.size()>5)
+                                    return posts.subList(0,4);
+                                else
+                                    return posts;
+                            })
+                            .flatMapMany(Flux::fromIterable)
+                            .flatMap(post -> this.subscribePostTimeLine(post, map.get("user").toString(), map.get("enterprise").toString())
+                                    .doOnSuccess(postTimeline -> streamService.putInPipelinePostNotification(KAFKA_MESSAGE_BINDER.bindPostWSNotif(map.get("user").toString(), postTimeline.getPost().getId(), map.get("user").toString(), postTimeline.getEnterprise())).subscribe()))
+                            //.doOnComplete(() -> streamService.putInPipelineDeletePostNotification(KAFKA_MESSAGE_BINDER.bindPostWSNotif(map.get("user").toString(), source.get("post").toString(), source.get("user").toString(), source.get("enterprise").toString())))
+                            .then();
+                }
+                else
+                    return empty();
+            }
+            else
+                return empty();
+        }catch (Exception e){e.printStackTrace();}
+        return empty();
+    }
+
+    public Mono<PostTimeline> subscribePostTimeLine(Post post, String user, String enterprise)
+    {
+        PostTimelineTO postTimelineTO = new PostTimelineTO();
+        postTimelineTO.setPost(post.getId());
+        postTimelineTO.setUser(user);
+        postTimelineTO.setWorkspace(true);
+        postTimelineTO.setEnterprise(enterprise);
+        return postTimelineRepository.save(POST_TIMELINE_BINDER.bind(postTimelineTO));
     }
 
     private Flux<Tuple2<String, Map>> createPostCommentTimeline(Map source) {
