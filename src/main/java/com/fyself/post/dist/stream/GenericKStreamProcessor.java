@@ -111,7 +111,7 @@ public class GenericKStreamProcessor {
                             })
                             .flatMapMany(Flux::fromIterable)
                             .flatMap(post -> this.subscribePostTimeLine(post, map.get("user").toString(), map.get("enterprise").toString())
-                                    .doOnSuccess(postTimeline -> streamService.putInPipelineDeletePostNotification(KAFKA_MESSAGE_BINDER.bindPostWSNotif(map.get("user").toString(), postTimeline.getPost().getId(), map.get("user").toString(), postTimeline.getEnterprise())).subscribe()))
+                                    .doOnSuccess(postTimeline -> streamService.putInPipelinePostNotification(KAFKA_MESSAGE_BINDER.bindPostWSNotif(map.get("user").toString(), postTimeline.getPost().getId(), map.get("user").toString(), postTimeline.getEnterprise())).subscribe()))
                             //.doOnComplete(() -> streamService.putInPipelineDeletePostNotification(KAFKA_MESSAGE_BINDER.bindPostWSNotif(map.get("user").toString(), source.get("post").toString(), source.get("user").toString(), source.get("enterprise").toString())))
                             .then();
                 }
