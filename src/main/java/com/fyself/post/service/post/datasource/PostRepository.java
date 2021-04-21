@@ -14,4 +14,7 @@ import reactor.core.publisher.Flux;
 public interface PostRepository extends MongoRepository<Post> {
     @Query(value = "{ 'deleted' : {$ne : true}, 'pinned': {$ne: false}, 'owner': ?0}")
     Flux<Post> findAllByOwnerPinned(String owner);
+
+    @Query(value = "{ 'deleted' : {$ne : true}, 'workspace': {$ne: false}, 'enterprise': ?0}")
+    Flux<Post> findAllByEnterprise(String enterprise);
 }
