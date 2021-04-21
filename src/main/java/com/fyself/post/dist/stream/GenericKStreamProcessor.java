@@ -9,6 +9,7 @@ import com.fyself.post.service.post.datasource.PostRepository;
 import com.fyself.post.service.post.datasource.PostTimelineRepository;
 import com.fyself.post.service.post.datasource.domain.Post;
 import com.fyself.post.service.post.datasource.domain.PostTimeline;
+import com.fyself.post.service.stream.StreamService;
 import com.fyself.post.service.system.datasource.domain.enums.BusinessPostType;
 import com.fyself.seedwork.kafka.reactive.ReactiveKafkaMessageQueue;
 import com.fyself.seedwork.kafka.stereotype.Stream;
@@ -46,9 +47,11 @@ public class GenericKStreamProcessor {
     private final String businessPost;
     private final PostRepository postRepository;
     private final PostTimelineRepository postTimelineRepository;
+    private final StreamService streamService;
 
 
     public GenericKStreamProcessor(
+            StreamService streamService,
             PostRepository postRepository,
             PostTimelineRepository postTimelineRepository,
             @Value("${mspost.application.kafka.topics.input.post}") String input_topic_post,
@@ -70,6 +73,7 @@ public class GenericKStreamProcessor {
         this.businessPost = businessPost;
         this.postRepository = postRepository;
         this.postTimelineRepository = postTimelineRepository;
+        this.streamService = streamService;
 
         reactiveKafkaMessageQueue.createFlow(input_topic_post, this::createPostTimeline);
         reactiveKafkaMessageQueue.createFlow(input_topic_post_workspace, this::createPostWSTimeline);
@@ -106,15 +110,10 @@ public class GenericKStreamProcessor {
                                     return posts;
                             })
                             .flatMapMany(Flux::fromIterable)
-                            .flatMap(post -> this.subscribePostTimeLine(post, map.get("user").toString(), map.get("enterprise").toString()))
-                            //.doOnNext(post -> this.subscribePostTimeLine(post, map.get("user").toString(), map.get("enterprise").toString()))
+                            .flatMap(post -> this.subscribePostTimeLine(post, map.get("user").toString(), map.get("enterprise").toString())
+                                    .doOnSuccess(postTimeline -> streamService.putInPipelineDeletePostNotification(KAFKA_MESSAGE_BINDER.bindPostWSNotif(map.get("user").toString(), postTimeline.getPost().getId(), map.get("user").toString(), postTimeline.getEnterprise())).subscribe()))
+                            //.doOnComplete(() -> streamService.putInPipelineDeletePostNotification(KAFKA_MESSAGE_BINDER.bindPostWSNotif(map.get("user").toString(), source.get("post").toString(), source.get("user").toString(), source.get("enterprise").toString())))
                             .then();
-                            //.map(post -> this.subscribePostTimeLine(post, map.get("user").toString(), map.get("enterprise").toString()))
-                            //.then();
-                            //.doOnNext(post -> this.subscribePostTimeLine(post, map.get("user").toString(), map.get("enterprise").toString()).subscribe());
-                            //.then();
-
-
                 }
                 else
                     return empty();
