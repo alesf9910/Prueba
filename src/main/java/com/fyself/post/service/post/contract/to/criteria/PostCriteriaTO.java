@@ -74,11 +74,21 @@ public class PostCriteriaTO extends CriteriaTO {
         this.enterprise = enterprise;
     }
 
+    public PostCriteriaTO putEnterprise(String enterprise) {
+        setEnterprise(enterprise);
+        return this;
+    }
+
     public boolean isWorkspace() {
         return workspace;
     }
 
     public void setWorkspace(boolean workspace) {
         this.workspace = workspace;
+    }
+
+    public PostCriteriaTO putWorkspace(boolean workspace) {
+        setWorkspace(workspace);
+        return this;
     }
 }

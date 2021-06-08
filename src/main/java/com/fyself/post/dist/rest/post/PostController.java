@@ -278,6 +278,14 @@ public class PostController extends Controller<PostFacade> {
     public Mono<ResponseEntity> searchPost(@RequestBody PostCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.search(to, context), exchange);
     }
+
+    @PostMapping("/search-by-enterprise")
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "post_search", value = "Search Posts", response = SearchResponse.class)
+    public Mono<ResponseEntity> searchPostByEnterprise(@RequestBody PostCriteriaTO to, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.searchByEnterprise(to, context), exchange);
+    }
+
     @GetMapping("/search")
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_search", value = "Search Posts", response = SearchResponse.class)
