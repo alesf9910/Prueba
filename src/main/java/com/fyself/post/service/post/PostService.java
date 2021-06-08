@@ -37,6 +37,8 @@ public interface PostService {
 
     Mono<PagedList<PostTO>> search(@NotNull PostCriteriaTO criteria, FySelfContext context);
 
+    Mono<PagedList<PostTO>> searchByEnterprise(@NotNull PostCriteriaTO criteria, FySelfContext context);
+
     Mono<Void> block(String post);
 
     Mono<Void> shareWith(@NotNull PostShareTO to, FySelfContext context);
