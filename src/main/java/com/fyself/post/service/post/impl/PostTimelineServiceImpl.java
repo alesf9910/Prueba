@@ -54,7 +54,7 @@ public class PostTimelineServiceImpl implements PostTimelineService {
 
     @Override
     public Mono<PagedList<PostTO>> search(PostTimelineCriteriaTO criteria, FySelfContext context) {
-        return repository.findPage(POST_BINDER.bindToTimelineCriteria(criteria.withUser(context.getAccount().get().getId())))
+        return repository.findPage(POST_BINDER.bindToTimelineCriteria(criteria/*.withUser(context.getAccount().get().getId())*/))
                 .map(postTimelines -> POST_BINDER.bindPageTimeline(postTimelines, context.getAccount().get().getId()))
                 .flatMap(postTOPagedList -> fromIterable(postTOPagedList.getElements())
                         .flatMap(postTO ->
