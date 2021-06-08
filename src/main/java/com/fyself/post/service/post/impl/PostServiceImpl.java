@@ -166,6 +166,33 @@ public class PostServiceImpl implements PostService {
             .map(postTOS -> POST_BINDER.bind(postTOPagedList, postTOS)));
   }
 
+  @Override
+  public Mono<PagedList<PostTO>> searchByEnterprise(@NotNull PostCriteriaTO criteria, FySelfContext context) {
+    return repository.findPage(
+            POST_BINDER.bindToCriteria(criteria.putWorkspace(true).putEnterprise(context.getAccount().get().getBusiness())))
+            .map(POST_BINDER::bindPage)
+            .flatMap(postTOPagedList -> fromIterable(postTOPagedList.getElements())
+                    .flatMap(
+                            postTO ->
+                                    answerSurveyRepository
+                                            .findByPostAndUser(
+                                                    postTO.getContent() != null ?
+                                                            postTO.getContent().getTypeContent() != null ?
+                                                                    postTO.getContent().getTypeContent() == TypeContent.SHARED_POST?
+                                                                            ((SharedPostTO) postTO.getContent()).getPostTo().getId() :
+                                                                            postTO.getId()
+                                                                    : postTO.getId()
+                                                            : postTO.getId()
+                                                    , context.getAccount().get().getId()
+                                            )
+                                            .map(ANSWER_SURVEY_BINDER::bindFromSurvey)
+                                            .map(answerSurveyTO -> POST_BINDER
+                                                    .bindPostTOWithAnswer(postTO, answerSurveyTO))
+                                            .switchIfEmpty(just(postTO)), 1)
+                    .collectList()
+                    .map(postTOS -> POST_BINDER.bind(postTOPagedList, postTOS)));
+  }
+
   private Mono<PostTO> loadPost(Post postTO, FySelfContext context) {
     return answerSurveyRepository.findByPostAndUser(
 

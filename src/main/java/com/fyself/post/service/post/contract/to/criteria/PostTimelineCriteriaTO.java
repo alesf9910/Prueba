@@ -14,7 +14,7 @@ public class PostTimelineCriteriaTO extends CriteriaTO {
     private TypeSearch type;
     private boolean workspace;
 
-    @ReadOnly
+
     public String getUser() {
         return user;
     }
