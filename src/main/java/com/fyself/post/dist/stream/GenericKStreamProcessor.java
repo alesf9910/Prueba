@@ -144,7 +144,7 @@ public class GenericKStreamProcessor {
                 )
                 .map(contact -> source.get("contact").toString())
                 //.flatMap(contact -> postCommentTimelineService.create( from(contact, source.get("post").toString(), source.get("comment").toString(), source.get("user").toString())))
-                .map(user -> Tuples.of( this.output_topic_notification, KAFKA_MESSAGE_BINDER.bindPostCommentNotif(user, source.get("post").toString(), source.get("comment").toString(), source.get("user").toString()))
+                .map(user -> Tuples.of( this.output_topic_notification, KAFKA_MESSAGE_BINDER.bindPostCommentNotif(user, source.get("post").toString(), source.get("comment").toString(), source.get("user").toString(), source.containsKey("enterprise") ? source.get("enterprise").toString() : null))
                 )
                 .flux()
                 .onErrorResume(throwable -> empty());
@@ -161,7 +161,7 @@ public class GenericKStreamProcessor {
                 )
                 .map(contact -> source.get("contact").toString())
                 //.flatMap(contact -> postCommentTimelineService.create( from(contact, source.get("post").toString(), source.get("comment").toString(), source.get("user").toString())))
-                .map(user -> Tuples.of( this.output_topic_notification, KAFKA_MESSAGE_BINDER.bindPostReactionNotif(user, source.get("post").toString(), source.get("reaction").toString(),  source.get("type_reaction").toString(), source.get("user").toString()))
+                .map(user -> Tuples.of( this.output_topic_notification, KAFKA_MESSAGE_BINDER.bindPostReactionNotif(user, source.get("post").toString(), source.get("reaction").toString(),  source.get("type_reaction").toString(), source.get("user").toString(), source.containsKey("enterprise") ? source.get("enterprise").toString() : null))
                 )
                 .flux()
                 .onErrorResume(throwable -> empty());

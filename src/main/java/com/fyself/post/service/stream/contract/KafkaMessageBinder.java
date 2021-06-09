@@ -110,7 +110,7 @@ public interface KafkaMessageBinder {
         return toMap(message);
     }
 
-    default Map bindPostCommentNotif(String user, String post,String comment, String from) {
+    default Map bindPostCommentNotif(String user, String post,String comment, String from, String enterprise) {
 
 
         MessageTO message = new MessageTO();
@@ -119,8 +119,11 @@ public interface KafkaMessageBinder {
         message.setFrom(from);
 
         PayloadTO payload = new PayloadTO();
-        //payload.setBody(Map.of("post", from));
-        payload.setBody(Map.of("post", post, "comment", comment));
+        if(enterprise!=null)
+            payload.setBody(Map.of("post", post, "comment", comment, "enterprise", enterprise));
+        else
+            payload.setBody(Map.of("post", post, "comment", comment));
+
         message.setPayload(payload);
 
         message.setTodb(true);
@@ -130,7 +133,7 @@ public interface KafkaMessageBinder {
         return toMap(message);
     }
 
-    default Map bindPostReactionNotif(String user, String post,String reaction, String type_reaction, String from) {
+    default Map bindPostReactionNotif(String user, String post,String reaction, String type_reaction, String from, String enterprise) {
 
 
         MessageTO message = new MessageTO();
@@ -139,8 +142,11 @@ public interface KafkaMessageBinder {
         message.setFrom(from);
 
         PayloadTO payload = new PayloadTO();
-        //payload.setBody(Map.of("post", from));
-        payload.setBody(Map.of("post", post, "reaction", reaction, "type_reaction", type_reaction));
+        if(enterprise!=null)
+            payload.setBody(Map.of("post", post, "reaction", reaction, "type_reaction", type_reaction, "enterprise", enterprise));
+        else
+            payload.setBody(Map.of("post", post, "reaction", reaction, "type_reaction", type_reaction));
+
         message.setPayload(payload);
 
         message.setTodb(true);
