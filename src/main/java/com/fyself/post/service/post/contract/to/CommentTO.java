@@ -22,7 +22,7 @@ public class CommentTO extends DomainAuditTransferObject {
     private boolean workspace;
     private String enterprise;
 
-    @NotBlank
+    //@NotBlank
     public String getContent() {
         return content;
     }
