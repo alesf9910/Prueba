@@ -23,6 +23,7 @@ import reactor.core.publisher.Mono;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
 import static com.fyself.seedwork.facade.Result.successful;
@@ -130,7 +131,7 @@ public class PostFacadeImpl implements PostFacade {
 
     private List<PostTO> updateOwnerWhenShared(List<PostTO> listPostTO)
     {
-        listPostTO.stream().map(postTO -> {
+        return listPostTO.stream().map(postTO -> {
             if(postTO.getContent().getTypeContent() == TypeContent.SHARED_POST)
             {
                 String owner = postTO.getOwner();
@@ -138,8 +139,8 @@ public class PostFacadeImpl implements PostFacade {
                 postTO.setOwner(((SharedPostTO)postTO.getContent()).getPostTo().getOwner());
             }
             return postTO;
-        });
-        return listPostTO;
+        }).collect(Collectors.toList());
+
     }
 
     @Override
