@@ -31,6 +31,7 @@ public class PostTO extends DomainAuditTransferObject {
     private Map<ReactionType,Long>  reactionStats= new HashMap<>();
     private boolean workspace;
     private String enterprise;
+    private String sharedBy;
 
     @ReadOnly
     public Long getComments() {
@@ -192,5 +193,25 @@ public class PostTO extends DomainAuditTransferObject {
 
     public void setEnterprise(String enterprise) {
         this.enterprise = enterprise;
+    }
+
+    public PostTO putOwner(String owner)
+    {
+        setOwner(owner);
+        return this;
+    }
+
+    public String getSharedBy() {
+        return sharedBy;
+    }
+
+    public void setSharedBy(String sharedBy) {
+        this.sharedBy = sharedBy;
+    }
+
+    public PostTO putsharedBy(String owner)
+    {
+        setSharedBy(owner);
+        return this;
     }
 }
