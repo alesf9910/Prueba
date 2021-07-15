@@ -12,6 +12,7 @@ import com.fyself.post.service.post.contract.to.SharedPostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
 import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
 import com.fyself.post.service.post.contract.to.criteria.enums.TypeSearch;
+import com.fyself.post.service.post.datasource.domain.enums.TypeContent;
 import com.fyself.seedwork.facade.Result;
 import com.fyself.seedwork.facade.stereotype.Facade;
 import com.fyself.seedwork.service.PagedList;
@@ -20,7 +21,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
 import static com.fyself.seedwork.facade.Result.successful;
@@ -122,7 +125,22 @@ public class PostFacadeImpl implements PostFacade {
                     }
                 })
                 .collectList()
+                .map(this::updateOwnerWhenShared)
                 .map(elements -> {page.setElements(elements); return page;});
+    }
+
+    private List<PostTO> updateOwnerWhenShared(List<PostTO> listPostTO)
+    {
+        return listPostTO.stream().map(postTO -> {
+            if(postTO.getContent().getTypeContent() == TypeContent.SHARED_POST)
+            {
+                String owner = postTO.getOwner();
+                postTO.setSharedBy(owner);
+                postTO.setOwner(((SharedPostTO)postTO.getContent()).getPostTo().getOwner());
+            }
+            return postTO;
+        }).collect(Collectors.toList());
+
     }
 
     @Override
