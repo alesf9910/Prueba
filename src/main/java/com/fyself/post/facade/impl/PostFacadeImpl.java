@@ -65,8 +65,8 @@ public class PostFacadeImpl implements PostFacade {
                 })
                 .flatMap(postTOResult -> commentService.count(post).map(postTOResult::putCount))
                 .flatMap(postTOResult -> reactionService.meReaction(post,context).map(postTOResult::putReaction).switchIfEmpty(Mono.just(postTOResult)))
-                .flatMap(postTOResult -> reactionService.loadAll(post,context).map(postTOResult::putReactionStats).switchIfEmpty(Mono.just(postTOResult)))
-                .map(this::updateOwnerWhenShared)
+                .flatMap(postTOResult -> reactionService.loadAll(post,context)./*filter(map -> !(postTOResult.getOwner().equals(context.getAccount().get().getId()))).*/map(postTOResult::putReactionStats).switchIfEmpty(Mono.just(postTOResult)))
+                .map(postTO -> this.updateOwnerWhenShared(postTO, context))
                 .map(Result::successful);
     }
 
@@ -126,28 +126,27 @@ public class PostFacadeImpl implements PostFacade {
                     }
                 })
                 .collectList()
-                .map(this::updateOwnerWhenShared)
+                .map(postTOS -> this.updateOwnerWhenShared(postTOS, context))
                 .map(elements -> {page.setElements(elements); return page;});
     }
 
-    private List<PostTO> updateOwnerWhenShared(List<PostTO> listPostTO)
+    private List<PostTO> updateOwnerWhenShared(List<PostTO> listPostTO, FySelfContext context)
     {
-        return listPostTO.stream().map(postTO -> {
-            if(postTO.getContent().getTypeContent() == TypeContent.SHARED_POST)
+        return listPostTO.stream().peek(postTO -> {
+            if(postTO.getContent().getTypeContent() == TypeContent.SHARED_POST && !(postTO.getOwner().equals(context.getAccount().get().getId())))
             {
                 String owner = postTO.getOwner();
                 postTO.setSharedBy(owner);
                 postTO.setOwner(((SharedPostTO)postTO.getContent()).getPostTo().getOwner());
             }
-            return postTO;
         }).collect(Collectors.toList());
 
     }
 
-    private PostTO updateOwnerWhenShared(PostTO postTO)
+    private PostTO updateOwnerWhenShared(PostTO postTO, FySelfContext context)
     {
 
-        if(postTO.getContent().getTypeContent() == TypeContent.SHARED_POST)
+        if(postTO.getContent().getTypeContent() == TypeContent.SHARED_POST && !(postTO.getOwner().equals(context.getAccount().get().getId())))
         {
             String owner = postTO.getOwner();
             postTO.setSharedBy(owner);
