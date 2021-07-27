@@ -66,7 +66,7 @@ public class PostFacadeImpl implements PostFacade {
                 .flatMap(postTOResult -> commentService.count(post).map(postTOResult::putCount))
                 .flatMap(postTOResult -> reactionService.meReaction(post,context).map(postTOResult::putReaction).switchIfEmpty(Mono.just(postTOResult)))
                 .flatMap(postTOResult -> reactionService.loadAll(post,context)./*filter(map -> !(postTOResult.getOwner().equals(context.getAccount().get().getId()))).*/map(postTOResult::putReactionStats).switchIfEmpty(Mono.just(postTOResult)))
-                .map(postTO -> this.updateOwnerWhenShared(postTO, context))
+                .map(this::updateOwnerWhenShared)
                 .map(Result::successful);
     }
 
@@ -126,14 +126,14 @@ public class PostFacadeImpl implements PostFacade {
                     }
                 })
                 .collectList()
-                .map(postTOS -> this.updateOwnerWhenShared(postTOS, context))
+                .map(this::updateOwnerWhenShared)
                 .map(elements -> {page.setElements(elements); return page;});
     }
 
-    private List<PostTO> updateOwnerWhenShared(List<PostTO> listPostTO, FySelfContext context)
+    private List<PostTO> updateOwnerWhenShared(List<PostTO> listPostTO)
     {
         return listPostTO.stream().peek(postTO -> {
-            if(postTO.getContent().getTypeContent() == TypeContent.SHARED_POST && !(postTO.getOwner().equals(context.getAccount().get().getId())))
+            if(postTO.getContent().getTypeContent() == TypeContent.SHARED_POST)
             {
                 String owner = postTO.getOwner();
                 postTO.setSharedBy(owner);
@@ -143,10 +143,10 @@ public class PostFacadeImpl implements PostFacade {
 
     }
 
-    private PostTO updateOwnerWhenShared(PostTO postTO, FySelfContext context)
+    private PostTO updateOwnerWhenShared(PostTO postTO)
     {
 
-        if(postTO.getContent().getTypeContent() == TypeContent.SHARED_POST && !(postTO.getOwner().equals(context.getAccount().get().getId())))
+        if(postTO.getContent().getTypeContent() == TypeContent.SHARED_POST)
         {
             String owner = postTO.getOwner();
             postTO.setSharedBy(owner);
