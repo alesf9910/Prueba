@@ -69,7 +69,7 @@ public interface KafkaMessageBinder {
 
     default void SURVEY_ASK(Map<String, Object> response, AnswerAsk answer) {
         response.put("response", answer.getAnswer());
-        response.put("tag", Arrays.asList(answer.getAnswer().split(" ")));
+        response.put("tag", Arrays.asList(answer.getAnswer().split(" ")).stream().filter(s -> s.length()>3).collect(toList()));
     }
 
     default Map bindPostNotif(String user, String post, String from) {
