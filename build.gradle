@@ -20,6 +20,7 @@ repositories {
 	maven {
 		url 'http://nexus.fyself.com/repository/maven-public/'
 	}
+
 }
 
 ext {
@@ -57,7 +58,9 @@ dependencies {
 	implementation 'com.github.ua-parser:uap-java:1.4.3'
 
 	implementation 'com.drewnoakes:metadata-extractor:2.14.0'
-	implementation 'javaxt:javaxt-core:1.7.8'
+	//implementation 'javaxt:javaxt-core:1.7.8'
+	//implementation group: 'javaxt', name: 'javaxt-core', version: '1.7.8'
+	implementation 'javaxt:javaxt-core:1.7.8@jar'
 
 
 	implementation 'commons-codec:commons-codec:1.14'

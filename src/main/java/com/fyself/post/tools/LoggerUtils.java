@@ -85,35 +85,26 @@ public class LoggerUtils {
     }
 
     private static Map<String, Object> DETAILS(DomainEntity entity) {
-        switch (entity.getClass().getSimpleName().toLowerCase()) {
-            default:
-                return Map.of(
-                        "entity", entity.getClass().getSimpleName().toLowerCase(),
-                        "value", write(entity)
-                );
-        }
+        return Map.of(
+                "entity", entity.getClass().getSimpleName().toLowerCase(),
+                "value", write(entity)
+        );
     }
 
     private static Map<String, Object> detailsWS(DomainEntity entity, String enterprise) {
-        switch (entity.getClass().getSimpleName().toLowerCase()) {
-            default:
-                return Map.of(
-                        "entity", entity.getClass().getSimpleName().toLowerCase(),
-                        "value", write(entity),
-                        "enterprise", enterprise
-                );
-        }
+        return Map.of(
+                "entity", entity.getClass().getSimpleName().toLowerCase(),
+                "value", write(entity),
+                "enterprise", enterprise
+        );
     }
 
     private static Map<String, Object> detailsComment(DomainEntity entity, String postOwner) {
-        switch (entity.getClass().getSimpleName().toLowerCase()) {
-            default:
-                return Map.of(
-                        "entity", entity.getClass().getSimpleName().toLowerCase(),
-                        "value", write(entity),
-                        "postowner", postOwner
-                );
-        }
+        return Map.of(
+                "entity", entity.getClass().getSimpleName().toLowerCase(),
+                "value", write(entity),
+                "postowner", postOwner
+        );
     }
 
     static public void updateEvent(DomainEntity entity, FySelfContext context) {

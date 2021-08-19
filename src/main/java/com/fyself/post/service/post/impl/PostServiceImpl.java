@@ -199,10 +199,10 @@ public class PostServiceImpl implements PostService {
 
         postTO.getContent() != null ?
             postTO.getContent().getTypeContent() != null ?
-                postTO.getContent().getTypeContent() == TypeContent.SHARED_POST?
-                    ((SharedPost) postTO.getContent()).getPost() :
-                    postTO.getId()
-                : postTO.getId()
+                postTO.getContent().getTypeContent() == TypeContent.SHARED_POST ?
+                    ((SharedPost) postTO.getContent()).getPost()
+                        : postTO.getId()
+                  : postTO.getId()
             : postTO.getId()
         ,
 

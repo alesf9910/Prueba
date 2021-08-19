@@ -65,7 +65,7 @@ public class PostFacadeImpl implements PostFacade {
                 })
                 .flatMap(postTOResult -> commentService.count(post).map(postTOResult::putCount))
                 .flatMap(postTOResult -> reactionService.meReaction(post,context).map(postTOResult::putReaction).switchIfEmpty(Mono.just(postTOResult)))
-                .flatMap(postTOResult -> reactionService.loadAll(post,context).map(postTOResult::putReactionStats).switchIfEmpty(Mono.just(postTOResult)))
+                .flatMap(postTOResult -> reactionService.loadAll(post,context)./*filter(map -> !(postTOResult.getOwner().equals(context.getAccount().get().getId()))).*/map(postTOResult::putReactionStats).switchIfEmpty(Mono.just(postTOResult)))
                 .map(this::updateOwnerWhenShared)
                 .map(Result::successful);
     }
@@ -132,14 +132,13 @@ public class PostFacadeImpl implements PostFacade {
 
     private List<PostTO> updateOwnerWhenShared(List<PostTO> listPostTO)
     {
-        return listPostTO.stream().map(postTO -> {
+        return listPostTO.stream().peek(postTO -> {
             if(postTO.getContent().getTypeContent() == TypeContent.SHARED_POST)
             {
                 String owner = postTO.getOwner();
                 postTO.setSharedBy(owner);
                 postTO.setOwner(((SharedPostTO)postTO.getContent()).getPostTo().getOwner());
             }
-            return postTO;
         }).collect(Collectors.toList());
 
     }
