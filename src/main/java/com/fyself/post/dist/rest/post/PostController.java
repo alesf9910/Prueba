@@ -286,6 +286,13 @@ public class PostController extends Controller<PostFacade> {
         return this.get((facade, context) -> facade.searchByEnterprise(to, context), exchange);
     }
 
+    @DeleteMapping("/delete-by-enterprise/{id}")
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "delete-by-enterprise", value = "Delete Posts By Enterprise Deleted",response = NoContentResponse.class, code = 204)
+    public Mono<ResponseEntity> deleteByEnterpriseId(@PathVariable String id, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.deleteByEnterprise(id, context), exchange);
+    }
+
     @GetMapping("/search")
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_search", value = "Search Posts", response = SearchResponse.class)

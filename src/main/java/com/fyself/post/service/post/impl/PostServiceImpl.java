@@ -122,6 +122,19 @@ public class PostServiceImpl implements PostService {
   }
 
   @Override
+  public Mono<Void> deleteByEnterprise(@NotNull String id, FySelfContext context){
+    return repository.findAllByEnterprise(id)
+            .switchIfEmpty(error(EntityNotFoundException::new))
+            .flatMap(post -> repository.softDelete(post)
+                    .doOnSuccess(entity -> deleteEvent(post, context))
+                    .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity)).subscribe())
+                    .doOnSuccess(entity -> postTimelineRepository.deleteAllByPost_IdAndUserOrOwner(entity.getId(), entity.getOwner(), entity.getOwner()).subscribe())
+                    .doOnSuccess(entity -> streamService.putInPipelineDeletePostNotification(Map.of("type","DELETE-POST-NOT","post",entity.getId())).subscribe())
+            )
+            .then();
+  }
+
+  @Override
   public Mono<Post> patch(@NotNull String id, HashMap to, FySelfContext context) {
     if (!to.containsKey("pinned")) {
       return error(EntityNotFoundException::new);
