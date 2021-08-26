@@ -24,7 +24,7 @@ public interface PostFacade {
 
     Mono<Result<PostTO>> load(String post, FySelfContext context);
 
-    Mono<Result<Void>> delete(String post, FySelfContext context);
+    Mono<Result<Void>> deleteByEnterprise(String post, FySelfContext context);
 
     Mono<Result<Void>> update(PostTO to, FySelfContext context);
 
@@ -33,6 +33,8 @@ public interface PostFacade {
     Mono<Result<PagedList<PostTO>>> search(PostCriteriaTO criteria, FySelfContext context);
 
     Mono<Result<PagedList<PostTO>>> searchByEnterprise(PostCriteriaTO criteria, FySelfContext context);
+
+    Mono<Result<Void>> delete(String post, FySelfContext context);
 
     Mono<Result<PagedList<PostTO>>> searchPostTimeline(PostTimelineCriteriaTO criteria, FySelfContext context);
 
