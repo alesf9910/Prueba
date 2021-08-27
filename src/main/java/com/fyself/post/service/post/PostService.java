@@ -33,6 +33,8 @@ public interface PostService {
 
     Mono<Void> delete(@NotNull String id, FySelfContext context);
 
+    Mono<Void> deleteByEnterprise(@NotNull String id, FySelfContext context);
+
     Mono<Post> patch(@NotNull String id, HashMap to, FySelfContext context);
 
     Mono<PagedList<PostTO>> search(@NotNull PostCriteriaTO criteria, FySelfContext context);
