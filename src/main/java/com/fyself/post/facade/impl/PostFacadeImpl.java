@@ -138,11 +138,13 @@ public class PostFacadeImpl implements PostFacade {
     private List<PostTO> updateOwnerWhenShared(List<PostTO> listPostTO)
     {
         return listPostTO.stream().peek(postTO -> {
-            if(postTO.getContent().getTypeContent() == TypeContent.SHARED_POST)
+            if(postTO.getContent() != null)
             {
-                String owner = postTO.getOwner();
-                postTO.setSharedBy(owner);
-                postTO.setOwner(((SharedPostTO)postTO.getContent()).getPostTo().getOwner());
+                if (postTO.getContent().getTypeContent() == TypeContent.SHARED_POST) {
+                    String owner = postTO.getOwner();
+                    postTO.setSharedBy(owner);
+                    postTO.setOwner(((SharedPostTO) postTO.getContent()).getPostTo().getOwner());
+                }
             }
         }).collect(Collectors.toList());
 
