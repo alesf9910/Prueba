@@ -27,4 +27,10 @@ public class FileServiceImpl implements FileService {
     {
         return fileRepository.getFile(file,content);
     }
+
+    @Override
+    public Mono<String> getUrl(@NotNull @Valid String url, FySelfContext content)
+    {
+        return fileRepository.getUrl(url,content);
+    }
 }

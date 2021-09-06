@@ -11,4 +11,6 @@ import javax.validation.constraints.NotNull;
 public interface FileService {
 
     Mono<byte[]> getFile(@NotNull @Valid FileTO file, FySelfContext context);
+
+    Mono<String> getUrl(@NotNull @Valid String url, FySelfContext context);
 }

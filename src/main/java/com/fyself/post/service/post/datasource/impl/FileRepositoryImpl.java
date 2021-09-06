@@ -41,18 +41,15 @@ public class FileRepositoryImpl implements FileRepository {
                 .doGet(url, Map.of(),headers,new ParameterizedTypeReference<byte[]>() {})
                 .map(map -> map)
                 .onErrorResume(throwable -> Mono.empty());
-        /*return Mono.empty()
-                .doOnSuccess(o -> {
-                    String url = String.format("%s%s%s", baseUrl, USER_PATH, file.getFile());
-                    String token = context.getHeaders().get("authorization").get(0);
-                    MultiValueMap<String, String> headers = new HttpHeaders();
-                    headers.add("Content-Type","application/octet-stream");
-                    headers.add("Authorization", token);
-                    this.client
-                            .doGet(url, Map.of(),headers,new ParameterizedTypeReference<byte[]>() {})
-                            .map(map -> map)
-                            .onErrorResume(throwable -> Mono.empty()).subscribe();
-                }).thenReturn(this.pdf());*/
+    }
+
+    @Override
+    public Mono<String> getUrl(String url, FySelfContext context) {
+        MultiValueMap<String, String> headers = new HttpHeaders();
+        return this.client
+                .doGet(url, Map.of(),headers,new ParameterizedTypeReference<String>() {})
+                .map(map -> map)
+                .onErrorResume(throwable -> Mono.empty());
     }
 
     public byte[] pdf()
