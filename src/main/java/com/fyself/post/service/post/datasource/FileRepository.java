@@ -6,4 +6,6 @@ import reactor.core.publisher.Mono;
 
 public interface FileRepository {
     Mono<byte[]> getFile(FileTO file, FySelfContext context);
+
+    Mono<String> getUrl(String url, FySelfContext context);
 }

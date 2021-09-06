@@ -4,6 +4,7 @@ import com.fyself.post.dist.rest.comments.CommentController;
 import com.fyself.post.facade.UploadFileFacade;
 import com.fyself.post.service.post.contract.to.CommentTO;
 import com.fyself.post.service.post.contract.to.FileTO;
+import com.fyself.post.service.post.contract.to.UrlTo;
 import com.fyself.post.service.post.contract.to.criteria.CommentCriteriaTO;
 import com.fyself.seedwork.web.Controller;
 import com.fyself.seedwork.web.documentation.annotations.ApiSecuredOperation;
@@ -47,6 +48,13 @@ public class UploadFileController extends Controller<UploadFileFacade> {
     @ApiOperation(nickname = "get_file", value = "Search comments", response = String.class)
     public Mono<ResponseEntity> search(@RequestBody FileTO file, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.getFile(file, context), exchange);
+    }
+
+    @PostMapping(value = "/get-url")
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "get_url", value = "Search Url", response = String.class)
+    public Mono<ResponseEntity> searchUrl(@RequestBody UrlTo url, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.getUrl(url, context), exchange);
     }
 
     @RequestMapping(value = "/test", method = RequestMethod.GET, produces = "application/pdf")
