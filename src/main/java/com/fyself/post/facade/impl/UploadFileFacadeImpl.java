@@ -3,6 +3,7 @@ package com.fyself.post.facade.impl;
 import com.fyself.post.facade.UploadFileFacade;
 import com.fyself.post.service.post.FileService;
 import com.fyself.post.service.post.contract.to.FileTO;
+import com.fyself.post.service.post.contract.to.UrlTo;
 import com.fyself.post.service.system.UploadFileService;
 import com.fyself.post.service.system.contract.to.ResourceCriteriaTO;
 import com.fyself.post.service.system.contract.to.ResourceTO;
@@ -59,6 +60,12 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
     public Mono<Result<byte[]>> getFile(FileTO pdf, FySelfContext context)
     {
         return fileService.getFile(pdf,context).map(Result::successful);
+    }
+
+    @Override
+    public Mono<Result<String>> getUrl(UrlTo url, FySelfContext context)
+    {
+        return fileService.getUrl(url.getUrl(),context).map(Result::successful);
     }
 
     public Optional<String> getExtensionByStringHandling(String filename) {
