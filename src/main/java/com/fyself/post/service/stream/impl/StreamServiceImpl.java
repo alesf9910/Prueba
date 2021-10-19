@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuples;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 import static reactor.core.publisher.Mono.empty;
 import static reactor.core.publisher.Mono.error;
@@ -83,4 +85,10 @@ public class StreamServiceImpl implements StreamService {
         }
     }
     //</editor-fold>
+
+    @Override
+    public Mono<Boolean> containAllConsumerGroup(Collection<String> groupIds, Set<String> setString)
+    {
+        return Mono.just(queueManager.containAllConsumerGroup(groupIds, setString));
+    }
 }
