@@ -314,13 +314,13 @@ public class PostController extends Controller<PostFacade> {
         return this.get((facade, context) -> facade.searchPostTimeline(criteria, context), exchange);
     }
 
-
     @PostMapping("/{id}/share-with")
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_share_with", value = "Share post with user", response = NoContentResponse.class, code = 204)
     public Mono<ResponseEntity> shareWith(@PathVariable String id, @RequestBody PostShareTO to, @ApiIgnore ServerWebExchange exchange) {
         return this.perform((facade, context) -> facade.shareWith(to.withId(id), context), exchange);
     }
+
     @PostMapping("/{id}/stop-share-with")
     @ApiSecuredOperation
     @ApiOperation(nickname = "post_stop_share_with", value = "Stop share post with user", response = NoContentResponse.class, code = 204)
