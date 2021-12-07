@@ -331,19 +331,21 @@ public class PostServiceImpl implements PostService {
 
   private Mono<Boolean> shareBulk(@NotNull Post to, FySelfContext context) {
     return repository.save(to)
-            .flatMap( post -> {
-              for (String sharedWi: post.getSharedWith()) {
-                postTimelineRepository.findAllByUserAndPost(sharedWi, post.getId()).map(count -> {
-                          if (count==0)
-                          postTimelineRepository.save(POST_TIMELINE_BINDER.bindU(post, sharedWi)).subscribe();
-                          return count;
-                          }).subscribe();
-              }
-              return just(post);
-            })
+            .flatMap( post -> this.saveInPostTimeLineRepository(post))
         .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity))
             .subscribe())
         .then(just(true));
+  }
+
+  private Mono<Post> saveInPostTimeLineRepository(Post post) {
+    for (String sharedWi : post.getSharedWith()) {
+      postTimelineRepository.findAllByUserAndPost(sharedWi, post.getId()).map(count -> {
+        if (count == 0)
+          postTimelineRepository.save(POST_TIMELINE_BINDER.bindU(post, sharedWi)).subscribe();
+        return count;
+      }).subscribe();
+    }
+    return just(post);
   }
 
   private Mono<Post> createPost(@NotNull Post to, FySelfContext context) {
