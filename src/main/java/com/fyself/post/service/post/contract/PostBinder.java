@@ -95,6 +95,14 @@ public interface PostBinder {
         return target;
     }
 
+    default Post bindReSharedPost(Post source, String owner) {
+        Post target = bindToPost(source);
+        target.setOwner(owner);
+        target.setCreatedAt(now());
+        target.setUpdatedAt(now());
+        return target;
+    }
+
     AwardContent bind(AwardContentTO source);
 
     ProfileContent bind(ProfileContentTO source);
