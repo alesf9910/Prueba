@@ -7,6 +7,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Binder
  *
@@ -25,7 +28,18 @@ public interface PostTimelineBinder {
         postTimeline.setPost(post);
         postTimeline.setUser(post.getOwner());
         postTimeline.setCreatedAt(post.getCreatedAt());
-        postTimeline.setCreatedAt(post.getUpdatedAt());
+        postTimeline.setUpdatedAt(post.getUpdatedAt());
+        postTimeline.setEnterprise(post.getEnterprise());
+        postTimeline.setWorkspace(post.getWorkspace());
+        return postTimeline;
+    }
+    default PostTimeline bindU(Post post, String sharedW) {
+        var postTimeline = new PostTimeline();
+        postTimeline.setPost(post);
+        postTimeline.setUser(sharedW);
+        postTimeline.setOwner(post.getOwner());
+        postTimeline.setCreatedAt(post.getCreatedAt());
+        postTimeline.setUpdatedAt(post.getUpdatedAt());
         postTimeline.setEnterprise(post.getEnterprise());
         postTimeline.setWorkspace(post.getWorkspace());
         return postTimeline;
