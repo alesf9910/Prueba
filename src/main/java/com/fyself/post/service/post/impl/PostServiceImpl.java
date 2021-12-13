@@ -281,9 +281,17 @@ public class PostServiceImpl implements PostService {
                       .filter(Boolean::booleanValue).map(ing -> to.getPost());
             } else {
               if (post.getAccess().equals(Access.PUBLIC)) {
-                return createPost(
-                        POST_BINDER.bindSharedPost(post, context.getAccount().get().getId()), context)
-                        .map(DomainEntity::getId);
+                return this.checkPostContent(post).flatMap(checkingContent -> {
+                  if (checkingContent) {
+                    return createPost(
+                            POST_BINDER.bindSharedPost(post, context.getAccount().get().getId()), context)
+                            .map(DomainEntity::getId);
+                  } else {
+                    return createPost(
+                            POST_BINDER.bindReSharedPost(post, context.getAccount().get().getId()), context)
+                            .map(DomainEntity::getId);
+                  }
+                });
               } else {
                 return error(ValidationException::new);
               }
@@ -291,6 +299,13 @@ public class PostServiceImpl implements PostService {
           }
         })
         .switchIfEmpty(error(EntityNotFoundException::new));
+  }
+
+  private Mono<Boolean> checkPostContent(Post post) {
+    if (post.getContent().getTypeContent() != null)
+      return just(true);
+    else
+      return just(false);
   }
 
   @Override

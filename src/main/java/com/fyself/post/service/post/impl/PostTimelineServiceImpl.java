@@ -47,15 +47,20 @@ public class PostTimelineServiceImpl implements PostTimelineService {
 
     @Override
     public Mono<String> create(@NotNull @Valid PostTimelineTO to) {
-        return repository
-                .save(POST_TIMELINE_BINDER.bind(to.withCreatedAt().withUpdatedAt()))
-                .map(PostTimeline::getUser);
+        repository.findAllByUserAndPost(to.getUser(), to.getPost()).map(count -> {
+            if (count == 0)
+                return repository.save(POST_TIMELINE_BINDER.bind(to.withCreatedAt().withUpdatedAt()))
+                        .map(PostTimeline::getUser);
+           return to.getUser();
+        }).subscribe();
+        return just(to.getUser());
     }
 
     @Override
     public Mono<PagedList<PostTO>> search(PostTimelineCriteriaTO criteria, FySelfContext context) {
         return repository.findPage(POST_BINDER.bindToTimelineCriteria(criteria.withUser(context.getAccount().get().getId())))
-                .map(postTimelines -> POST_BINDER.bindPageTimeline(postTimelines, context.getAccount().get().getId()))
+                .map(postTimelines ->
+                        POST_BINDER.bindPageTimeline(postTimelines, context.getAccount().get().getId()))
                 .flatMap(postTOPagedList -> fromIterable(postTOPagedList.getElements())
                         .flatMap(postTO ->
                             answerSurveyRepository.findByPostAndUser(
