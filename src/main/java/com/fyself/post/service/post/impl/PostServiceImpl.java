@@ -281,18 +281,31 @@ public class PostServiceImpl implements PostService {
                       .filter(Boolean::booleanValue).map(ing -> to.getPost());
             } else {
               if (post.getAccess().equals(Access.PUBLIC)) {
-                return createPost(
-                        POST_BINDER.bindSharedPost(post, context.getAccount().get().getId()), context)
-                        .map(DomainEntity::getId);
+                return this.checkPostContent(post).flatMap(checkingContent -> {
+                  if (checkingContent) {
+                    return createPost(
+                            POST_BINDER.bindSharedPost(post, context.getAccount().get().getId()), context)
+                            .map(DomainEntity::getId);
+                  } else {
+                    return createPost(
+                            POST_BINDER.bindReSharedPost(post, context.getAccount().get().getId()), context)
+                            .map(DomainEntity::getId);
+                  }
+                });
               } else {
                 return error(ValidationException::new);
               }
             }
           }
-
-
         })
         .switchIfEmpty(error(EntityNotFoundException::new));
+  }
+
+  private Mono<Boolean> checkPostContent(Post post) {
+    if (post.getContent().getTypeContent() != null)
+      return just(true);
+    else
+      return just(false);
   }
 
   @Override
@@ -333,9 +346,21 @@ public class PostServiceImpl implements PostService {
 
   private Mono<Boolean> shareBulk(@NotNull Post to, FySelfContext context) {
     return repository.save(to)
+            .flatMap( post -> this.saveInPostTimeLineRepository(post))
         .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity))
             .subscribe())
         .then(just(true));
+  }
+
+  private Mono<Post> saveInPostTimeLineRepository(Post post) {
+    for (String sharedWi : post.getSharedWith()) {
+      postTimelineRepository.findAllByUserAndPost(sharedWi, post.getId()).map(count -> {
+        if (count == 0)
+          postTimelineRepository.save(POST_TIMELINE_BINDER.bindU(post, sharedWi)).subscribe();
+        return count;
+      }).subscribe();
+    }
+    return just(post);
   }
 
   private Mono<Post> createPost(@NotNull Post to, FySelfContext context) {
