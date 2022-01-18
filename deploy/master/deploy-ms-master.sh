@@ -28,6 +28,6 @@ docker run --rm \
 -e AWS_DEFAULT_REGION=$AWS_REGION \
 banst/awscli lambda invoke \
 --function-name Restart_Fyself_Services --invocation-type Event \
---log-type Tail --payload '{"cluster":"Fyself-PROD","service":"ServiceMSPost"}' \
+--log-type Tail --payload '{"cluster":"Fyself-Production","service":"ServiceMSPost"}' \
 logsfile.txt
 
