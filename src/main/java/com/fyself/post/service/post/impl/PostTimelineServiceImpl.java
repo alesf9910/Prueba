@@ -12,6 +12,7 @@ import com.fyself.post.service.post.datasource.domain.Post;
 import com.fyself.post.service.post.datasource.domain.PostTimeline;
 import com.fyself.post.service.post.datasource.domain.enums.TypeContent;
 import com.fyself.post.service.post.datasource.domain.subentities.SharedPost;
+import com.fyself.seedwork.service.EntityNotFoundException;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.context.FySelfContext;
 import org.springframework.data.domain.Page;
@@ -29,6 +30,7 @@ import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
 import static com.fyself.post.service.post.contract.PostTimelineBinder.POST_TIMELINE_BINDER;
 import static java.util.stream.Collectors.toList;
 import static reactor.core.publisher.Flux.fromIterable;
+import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
 
 @Service("postTimelineService")
@@ -47,13 +49,14 @@ public class PostTimelineServiceImpl implements PostTimelineService {
 
     @Override
     public Mono<String> create(@NotNull @Valid PostTimelineTO to) {
-        repository.findAllByUserAndPost(to.getUser(), to.getPost()).map(count -> {
-            if (count == 0)
-                return repository.save(POST_TIMELINE_BINDER.bind(to.withCreatedAt().withUpdatedAt()))
-                        .map(PostTimeline::getUser);
-           return to.getUser();
-        }).subscribe();
-        return just(to.getUser());
+        return repository.findAllByUserAndPost(to.getUser(), to.getPost())
+                .flatMap(count -> {
+                    if (count == 0)
+                        return repository.save(POST_TIMELINE_BINDER.bind(to.withCreatedAt().withUpdatedAt()))
+                                .map(PostTimeline::getUser);
+                    return just(to.getUser());
+                })
+                .switchIfEmpty(error(EntityNotFoundException::new));
     }
 
     @Override
