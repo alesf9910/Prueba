@@ -256,48 +256,57 @@ public class PostServiceImpl implements PostService {
   @Override
   public Mono<String> sharePost(@NotNull PostShareBulkTO to, FySelfContext context) {
     return repository.findById(to.getPost())
-        .flatMap(post -> {
+        .flatMap(post -> checkPostContent(post).flatMap(checkingContent -> {
           if(post.getWorkspace())
           {
              if(to.getSharedWith().isEmpty())
              {
-               return userRepository.loadUsersWorkspace(post.getEnterprise(),context)
-                       .flatMap(users ->
-                               shareBulk(POST_BINDER.bindShareBulk(post, to.putSharedWith(users)), context)
-                                       .filter(Boolean::booleanValue).map(ing -> to.getPost())
-                       );
+                 if (checkingContent)
+                   return userRepository.loadUsersWorkspace(post.getEnterprise(), context)
+                           .flatMap(users ->
+                                   shareBulk(POST_BINDER.bindShareBulk(post, to.putSharedWith(users), context.getAccount().get().getId()), context)
+                                           .filter(Boolean::booleanValue).map(ing -> to.getPost()));
+                 else
+                   return userRepository.loadUsersWorkspace(post.getEnterprise(), context)
+                           .flatMap(users ->
+                                   shareBulk(POST_BINDER.bindReShareBulk(post, to.putSharedWith(users), context.getAccount().get().getId()), context)
+                                           .filter(Boolean::booleanValue).map(ing -> to.getPost()));
              }
              else
              {
-               return shareBulk(POST_BINDER.bindShareBulk(post, to), context)
-                      .filter(Boolean::booleanValue).map(ing -> to.getPost());
+                 if (checkingContent)
+                   return shareBulk(POST_BINDER.bindShareBulk(post, to, context.getAccount().get().getId()), context)
+                           .filter(Boolean::booleanValue).map(ing -> to.getPost());
+                 else
+                   return shareBulk(POST_BINDER.bindReShareBulk(post, to, context.getAccount().get().getId()), context)
+                           .filter(Boolean::booleanValue).map(ing -> to.getPost());
              }
-
           }
           else
           {
             if (post.getOwner().equals(context.getAccount().get().getId())) {
-              return shareBulk(POST_BINDER.bindShareBulk(post, to), context)
-                      .filter(Boolean::booleanValue).map(ing -> to.getPost());
+                if (checkingContent)
+                  return shareBulk(POST_BINDER.bindShareBulk(post, to, context.getAccount().get().getId()), context)
+                          .filter(Boolean::booleanValue).map(ing -> to.getPost());
+                else
+                  return shareBulk(POST_BINDER.bindReShareBulk(post, to, context.getAccount().get().getId()), context)
+                          .filter(Boolean::booleanValue).map(ing -> to.getPost());
             } else {
               if (post.getAccess().equals(Access.PUBLIC)) {
-                return this.checkPostContent(post).flatMap(checkingContent -> {
-                  if (checkingContent) {
+                  if (checkingContent)
                     return createPost(
                             POST_BINDER.bindSharedPost(post, context.getAccount().get().getId()), context)
                             .map(DomainEntity::getId);
-                  } else {
+                   else
                     return createPost(
                             POST_BINDER.bindReSharedPost(post, context.getAccount().get().getId()), context)
                             .map(DomainEntity::getId);
-                  }
-                });
               } else {
                 return error(ValidationException::new);
               }
             }
           }
-        })
+        }))
         .switchIfEmpty(error(EntityNotFoundException::new));
   }
 

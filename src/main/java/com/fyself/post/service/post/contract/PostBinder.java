@@ -324,8 +324,23 @@ public interface PostBinder {
         return post.shareUser(to.getSharedWith());
     }
 
-    default Post bindShareBulk(Post post, PostShareBulkTO to) {
-        return post.shareBulk(to.getSharedWith());
+    default Post bindShareBulk(Post post, PostShareBulkTO to, String owner) {
+        SharedPost postShared = new SharedPost();
+        postShared.setPost(post.getId());
+        Post target = bindToPost(post);
+        target.setContent(postShared);
+        target.setOwner(owner);
+        target.setCreatedAt(now());
+        target.shareBulk(to.getSharedWith());
+        return target;
+    }
+
+    default Post bindReShareBulk(Post post, PostShareBulkTO to, String owner) {
+        Post target = bindToPost(post);
+        target.setOwner(owner);
+        target.setCreatedAt(now());
+        target.shareBulk(to.getSharedWith());
+        return target;
     }
 
     default Post bindStopShareWith(Post post, PostShareTO to) {
