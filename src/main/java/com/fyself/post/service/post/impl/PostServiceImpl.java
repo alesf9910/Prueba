@@ -112,8 +112,9 @@ public class PostServiceImpl implements PostService {
             .doOnSuccess(
                 entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity))
                     .subscribe())
-            .doOnSuccess(entity -> postTimelineRepository
-                .deleteAllByPost_IdAndUserOrOwner(entity.getId(), entity.getOwner(), entity.getOwner()).subscribe())
+            .doOnSuccess(entity ->
+                            postTimelineRepository.deleteAllByPost(entity.getId())
+                                    .subscribe())
             .doOnSuccess(
                         entity -> streamService.putInPipelineDeletePostNotification(Map.of("type","DELETE-POST-NOT","post",entity.getId()))
                                 .subscribe())
@@ -128,7 +129,7 @@ public class PostServiceImpl implements PostService {
             .flatMap(post -> repository.softDelete(post)
                     .doOnSuccess(entity -> deleteEvent(post, context))
                     .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity)).subscribe())
-                    .doOnSuccess(entity -> postTimelineRepository.deleteAllByPost_IdAndUserOrOwner(entity.getId(), entity.getOwner(), entity.getOwner()).subscribe())
+                    .doOnSuccess(entity -> postTimelineRepository.deleteAllByPost(entity.getId()))
                     .doOnSuccess(entity -> streamService.putInPipelineDeletePostNotification(Map.of("type","DELETE-POST-NOT","post",entity.getId())).subscribe())
             )
             .then();

@@ -21,7 +21,8 @@ public interface PostTimelineRepository extends MongoRepository<PostTimeline> {
     @Query(value = "{ 'deleted' : {$ne : true}, 'user': ?0, 'post': ?1 }",count = true)
     Mono<Long> findAllByUserAndPost(String userId, String post);
 
-    Mono<Void> deleteAllByPost_IdAndUserOrOwner(String post_id, String user, String owner);
+    @Query(value = "{ 'post': ?0 }", delete = true)
+    Mono<Void> deleteAllByPost(String post_id);
 
     Mono<Boolean> existsByPost_IdAndOwner(String post_id, String owner);
 }
