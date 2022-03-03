@@ -22,10 +22,9 @@ public class HierarchySurveyTO extends SurveyContentTO {
 
     public HierarchySurveyTO generateOptionsIds() {
         this.setOptions(this.options.stream()
-                .map(option -> {
-                    option.put("id", UUID.randomUUID().toString());
-                    return option;
-                }).collect(Collectors.toSet()));
+                .peek(option ->
+                        option.put("id", UUID.randomUUID().toString()))
+                .collect(Collectors.toSet()));
         return this;
     }
 }
