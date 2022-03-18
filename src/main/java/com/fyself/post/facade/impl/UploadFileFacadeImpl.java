@@ -12,6 +12,7 @@ import com.fyself.seedwork.facade.stereotype.Facade;
 import com.fyself.seedwork.service.context.FySelfContext;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -60,6 +61,12 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
     public Mono<Result<byte[]>> getFile(FileTO pdf, FySelfContext context)
     {
         return fileService.getFile(pdf,context).map(Result::successful);
+    }
+
+    @Override
+    public Mono<Result<InputStreamResource>> getFilePrivate(ResourceCriteriaTO pdf, FySelfContext context)
+    {
+        return uploadFileService.getPrivate(pdf).map(Result::successful);
     }
 
     @Override

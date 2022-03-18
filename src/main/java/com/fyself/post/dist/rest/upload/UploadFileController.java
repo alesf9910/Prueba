@@ -58,6 +58,13 @@ public class UploadFileController extends Controller<UploadFileFacade> {
         return this.get((facade, context) -> facade.getFile(file, context), exchange);
     }
 
+    @PostMapping(value = "/get-file-private", produces = MediaType.APPLICATION_PDF_VALUE)
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "get_file_private", value = "Get file private", response = String.class)
+    public Mono<ResponseEntity> searchPrivate(@RequestBody ResourceCriteriaTO file, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.getFilePrivate(file, context), exchange);
+    }
+
     @PostMapping(value = "/get-url")
     @ApiSecuredOperation
     @ApiOperation(nickname = "get_url", value = "Search Url", response = String.class)
@@ -67,7 +74,7 @@ public class UploadFileController extends Controller<UploadFileFacade> {
 
     @PostMapping(value = "/delete-url-private")
     @ApiSecuredOperation
-    @ApiOperation(nickname = "get_url_private", value = "delete private Url", response = String.class)
+    @ApiOperation(nickname = "get_url_private", value = "delete private Url", response = Boolean.class)
     public Mono<ResponseEntity> deleteUrlPrivate(@RequestBody ResourceCriteriaTO url, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.deleteUrl(url, context, true), exchange);
     }

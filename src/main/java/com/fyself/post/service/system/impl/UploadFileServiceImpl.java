@@ -51,6 +51,11 @@ public class UploadFileServiceImpl implements UploadFileService {
     }
 
     @Override
+    public Mono<InputStreamResource> getPrivate(ResourceCriteriaTO criteria) {
+        return fileRepository.getContent(RESOURCE_BINDER.bind(criteria, bucketPrivate)).map(InputStreamResource::new);
+    }
+
+    @Override
     public Mono<String> addPrivate(ResourceTO resource) {
         return this.fileRepository.save(RESOURCE_BINDER.bind(resource, bucketPrivate))
                 .filter(Boolean::booleanValue)
