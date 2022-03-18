@@ -19,14 +19,17 @@ public class UploadFileServiceImpl implements UploadFileService {
     private static final Logger logger = getLogger(UploadFileService.class);
     private final FileRepository fileRepository;
     private final String bucket;
+    private final String bucketPrivate;
     private final String url;
 
     public UploadFileServiceImpl(FileRepository fileRepository,
                                  @Value("${application.aws.bucket}") String bucket,
+                                 @Value("${application.aws.bucketPrivate}")String bucketPrivate,
                                  @Value("${mspost.application.aws.url}") String url
     ) {
         this.fileRepository = fileRepository;
         this.bucket = bucket;
+        this.bucketPrivate = bucketPrivate;
         this.url = url;
     }
 
@@ -45,5 +48,18 @@ public class UploadFileServiceImpl implements UploadFileService {
     @Override
     public Mono<InputStreamResource> get(ResourceCriteriaTO criteria) {
         return fileRepository.getContent(RESOURCE_BINDER.bind(criteria, bucket)).map(InputStreamResource::new);
+    }
+
+    @Override
+    public Mono<String> addPrivate(ResourceTO resource) {
+        return this.fileRepository.save(RESOURCE_BINDER.bind(resource, bucketPrivate))
+                .filter(Boolean::booleanValue)
+                .map(ing ->
+                        String.format("%s/%s/%s", url, resource.getCriteria().getFolder(), resource.getCriteria().getName()));
+    }
+
+    @Override
+    public Mono<Boolean> deletePrivate(ResourceCriteriaTO criteria) {
+        return this.fileRepository.delete(RESOURCE_BINDER.bind(criteria, bucketPrivate));
     }
 }

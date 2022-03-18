@@ -53,12 +53,14 @@ mspost:
       max: 10
     aws:
       bucketname: staging-static-files.fyself.com
+      bucketprivatename: fyself-private-files
       url: http://staging-static-files.fyself.com
 
 application:
   aws:
     region: us-east-1
     bucket: ${mspost.application.aws.bucketname}
+    bucketPrivate: ${mspost.application.aws.bucketprivatename}
 
   name: ${mspost.application.name}
   datasource:
