@@ -58,7 +58,7 @@ public class UploadFileController extends Controller<UploadFileFacade> {
         return this.get((facade, context) -> facade.getFile(file, context), exchange);
     }
 
-    @PostMapping(value = "/get-file-private", produces = MediaType.APPLICATION_PDF_VALUE)
+    @PostMapping(value = "/get-file-private", produces = MediaType.ALL_VALUE)
     @ApiSecuredOperation
     @ApiOperation(nickname = "get_file_private", value = "Get file private", response = String.class)
     public Mono<ResponseEntity> searchPrivate(@RequestBody ResourceCriteriaTO file, @ApiIgnore ServerWebExchange exchange) {
