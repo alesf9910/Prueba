@@ -4,6 +4,7 @@ import com.fyself.post.dist.rest.comments.CommentController;
 import com.fyself.post.facade.UploadFileFacade;
 import com.fyself.post.service.post.contract.to.CommentTO;
 import com.fyself.post.service.post.contract.to.FileTO;
+import com.fyself.post.service.post.contract.to.SignedFileTO;
 import com.fyself.post.service.post.contract.to.UrlTo;
 import com.fyself.post.service.post.contract.to.criteria.CommentCriteriaTO;
 import com.fyself.post.service.system.contract.to.ResourceCriteriaTO;
@@ -77,6 +78,13 @@ public class UploadFileController extends Controller<UploadFileFacade> {
     @ApiOperation(nickname = "get_url_private", value = "delete private Url", response = Boolean.class)
     public Mono<ResponseEntity> deleteUrlPrivate(@RequestBody ResourceCriteriaTO url, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.deleteUrl(url, context, true), exchange);
+    }
+
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "upload_private_file", value = "Upload private file", response = String.class)
+    @RequestMapping(path = "/upload-pdf-s3", method = RequestMethod.POST)
+    public Mono<ResponseEntity> uploadToS3(@RequestBody SignedFileTO to, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.uploadToS3(to, context, true), exchange);
     }
 
     @RequestMapping(value = "/test", method = RequestMethod.GET, produces = "application/pdf")

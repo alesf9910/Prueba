@@ -1,6 +1,7 @@
 package com.fyself.post.facade;
 
 import com.fyself.post.service.post.contract.to.FileTO;
+import com.fyself.post.service.post.contract.to.SignedFileTO;
 import com.fyself.post.service.post.contract.to.UrlTo;
 import com.fyself.post.service.system.contract.to.ResourceCriteriaTO;
 import com.fyself.seedwork.facade.Result;
@@ -12,6 +13,8 @@ import reactor.core.publisher.Mono;
 public interface UploadFileFacade {
 
     Mono<Result<String>> uploadImage(Mono<FilePart> part, String typeElement, FySelfContext context, boolean isPrivate);
+
+    Mono<Result<String>> uploadToS3(SignedFileTO to, FySelfContext context, boolean isPrivate);
 
     Mono<Result<byte[]>> getFile(FileTO pdf, FySelfContext context);
 

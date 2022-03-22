@@ -3,6 +3,7 @@ package com.fyself.post.facade.impl;
 import com.fyself.post.facade.UploadFileFacade;
 import com.fyself.post.service.post.FileService;
 import com.fyself.post.service.post.contract.to.FileTO;
+import com.fyself.post.service.post.contract.to.SignedFileTO;
 import com.fyself.post.service.post.contract.to.UrlTo;
 import com.fyself.post.service.system.UploadFileService;
 import com.fyself.post.service.system.contract.to.ResourceCriteriaTO;
@@ -142,5 +143,22 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
             }
         }
         return false;
+    }
+
+    @Override
+    public Mono<Result<String>> uploadToS3(SignedFileTO to, FySelfContext context, boolean isPrivate) {
+        var name = UUID.randomUUID().toString() + ".pdf";
+        return just(name).flatMap(id -> this.saveSignedFile(id, to.getTypeFile(), to.getSignedFileS3(), isPrivate))
+                .map(Result::successful);
+    }
+
+    private Mono<String> saveSignedFile(String name, String typeElement, byte[] part, boolean isPrivate) {
+        return just(true).flatMap(unused -> {
+            ByteBuffer byteBuffer = ByteBuffer.wrap(part);
+            var criteria = ResourceCriteriaTO.from(typeElement).withName(String.format(name));
+            if (isPrivate)
+                return uploadFileService.addPrivate(ResourceTO.of(criteria, byteBuffer, Map.of()));
+            return uploadFileService.add(ResourceTO.of(criteria, byteBuffer, Map.of()));
+        });
     }
 }
