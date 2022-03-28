@@ -4,8 +4,10 @@ import com.fyself.post.dist.rest.comments.CommentController;
 import com.fyself.post.facade.UploadFileFacade;
 import com.fyself.post.service.post.contract.to.CommentTO;
 import com.fyself.post.service.post.contract.to.FileTO;
+import com.fyself.post.service.post.contract.to.SignedFileTO;
 import com.fyself.post.service.post.contract.to.UrlTo;
 import com.fyself.post.service.post.contract.to.criteria.CommentCriteriaTO;
+import com.fyself.post.service.system.contract.to.ResourceCriteriaTO;
 import com.fyself.seedwork.web.Controller;
 import com.fyself.seedwork.web.documentation.annotations.ApiSecuredOperation;
 import io.swagger.annotations.Api;
@@ -40,7 +42,14 @@ public class UploadFileController extends Controller<UploadFileFacade> {
     @ApiOperation(nickname = "upload_image", value = "Upload image", response = String.class)
     @RequestMapping(path = "/upload", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Mono<ResponseEntity> uploadImage(@RequestPart Mono<FilePart> part, @RequestPart String type, @ApiIgnore ServerWebExchange exchange) {
-        return this.get((facade, context) -> facade.uploadImage(part, type, context), exchange);
+        return this.get((facade, context) -> facade.uploadImage(part, type, context, false), exchange);
+    }
+
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "upload_private_file", value = "Upload private file", response = String.class)
+    @RequestMapping(path = "/uploadPrivate", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Mono<ResponseEntity> uploadPrivateFile(@RequestPart Mono<FilePart> part, @RequestPart String type, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.uploadImage(part, type, context, true), exchange);
     }
 
     @PostMapping(value = "/get-file", produces = MediaType.APPLICATION_PDF_VALUE)
@@ -50,11 +59,32 @@ public class UploadFileController extends Controller<UploadFileFacade> {
         return this.get((facade, context) -> facade.getFile(file, context), exchange);
     }
 
+    @PostMapping(value = "/get-file-private", produces = MediaType.ALL_VALUE)
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "get_file_private", value = "Get file private", response = String.class)
+    public Mono<ResponseEntity> searchPrivate(@RequestBody ResourceCriteriaTO file, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.getFilePrivate(file, context), exchange);
+    }
+
     @PostMapping(value = "/get-url")
     @ApiSecuredOperation
     @ApiOperation(nickname = "get_url", value = "Search Url", response = String.class)
     public Mono<ResponseEntity> searchUrl(@RequestBody UrlTo url, @ApiIgnore ServerWebExchange exchange) {
         return this.get((facade, context) -> facade.getUrl(url, context), exchange);
+    }
+
+    @PostMapping(value = "/delete-url-private")
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "get_url_private", value = "delete private Url", response = Boolean.class)
+    public Mono<ResponseEntity> deleteUrlPrivate(@RequestBody ResourceCriteriaTO url, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.deleteUrl(url, context, true), exchange);
+    }
+
+    @ApiSecuredOperation
+    @ApiOperation(nickname = "upload_private_file", value = "Upload private file", response = String.class)
+    @RequestMapping(path = "/upload-pdf-s3", method = RequestMethod.POST)
+    public Mono<ResponseEntity> uploadToS3(@RequestBody SignedFileTO to, @ApiIgnore ServerWebExchange exchange) {
+        return this.get((facade, context) -> facade.uploadToS3(to, context, true), exchange);
     }
 
     @RequestMapping(value = "/test", method = RequestMethod.GET, produces = "application/pdf")

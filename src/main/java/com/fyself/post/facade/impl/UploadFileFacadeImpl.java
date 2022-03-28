@@ -3,6 +3,7 @@ package com.fyself.post.facade.impl;
 import com.fyself.post.facade.UploadFileFacade;
 import com.fyself.post.service.post.FileService;
 import com.fyself.post.service.post.contract.to.FileTO;
+import com.fyself.post.service.post.contract.to.SignedFileTO;
 import com.fyself.post.service.post.contract.to.UrlTo;
 import com.fyself.post.service.system.UploadFileService;
 import com.fyself.post.service.system.contract.to.ResourceCriteriaTO;
@@ -12,6 +13,7 @@ import com.fyself.seedwork.facade.stereotype.Facade;
 import com.fyself.seedwork.service.context.FySelfContext;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -49,10 +51,10 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
 
 
     @Override
-    public Mono<Result<String>> uploadImage(Mono<FilePart> part, String typeElement, FySelfContext context) {
+    public Mono<Result<String>> uploadImage(Mono<FilePart> part, String typeElement, FySelfContext context, boolean isPrivate) {
         logger.debug("Attempting to system image");
         return part.ofType(FilePart.class)
-                .flatMap(filePart -> this.add(filePart, typeElement))
+                .flatMap(filePart -> this.add(filePart, typeElement, isPrivate))
                 .map(Result::successful);
     }
 
@@ -63,9 +65,22 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
     }
 
     @Override
+    public Mono<Result<InputStreamResource>> getFilePrivate(ResourceCriteriaTO pdf, FySelfContext context)
+    {
+        return uploadFileService.getPrivate(pdf).map(Result::successful);
+    }
+
+    @Override
     public Mono<Result<String>> getUrl(UrlTo url, FySelfContext context)
     {
         return fileService.getUrl(url.getUrl(),context).map(Result::successful);
+    }
+
+    @Override
+    public Mono<Result<Boolean>> deleteUrl(ResourceCriteriaTO url, FySelfContext context, boolean isPrivate)
+    {
+        return uploadFileService.deletePrivate(url)
+                .map(Result::successful);
     }
 
     public Optional<String> getExtensionByStringHandling(String filename) {
@@ -74,14 +89,14 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
                 .map(f -> f.substring(filename.lastIndexOf(".") + 1));
     }
 
-    private Mono<String> add(FilePart part, String typeElement) {
+    private Mono<String> add(FilePart part, String typeElement, boolean isPrivate) {
         var ext = getExtensionByStringHandling(part.filename()).orElse("");
         var name = UUID.randomUUID().toString() + "." + ext;
-        return just(name).flatMap(id -> this.save(id, typeElement, part));
+        return just(name).flatMap(id -> this.save(id, typeElement, part, isPrivate));
     }
 
 
-    private Mono<String> save(String name, String typeElement, FilePart part) {
+    private Mono<String> save(String name, String typeElement, FilePart part, boolean isPrivate) {
         return join(part.content())
                 .map(DataBuffer::asByteBuffer)
                 .flatMap(content -> {
@@ -92,12 +107,25 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
 
                         var criteria = ResourceCriteriaTO.from(typeElement).withName(String.format("%.3f", ratio) + "_" + name);
 
-                        if (!a.png)
-                            return uploadFileService.add(ResourceTO.of(criteria, ByteBuffer.wrap(a.imageFile.getByteArray()), getMetadata(part.headers())));
+                        if ( isPrivate )
+                        {
+                            if (!a.png)
+                                return uploadFileService.addPrivate(ResourceTO.of(criteria, ByteBuffer.wrap(a.imageFile.getByteArray()), getMetadata(part.headers())));
 
-                        return uploadFileService.add(ResourceTO.of(criteria, content, getMetadata(part.headers())));
+                            return uploadFileService.addPrivate(ResourceTO.of(criteria, content, getMetadata(part.headers())));
+                        }
+                        else
+                        {
+                            if (!a.png)
+                                return uploadFileService.add(ResourceTO.of(criteria, ByteBuffer.wrap(a.imageFile.getByteArray()), getMetadata(part.headers())));
+
+                            return uploadFileService.add(ResourceTO.of(criteria, content, getMetadata(part.headers())));
+                        }
+
                     } else {
                         var criteria = ResourceCriteriaTO.from(typeElement).withName(String.format(name));
+                        if (isPrivate)
+                            return uploadFileService.addPrivate(ResourceTO.of(criteria, content, getMetadata(part.headers())));
                         return uploadFileService.add(ResourceTO.of(criteria, content, getMetadata(part.headers())));
                     }
                 });
@@ -115,5 +143,22 @@ public class UploadFileFacadeImpl implements UploadFileFacade {
             }
         }
         return false;
+    }
+
+    @Override
+    public Mono<Result<String>> uploadToS3(SignedFileTO to, FySelfContext context, boolean isPrivate) {
+        var name = UUID.randomUUID().toString() + ".pdf";
+        return just(name).flatMap(id -> this.saveSignedFile(id, to.getTypeFile(), to.getSignedFileS3(), isPrivate))
+                .map(Result::successful);
+    }
+
+    private Mono<String> saveSignedFile(String name, String typeElement, byte[] part, boolean isPrivate) {
+        return just(true).flatMap(unused -> {
+            ByteBuffer byteBuffer = ByteBuffer.wrap(part);
+            var criteria = ResourceCriteriaTO.from(typeElement).withName(String.format(name));
+            if (isPrivate)
+                return uploadFileService.addPrivate(ResourceTO.of(criteria, byteBuffer, Map.of()));
+            return uploadFileService.add(ResourceTO.of(criteria, byteBuffer, Map.of()));
+        });
     }
 }

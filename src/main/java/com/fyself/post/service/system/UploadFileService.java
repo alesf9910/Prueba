@@ -23,4 +23,9 @@ public interface UploadFileService {
 
     Mono<InputStreamResource> get(@NotNull @Valid ResourceCriteriaTO criteria);
 
+    Mono<InputStreamResource> getPrivate(@NotNull @Valid ResourceCriteriaTO criteria);
+
+    Mono<String> addPrivate(ResourceTO resource);
+
+    Mono<Boolean> deletePrivate(ResourceCriteriaTO criteria);
 }

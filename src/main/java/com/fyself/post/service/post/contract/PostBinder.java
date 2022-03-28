@@ -244,7 +244,7 @@ public interface PostBinder {
                             else
                                 return map;
                         })
-                        .collect(Collectors.toSet()));
+                        .collect(Collectors.toList()));
             } else {
                 choice.put("id", UUID.randomUUID().toString());
                 target.getOptions().add(choice);
