@@ -53,7 +53,7 @@ mspost:
       max: 10
     aws:
       bucketname: staging-static-files.fyself.com
-      bucketprivatename: fyself-private-files
+      bucketprivatename: fyself-private-files-prod
       url: http://staging-static-files.fyself.com
 
 application:
