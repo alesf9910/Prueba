@@ -28,7 +28,9 @@ import reactor.core.publisher.Mono;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static com.fyself.post.service.post.contract.AnswerSurveyBinder.ANSWER_SURVEY_BINDER;
 import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
@@ -183,7 +185,7 @@ public class PostServiceImpl implements PostService {
   @Override
   public Mono<PagedList<PostTO>> searchByEnterprise(@NotNull PostCriteriaTO criteria, FySelfContext context) {
     return repository.findPage(
-            POST_BINDER.bindToCriteria(criteria.putWorkspace(true).putEnterprise(context.getAccount().get().getBusiness())))
+            POST_BINDER.bindToSearchByEnterprise(criteria.putWorkspace(true).putEnterprise(context.getAccount().get().getBusiness())))
             .map(POST_BINDER::bindPage)
             .flatMap(postTOPagedList -> fromIterable(postTOPagedList.getElements())
                     .flatMap(
@@ -203,6 +205,7 @@ public class PostServiceImpl implements PostService {
                                             .map(answerSurveyTO -> POST_BINDER
                                                     .bindPostTOWithAnswer(postTO, answerSurveyTO))
                                             .switchIfEmpty(just(postTO)), 1)
+                    .flatMap(posTO -> findSharedPostsBusiness(posTO))
                     .collectList()
                     .map(postTOS -> POST_BINDER.bind(postTOPagedList, postTOS)));
   }
@@ -389,5 +392,17 @@ public class PostServiceImpl implements PostService {
             .doOnSuccess(entity -> createEventWS(entity, context, to.getEnterprise()))
             .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity))
                     .subscribe());
+  }
+
+  private Mono<PostTO> findSharedPostsBusiness(PostTO postTO) {
+    Set<String> idsSharedPosts = new HashSet<>();
+    return repository.findAllByEnterpriseAndShared(postTO.getEnterprise(), postTO.getId())
+            .collectList()
+            .map(listSharedPosts -> {
+              for (Post sharedPost: listSharedPosts)
+                idsSharedPosts.add(sharedPost.getId());
+              return postTO.putSharedPosts(idsSharedPosts);
+            })
+            .doOnError(err -> {throw new EntityNotFoundException(err.getMessage());});
   }
 }

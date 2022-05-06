@@ -32,6 +32,7 @@ public class PostTO extends DomainAuditTransferObject {
     private boolean workspace;
     private String enterprise;
     private String sharedBy;
+    private Set<String> sharedPosts;
 
     @ReadOnly
     public Long getComments() {
@@ -213,5 +214,18 @@ public class PostTO extends DomainAuditTransferObject {
     {
         setSharedBy(owner);
         return this;
+    }
+
+    public PostTO putSharedPosts(Set<String> sharedPosts) {
+        this.setSharedPosts(sharedPosts);
+        return this;
+    }
+
+    public Set<String> getSharedPosts() {
+        return sharedPosts;
+    }
+
+    public void setSharedPosts(Set<String> sharedPosts) {
+        this.sharedPosts = sharedPosts;
     }
 }
