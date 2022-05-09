@@ -188,7 +188,7 @@ public class PostServiceImpl implements PostService {
             POST_BINDER.bindToSearchByEnterprise(criteria.putWorkspace(true).putEnterprise(context.getAccount().get().getBusiness())))
             .map(POST_BINDER::bindPage)
             .flatMap(postTOPagedList -> fromIterable(postTOPagedList.getElements())
-                    .flatMap(
+                    .flatMapSequential(
                             postTO ->
                                     answerSurveyRepository
                                             .findByPostAndUser(
@@ -205,7 +205,7 @@ public class PostServiceImpl implements PostService {
                                             .map(answerSurveyTO -> POST_BINDER
                                                     .bindPostTOWithAnswer(postTO, answerSurveyTO))
                                             .switchIfEmpty(just(postTO)), 1)
-                    .flatMap(posTO -> findSharedPostsBusiness(posTO))
+                    .flatMapSequential(posTO -> findSharedPostsBusiness(posTO))
                     .collectList()
                     .map(postTOS -> POST_BINDER.bind(postTOPagedList, postTOS)));
   }
