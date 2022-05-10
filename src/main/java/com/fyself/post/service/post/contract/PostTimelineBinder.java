@@ -44,4 +44,14 @@ public interface PostTimelineBinder {
         postTimeline.setWorkspace(post.getWorkspace());
         return postTimeline;
     }
+
+    default PostTimeline bindSharedPost(Post post) {
+        var postTimeline = new PostTimeline();
+        postTimeline.setPost(post);
+        postTimeline.setUser(post.getOwner());
+        postTimeline.setCreatedAt(post.getCreatedAt());
+        postTimeline.setUpdatedAt(post.getUpdatedAt());
+        postTimeline.setWorkspace(false);
+        return postTimeline;
+    }
 }

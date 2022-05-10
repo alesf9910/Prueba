@@ -66,7 +66,7 @@ public class PostSearchByEnterpriseCriteria extends DomainCriteria<Post> {
         {
             return and(where("workspace").is(this.workspace),
                     this.enterprise != null ? where("enterprise").is(this.getEnterprise()) : null,
-                    where("sharedWith").exists(false));
+                    where("content.typeContent").exists(true));
         }
         else
             return null;
