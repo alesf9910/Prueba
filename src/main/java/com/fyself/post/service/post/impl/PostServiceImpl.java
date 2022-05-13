@@ -128,7 +128,7 @@ public class PostServiceImpl implements PostService {
             .flatMap(post -> repository.softDelete(post)
                     .doOnSuccess(entity -> deleteEvent(post, context))
                     .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity)).subscribe())
-                    .doOnSuccess(entity -> postTimelineRepository.deleteAllByPost(entity.getId()))
+                    .doOnSuccess(entity -> postTimelineRepository.deleteAllByPost(entity.getId()).subscribe())
                     .doOnSuccess(entity -> streamService.putInPipelineDeletePostNotification(Map.of("type","DELETE-POST-NOT","post",entity.getId())).subscribe())
             )
             .then();
