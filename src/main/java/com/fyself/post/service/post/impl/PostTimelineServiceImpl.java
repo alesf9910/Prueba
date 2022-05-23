@@ -7,6 +7,7 @@ import com.fyself.post.service.post.contract.to.PostTimelineTO;
 import com.fyself.post.service.post.contract.to.SharedPostTO;
 import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
 import com.fyself.post.service.post.datasource.AnswerSurveyRepository;
+import com.fyself.post.service.post.datasource.PostRepository;
 import com.fyself.post.service.post.datasource.PostTimelineRepository;
 import com.fyself.post.service.post.datasource.domain.Post;
 import com.fyself.post.service.post.datasource.domain.PostTimeline;
@@ -23,7 +24,9 @@ import reactor.core.publisher.Mono;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.fyself.post.service.post.contract.AnswerSurveyBinder.ANSWER_SURVEY_BINDER;
 import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
@@ -39,12 +42,16 @@ public class PostTimelineServiceImpl implements PostTimelineService {
     private final PostTimelineRepository repository;
     final PostService postService;
     final AnswerSurveyRepository answerSurveyRepository;
+    private final PostRepository postRepository;
 
-
-    public PostTimelineServiceImpl(PostTimelineRepository repository, AnswerSurveyRepository answerSurveyRepository,PostService postService) {
+    public PostTimelineServiceImpl(PostTimelineRepository repository,
+                                   AnswerSurveyRepository answerSurveyRepository,
+                                   PostService postService,
+                                   PostRepository postRepository) {
         this.repository = repository;
         this.answerSurveyRepository = answerSurveyRepository;
         this.postService = postService;
+        this.postRepository = postRepository;
     }
 
     @Override
@@ -65,7 +72,7 @@ public class PostTimelineServiceImpl implements PostTimelineService {
                 .map(postTimelines ->
                         POST_BINDER.bindPageTimeline(postTimelines, context.getAccount().get().getId()))
                 .flatMap(postTOPagedList -> fromIterable(postTOPagedList.getElements())
-                        .flatMap(postTO ->
+                        .flatMapSequential(postTO ->
                             answerSurveyRepository.findByPostAndUser(
                                 postTO.getContent() != null ?
                                     postTO.getContent().getTypeContent() != null ?
@@ -79,9 +86,25 @@ public class PostTimelineServiceImpl implements PostTimelineService {
                                 .map(ANSWER_SURVEY_BINDER::bindFromSurvey)
                                 .map(answerSurveyTO -> POST_BINDER.bindPostTOWithAnswer(postTO, answerSurveyTO))
                                 .switchIfEmpty(just(postTO)), 1)
-
+                        .flatMapSequential(posTO -> findSharedPosts(posTO))
                         .collectList()
-
                         .map(postTOS -> POST_BINDER.bind(postTOPagedList, postTOS)));
+    }
+
+    private Mono<PostTO> findSharedPosts(PostTO postTO) {
+        Set<String> idsSharedPosts = new HashSet<>();
+        String idPost;
+        if (postTO.getContent().getTypeContent() != null && postTO.getContent().getTypeContent().equals(TypeContent.SHARED_POST))
+            idPost = ((SharedPostTO) postTO.getContent()).getPostTo().getId();
+        else
+            idPost = postTO.getId();
+        return postRepository.findAllShared(idPost)
+                .collectList()
+                .map(listSharedPosts -> {
+                    for (Post sharedPost: listSharedPosts)
+                        idsSharedPosts.add(sharedPost.getId());
+                    return postTO.putSharedPosts(idsSharedPosts);
+                })
+                .doOnError(err -> {throw new EntityNotFoundException(err.getMessage());});
     }
 }

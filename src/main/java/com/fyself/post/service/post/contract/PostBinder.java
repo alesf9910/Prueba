@@ -10,6 +10,7 @@ import com.fyself.post.service.post.datasource.domain.PostTimeline;
 import com.fyself.post.service.post.datasource.domain.enums.TypeContent;
 import com.fyself.post.service.post.datasource.domain.subentities.*;
 import com.fyself.post.service.post.datasource.query.PostCriteria;
+import com.fyself.post.service.post.datasource.query.PostSearchByEnterpriseCriteria;
 import com.fyself.post.service.post.datasource.query.PostTimelineCriteria;
 import com.fyself.post.tools.enums.Access;
 import com.fyself.seedwork.service.PagedList;
@@ -287,6 +288,8 @@ public interface PostBinder {
     }
 
     PostCriteria bindToCriteria(PostCriteriaTO source);
+
+    PostSearchByEnterpriseCriteria bindToSearchByEnterprise(PostCriteriaTO source);
 
     default PostCriteriaTO bindToCriteriaTO(PostTimelineCriteriaTO source) {
         var criteria = new PostCriteriaTO();

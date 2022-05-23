@@ -1,10 +1,7 @@
 package com.fyself.post.service.post.impl;
 
 import com.fyself.post.service.post.PostService;
-import com.fyself.post.service.post.contract.to.PostShareBulkTO;
-import com.fyself.post.service.post.contract.to.PostShareTO;
-import com.fyself.post.service.post.contract.to.PostTO;
-import com.fyself.post.service.post.contract.to.SharedPostTO;
+import com.fyself.post.service.post.contract.to.*;
 import com.fyself.post.service.post.contract.to.criteria.PostCriteriaTO;
 import com.fyself.post.service.post.contract.to.criteria.PostTimelineCriteriaTO;
 import com.fyself.post.service.post.datasource.AnswerSurveyRepository;
@@ -28,7 +25,9 @@ import reactor.core.publisher.Mono;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static com.fyself.post.service.post.contract.AnswerSurveyBinder.ANSWER_SURVEY_BINDER;
 import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
@@ -129,7 +128,7 @@ public class PostServiceImpl implements PostService {
             .flatMap(post -> repository.softDelete(post)
                     .doOnSuccess(entity -> deleteEvent(post, context))
                     .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity)).subscribe())
-                    .doOnSuccess(entity -> postTimelineRepository.deleteAllByPost(entity.getId()))
+                    .doOnSuccess(entity -> postTimelineRepository.deleteAllByPost(entity.getId()).subscribe())
                     .doOnSuccess(entity -> streamService.putInPipelineDeletePostNotification(Map.of("type","DELETE-POST-NOT","post",entity.getId())).subscribe())
             )
             .then();
@@ -183,10 +182,10 @@ public class PostServiceImpl implements PostService {
   @Override
   public Mono<PagedList<PostTO>> searchByEnterprise(@NotNull PostCriteriaTO criteria, FySelfContext context) {
     return repository.findPage(
-            POST_BINDER.bindToCriteria(criteria.putWorkspace(true).putEnterprise(context.getAccount().get().getBusiness())))
+            POST_BINDER.bindToSearchByEnterprise(criteria.putWorkspace(true).putEnterprise(context.getAccount().get().getBusiness())))
             .map(POST_BINDER::bindPage)
             .flatMap(postTOPagedList -> fromIterable(postTOPagedList.getElements())
-                    .flatMap(
+                    .flatMapSequential(
                             postTO ->
                                     answerSurveyRepository
                                             .findByPostAndUser(
@@ -203,6 +202,7 @@ public class PostServiceImpl implements PostService {
                                             .map(answerSurveyTO -> POST_BINDER
                                                     .bindPostTOWithAnswer(postTO, answerSurveyTO))
                                             .switchIfEmpty(just(postTO)), 1)
+                    .flatMapSequential(posTO -> findSharedPostsBusiness(posTO))
                     .collectList()
                     .map(postTOS -> POST_BINDER.bind(postTOPagedList, postTOS)));
   }
@@ -256,58 +256,29 @@ public class PostServiceImpl implements PostService {
 
   @Override
   public Mono<String> sharePost(@NotNull PostShareBulkTO to, FySelfContext context) {
+    String userId = context.getAccount().get().getId();
     return repository.findById(to.getPost())
         .flatMap(post -> checkPostContent(post).flatMap(checkingContent -> {
-          if(post.getWorkspace())
+          if (to.getSharedWith().isEmpty() && post.getAccess().equals(Access.PUBLIC)) {
+            if (checkingContent)
+              return sharePost(POST_BINDER.bindSharedPost(post, userId), context)
+                      .map(DomainEntity::getId);
+            else
+              return sharePost(POST_BINDER.bindReSharedPost(post, userId), context)
+                      .map(DomainEntity::getId);
+          }
+          else if(post.getWorkspace() || post.getOwner().equals(userId))
           {
-             if(to.getSharedWith().isEmpty())
-             {
-                 if (checkingContent)
-                   return userRepository.loadUsersWorkspace(post.getEnterprise(), context)
-                           .flatMap(users ->
-                                   shareBulk(POST_BINDER.bindShareBulk(post, to.putSharedWith(users), context.getAccount().get().getId()), context)
-                                           .filter(Boolean::booleanValue).map(ing -> to.getPost()));
-                 else
-                   return userRepository.loadUsersWorkspace(post.getEnterprise(), context)
-                           .flatMap(users ->
-                                   shareBulk(POST_BINDER.bindReShareBulk(post, to.putSharedWith(users), context.getAccount().get().getId()), context)
-                                           .filter(Boolean::booleanValue).map(ing -> to.getPost()));
-             }
-             else
-             {
-                 if (checkingContent)
-                   return shareBulk(POST_BINDER.bindShareBulk(post, to, context.getAccount().get().getId()), context)
-                           .filter(Boolean::booleanValue).map(ing -> to.getPost());
-                 else
-                   return shareBulk(POST_BINDER.bindReShareBulk(post, to, context.getAccount().get().getId()), context)
-                           .filter(Boolean::booleanValue).map(ing -> to.getPost());
-             }
+            if (checkingContent)
+              return shareBulk(POST_BINDER.bindShareBulk(post, to, userId), context)
+                      .filter(Boolean::booleanValue).map(ing -> to.getPost());
+            else
+              return shareBulk(POST_BINDER.bindReShareBulk(post, to, userId), context)
+                      .filter(Boolean::booleanValue).map(ing -> to.getPost());
           }
           else
-          {
-            if (post.getOwner().equals(context.getAccount().get().getId())) {
-                if (checkingContent)
-                  return shareBulk(POST_BINDER.bindShareBulk(post, to, context.getAccount().get().getId()), context)
-                          .filter(Boolean::booleanValue).map(ing -> to.getPost());
-                else
-                  return shareBulk(POST_BINDER.bindReShareBulk(post, to, context.getAccount().get().getId()), context)
-                          .filter(Boolean::booleanValue).map(ing -> to.getPost());
-            } else {
-              if (post.getAccess().equals(Access.PUBLIC)) {
-                  if (checkingContent)
-                    return createPost(
-                            POST_BINDER.bindSharedPost(post, context.getAccount().get().getId()), context)
-                            .map(DomainEntity::getId);
-                   else
-                    return createPost(
-                            POST_BINDER.bindReSharedPost(post, context.getAccount().get().getId()), context)
-                            .map(DomainEntity::getId);
-              } else {
-                return error(ValidationException::new);
-              }
-            }
-          }
-        }))
+            return error(ValidationException::new);
+          }))
         .switchIfEmpty(error(EntityNotFoundException::new));
   }
 
@@ -382,6 +353,15 @@ public class PostServiceImpl implements PostService {
             .subscribe());
   }
 
+  private Mono<Post> sharePost(@NotNull Post to, FySelfContext context) {
+    return repository.save(to)
+            .flatMap(
+                    post -> postTimelineRepository.save(POST_TIMELINE_BINDER.bindSharedPost(post)).thenReturn(post))
+            .doOnSuccess(entity -> createEvent(entity, context))
+            .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity))
+                    .subscribe());
+  }
+
   private Mono<Post> createPostWS(@NotNull Post to, FySelfContext context) {
     return repository.save(to)
             .flatMap(
@@ -389,5 +369,17 @@ public class PostServiceImpl implements PostService {
             .doOnSuccess(entity -> createEventWS(entity, context, to.getEnterprise()))
             .doOnSuccess(entity -> streamService.putInPipelinePostElastic(POST_BINDER.bindIndex(entity))
                     .subscribe());
+  }
+
+  private Mono<PostTO> findSharedPostsBusiness(PostTO postTO) {
+    Set<String> idsSharedPosts = new HashSet<>();
+    return repository.findAllByEnterpriseAndShared(postTO.getEnterprise(), postTO.getId())
+            .collectList()
+            .map(listSharedPosts -> {
+              for (Post sharedPost: listSharedPosts)
+                idsSharedPosts.add(sharedPost.getId());
+              return postTO.putSharedPosts(idsSharedPosts);
+            })
+            .doOnError(err -> {throw new EntityNotFoundException(err.getMessage());});
   }
 }

@@ -119,10 +119,10 @@ public class PostFacadeImpl implements PostFacade {
 
     private Mono<PagedList<PostTO>> putExtraData(PagedList<PostTO> page, FySelfContext context) {
         return Flux.fromIterable(page.getElements())
-                .flatMap(postTOResult -> commentService.count(postTOResult.getId()).map(postTOResult::putCount), 1)
-                .flatMap(post -> reactionService.meReaction(post.getId(),context).map(post::putReaction).switchIfEmpty(Mono.just(post)),1)
-                .flatMap(post -> reactionService.loadAll(post.getId(),context).map(post::putReactionStats).switchIfEmpty(Mono.just(post)))
-                .flatMap(postTO -> {
+                .flatMapSequential(postTOResult -> commentService.count(postTOResult.getId()).map(postTOResult::putCount), 1)
+                .flatMapSequential(post -> reactionService.meReaction(post.getId(),context).map(post::putReaction).switchIfEmpty(Mono.just(post)),1)
+                .flatMapSequential(post -> reactionService.loadAll(post.getId(),context).map(post::putReactionStats).switchIfEmpty(Mono.just(post)))
+                .flatMapSequential(postTO -> {
                     if(postTO.getContent() instanceof SharedPostTO){
                         return service.addSharedPostContent(postTO);
                     } else
