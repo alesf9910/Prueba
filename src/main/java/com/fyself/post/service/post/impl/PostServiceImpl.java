@@ -17,17 +17,17 @@ import com.fyself.seedwork.service.EntityNotFoundException;
 import com.fyself.seedwork.service.PagedList;
 import com.fyself.seedwork.service.ValidationException;
 import com.fyself.seedwork.service.context.FySelfContext;
+import com.fyself.seedwork.service.mining.MiningAdminService;
+import com.fyself.seedwork.service.mining.datasource.domain.MiningMessage;
 import com.fyself.seedwork.service.repository.mongodb.domain.DomainEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import static com.fyself.post.service.post.contract.AnswerSurveyBinder.ANSWER_SURVEY_BINDER;
 import static com.fyself.post.service.post.contract.PostBinder.POST_BINDER;
@@ -46,24 +46,48 @@ public class PostServiceImpl implements PostService {
   final PostTimelineRepository postTimelineRepository;
   final AnswerSurveyRepository answerSurveyRepository;
   final StreamService streamService;
-  PostTO postTOAux;
+  final String typeMiningAction;
+  final String msName;
+  final MiningAdminService miningAdminService;
 
   public PostServiceImpl(PostRepository repository, UserRepository userRepository, PostTimelineRepository postTimelineRepository,
-      AnswerSurveyRepository answerSurveyRepository, StreamService streamService) {
+                         AnswerSurveyRepository answerSurveyRepository, StreamService streamService,
+                         MiningAdminService miningAdminService,
+                         @Value("${mspost.application.typeMiningAction.create-post}") String typeMiningAction,
+                         @Value("${mspost.application.name}") String msName) {
     this.repository = repository;
     this.postTimelineRepository = postTimelineRepository;
     this.answerSurveyRepository = answerSurveyRepository;
     this.streamService = streamService;
     this.userRepository = userRepository;
+    this.typeMiningAction = typeMiningAction;
+    this.msName = msName;
+    this.miningAdminService = miningAdminService;
   }
 
   @Override
   public Mono<String> create(@NotNull @Valid PostTO to, FySelfContext context) {
     return context.authenticatedId()
-        .flatMap(userId -> createPost(
-            POST_BINDER.bind(to.withUserId(userId).withCreatedAt().withUpdatedAt()), context))
-        .switchIfEmpty(error(EntityNotFoundException::new))
-        .map(DomainEntity::getId);
+            .flatMap(userId -> createPost(
+                    POST_BINDER.bind(to.withUserId(userId).withCreatedAt().withUpdatedAt()), context))
+            .switchIfEmpty(error(EntityNotFoundException::new))
+            .doOnSuccess(entity ->
+                    //Send mining action
+                    miningAdminService.sendAction(createMessage(context, entity)).subscribe())
+            .map(DomainEntity::getId);
+  }
+
+  private MiningMessage createMessage(FySelfContext context, Post entity) {
+    HashMap bodyMap = new HashMap();
+    bodyMap.put("idPost", entity.getId());
+    bodyMap.put("typePost", entity.getContent().getTypeContent());
+    MiningMessage message = new MiningMessage();
+    message.setIdMicroService(msName);
+    message.setOwner(context.getAccount().get().getId());
+    message.setIdTypeMiningAction(typeMiningAction);
+    message.setBody(bodyMap);
+    message.setCreatedAt(LocalDateTime.now());
+    return message;
   }
 
   @Override
