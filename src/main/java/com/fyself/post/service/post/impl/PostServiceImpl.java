@@ -78,9 +78,11 @@ public class PostServiceImpl implements PostService {
   }
 
   private MiningMessage createMessage(FySelfContext context, Post entity) {
-    HashMap bodyMap = new HashMap();
+    HashMap<String, Object> bodyMap = new HashMap<>();
     bodyMap.put("idPost", entity.getId());
     bodyMap.put("typePost", entity.getContent().getTypeContent());
+    if (entity.getEnterprise() != null)
+      bodyMap.put("enterprise", entity.getEnterprise());
     MiningMessage message = new MiningMessage();
     message.setIdMicroService(msName);
     message.setOwner(context.getAccount().get().getId());
@@ -96,6 +98,9 @@ public class PostServiceImpl implements PostService {
             .flatMap(userId -> createPostWS(
                     POST_BINDER.bind(to.withUserId(userId).withCreatedAt().withUpdatedAt()), context))
             .switchIfEmpty(error(EntityNotFoundException::new))
+            .doOnSuccess(entity ->
+                    //Send mining action
+                    miningAdminService.sendAction(createMessage(context, entity)).subscribe())
             .map(DomainEntity::getId);
   }
 
