@@ -66,6 +66,7 @@ mspost:
 
     typeMiningAction:
       create-post: CREATE_POST
+      create-post-ws: CREATE_POST_WS
 
 application:
   aws:

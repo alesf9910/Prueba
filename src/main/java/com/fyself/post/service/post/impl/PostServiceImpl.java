@@ -49,11 +49,13 @@ public class PostServiceImpl implements PostService {
   final String typeMiningAction;
   final String msName;
   final MiningAdminService miningAdminService;
+  final String typeMiningActionWS;
 
   public PostServiceImpl(PostRepository repository, UserRepository userRepository, PostTimelineRepository postTimelineRepository,
                          AnswerSurveyRepository answerSurveyRepository, StreamService streamService,
                          MiningAdminService miningAdminService,
                          @Value("${mspost.application.typeMiningAction.create-post}") String typeMiningAction,
+                         @Value("${mspost.application.typeMiningAction.create-post-ws}") String typeMiningActionWS,
                          @Value("${mspost.application.name}") String msName) {
     this.repository = repository;
     this.postTimelineRepository = postTimelineRepository;
@@ -63,6 +65,7 @@ public class PostServiceImpl implements PostService {
     this.typeMiningAction = typeMiningAction;
     this.msName = msName;
     this.miningAdminService = miningAdminService;
+    this.typeMiningActionWS = typeMiningActionWS;
   }
 
   @Override
@@ -79,14 +82,16 @@ public class PostServiceImpl implements PostService {
 
   private MiningMessage createMessage(FySelfContext context, Post entity) {
     HashMap<String, Object> bodyMap = new HashMap<>();
+    MiningMessage message = new MiningMessage();
     bodyMap.put("idPost", entity.getId());
     bodyMap.put("typePost", entity.getContent().getTypeContent());
-    if (entity.getEnterprise() != null)
+    if (entity.getEnterprise() != null) {
       bodyMap.put("enterprise", entity.getEnterprise());
-    MiningMessage message = new MiningMessage();
+      message.setIdTypeMiningAction(typeMiningActionWS);
+    } else
+      message.setIdTypeMiningAction(typeMiningAction);
     message.setIdMicroService(msName);
     message.setOwner(context.getAccount().get().getId());
-    message.setIdTypeMiningAction(typeMiningAction);
     message.setBody(bodyMap);
     message.setCreatedAt(LocalDateTime.now());
     return message;
