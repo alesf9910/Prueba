@@ -34,6 +34,7 @@ public class BasicFacadeImpl implements BasicFacade {
         this.groupId = groupId;
         this.topicPrefix = topicPrefix;
         this.enviromentPrefix = enviromentPrefix;
+        this.kafkaAddress = kafkaAddress;
     }
 
     @Override
@@ -44,7 +45,7 @@ public class BasicFacadeImpl implements BasicFacade {
             setString.add(topicPrefix+"-"+enviromentPrefix+"-"+val.replaceAll("\\s+",""));
         return streamService.containAllConsumerGroup(g, setString)
                 .filter(aBoolean -> aBoolean)
-                .map(aBoolean -> Map.of("status", "Ok" + this.kafkaAddress ))
+                .map(aBoolean -> Map.of("status", "Ok " + this.kafkaAddress ))
                 .switchIfEmpty(error(DataSourceCommunicationException::new))
                 .map(Result::successful);
     }
