@@ -56,16 +56,17 @@ public class PostServiceImpl implements PostService {
                          MiningAdminService miningAdminService,
                          @Value("${mspost.application.typeMiningAction.create-post}") String typeMiningAction,
                          @Value("${mspost.application.typeMiningAction.create-post-ws}") String typeMiningActionWS,
-                         @Value("${mspost.application.name}") String msName) {
-    this.repository = repository;
-    this.postTimelineRepository = postTimelineRepository;
-    this.answerSurveyRepository = answerSurveyRepository;
-    this.streamService = streamService;
-    this.userRepository = userRepository;
-    this.typeMiningAction = typeMiningAction;
-    this.msName = msName;
-    this.miningAdminService = miningAdminService;
-    this.typeMiningActionWS = typeMiningActionWS;
+                         @Value("${mspost.application.name}") String msName)
+  {
+      this.repository = repository;
+      this.postTimelineRepository = postTimelineRepository;
+      this.answerSurveyRepository = answerSurveyRepository;
+      this.streamService = streamService;
+      this.userRepository = userRepository;
+      this.typeMiningAction = typeMiningAction;
+      this.msName = msName;
+      this.miningAdminService = miningAdminService;
+      this.typeMiningActionWS = typeMiningActionWS;
   }
 
   @Override
