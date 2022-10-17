@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.elasticsearch.repository.config.EnableReactiveElasticsearchRepositories;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
@@ -37,7 +38,7 @@ public class DefaultContext {
      */
     @Configuration
     @Import(DefaultDispatcherContext.class)
-    @ComponentScan("com.fyself.post.dist.rest")
+    @ComponentScan({"com.fyself.post.dist.rest", "com.fyself.seedwork.rest.mining"})
     public class DispatcherContext {
 
     }
@@ -70,8 +71,11 @@ public class DefaultContext {
             "com.fyself.post.service.system.datasource.impl",
             "com.fyself.seedwork.service.repository.*.impl",
             "com.fyself.seedwork.service.repository.file.impl",
-            "com.fyself.seedwork.facade"})
-    @EnableReactiveMongoRepositories("com.fyself.post.service.*.datasource")
+            "com.fyself.seedwork.facade",
+            "com.fyself.seedwork.service.mining.datasource",
+            "com.fyself.seedwork.service.mining.impl"
+    })
+    @EnableReactiveMongoRepositories({"com.fyself.post.service.*.datasource", "com.fyself.seedwork.service.mining.datasource"})
     public class DataSourceContext {
         @Bean
         public MessageSource messageSource() {
@@ -83,6 +87,12 @@ public class DefaultContext {
             return builder().region(of(region)).build();
         }
 
+    }
+
+    @Configuration
+    @ComponentScan(basePackages = "com.fyself.seedwork.service.elastic.datasource")
+    @EnableReactiveElasticsearchRepositories(basePackages = "com.fyself.seedwork.service.elastic.datasource")
+    public class ElasticRepoConfig {
     }
 
     /**
