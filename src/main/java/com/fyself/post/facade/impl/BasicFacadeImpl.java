@@ -19,12 +19,15 @@ public class BasicFacadeImpl implements BasicFacade {
     private String groupId;
     private final String topicPrefix;
     private String enviromentPrefix;
+    private String kafkaAddress;
 
     BasicFacadeImpl(StreamService streamService,
                     @Value("${mspost.application.kafka.topics-verify.string}") String stringTopics,
                     @Value("${application.kafka.groupId}") String groupId,
                     @Value("${application.kafka.topicPrefix}") String topicPrefix,
-                    @Value("${application.kafka.enviromentPrefix}") String enviromentPrefix)
+                    @Value("${application.kafka.enviromentPrefix}") String enviromentPrefix,
+                    @Value("${application.kafka.bootstrapServers}") String kafkaAddress
+                    )
     {
         this.streamService = streamService;
         this.stringTopics = stringTopics;
@@ -41,7 +44,7 @@ public class BasicFacadeImpl implements BasicFacade {
             setString.add(topicPrefix+"-"+enviromentPrefix+"-"+val.replaceAll("\\s+",""));
         return streamService.containAllConsumerGroup(g, setString)
                 .filter(aBoolean -> aBoolean)
-                .map(aBoolean -> Map.of("status", "ok"))
+                .map(aBoolean -> Map.of("status", "Ok" + this.kafkaAddress ))
                 .switchIfEmpty(error(DataSourceCommunicationException::new))
                 .map(Result::successful);
     }
